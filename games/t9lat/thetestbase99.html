@@ -1,0 +1,2257 @@
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="max-age=31536000, public">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+<link rel="shortcut icon" type="image/jpg" href="favicon.png"/>
+
+<title>T9 OS</title>
+
+</head>
+<body>
+  
+
+    
+
+
+
+<style>
+
+@import url('https://fonts.googleapis.com/css?family=Luckiest+Guy');
+
+  body {
+  background: linear-gradient(to bottom, #000000, #3a0057, #550075);
+  background-repeat: no-repeat;
+  background-size: cover;   /* make sure images cover the whole screen */
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  text-decoration: none;
+  }
+  a{
+    outline:none;
+  }
+  a:focus{
+    outline:none;
+  }
+
+  /* Clock Styles */
+.clock {
+  color: white;
+  font-size: 35px;
+  position: fixed;
+  top: 20px;
+  left: 30px;
+  text-shadow: 0 0 10px #00ffff;
+  font-family: 'Orbitron', sans-serif;
+}
+
+
+  /* Battery Styles */
+  .battery {
+    
+color: white;
+  font-size: 15px;
+  position: fixed;
+  top: 45px;
+  left: 30px;
+  text-shadow: 0 0 10px #00ffff;
+  font-family: 'Orbitron', sans-serif;
+
+
+  }
+
+  /* Navbar Styles */
+.navbar {
+  position: fixed;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  width: 60px; /* thinner width since it's vertical */
+  height: auto;
+  background: linear-gradient(
+    145deg,
+    rgba(0, 0, 0, 0.842),
+    rgba(0, 0, 0, 0.534)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    inset 0 1px 2px rgba(46, 46, 46, 0.3),
+    0 4px 10px rgba(0, 0, 0, 0.4);
+  border-radius: 100px;
+  display: flex;
+  flex-direction: column; /* now stack items vertically */
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  box-shadow: 0px 4px 12px #31313133;
+  opacity: 0.6;
+  backdrop-filter: blur(2px);
+  transition: all 0.1s ease-in-out; 
+}
+.navbar:hover{
+  border-radius: 20px;
+}
+.navbar img{
+  opacity:1;
+}
+
+
+
+
+
+  .close-btn {
+    background: none;
+    border: none;
+    color: rgb(255, 0, 0);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    font-size:20px;
+} 
+
+.close-btn:hover {
+    color: #ff0000; /* Change color on hover */
+}
+ .full-btn {
+    background: none;
+    border: none;
+    color: rgb(26, 255, 0);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    font-size:20px;
+    top:-0.5;
+} 
+  img {
+    width: 28px;
+    padding: 10px 20px;
+    border-radius: 25px;
+    transition: transform 0.3s ease-in-out;
+  }
+
+  img:hover {
+    box-shadow: none;
+    border-radius: 15px;
+        transform: translateY(-3px);
+
+  }
+
+  .line {
+    width: 2px;
+    height: 50px;
+    background-color: white;
+    right: 150px;
+    position: fixed;
+  }
+
+  .line2 {
+    width: 2px;
+    height: 50px;
+    background-color: white;
+    right: 280px;
+    position: fixed;
+  }
+
+  #hiddenDiv {
+    display: none;
+    margin-top: 20px;
+    padding: 10px;
+background-color: #1b1b1bbd;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    inset: 0;
+    margin:auto;
+    position: fixed;
+    z-index: 1000;
+    border-radius:30px; 
+    width:85%;
+    height: 77%; 
+    overflow-x: hidden;
+    overflow-y: auto;
+box-shadow: 2px #141414;
+      animation: popIn2 0.5s ease-out forwards;
+
+  }
+   #aiDiv {
+    display: none;
+    margin-top: 20px;
+    padding: 10px;
+background-color: #1b1b1bbd;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    inset: 0;
+    margin:auto;
+    position: fixed;
+    z-index: 1000;
+    border-radius:30px; 
+    width:85%;
+    height: 77%; 
+    overflow-x: hidden;
+    overflow-y: auto;
+box-shadow: 2px #141414;
+      animation: popIn2 0.5s ease-out forwards;
+
+  }
+   #terminalDiv {
+    display: none;
+    margin-top: 20px;
+    padding: 10px;
+background-color: #1b1b1bbd;
+border: 1px solid rgb(34, 34, 34);   
+    color: white;
+    inset: 0;
+    margin:auto;
+    position: fixed;
+    z-index: 1000;
+    border-radius:30px; 
+    width:85%;
+    height: 77%; 
+    overflow-x: hidden;
+    overflow-y: auto;
+box-shadow: 2px #141414;
+      animation: popIn2 0.5s ease-out forwards;
+
+  }
+  #movieDiv {
+    display: none;
+    margin-top: 20px;
+    padding: 10px;
+background-color: #1b1b1bbd;
+border: 1px solid rgb(34, 34, 34);   
+    color: white;
+    inset: 0;
+    margin:auto;
+    position: fixed;
+    z-index: 1000;
+    border-radius:30px; 
+    width:85%;
+    height: 77%; 
+    overflow-x: hidden;
+    overflow-y: auto;
+box-shadow: 2px #141414;
+      animation: popIn2 0.5s ease-out forwards;
+
+  }
+   #musicDiv {
+    display: none;
+    margin-top: 20px;
+    padding: 10px;
+background-color: #1b1b1bbd;
+border: 1px solid rgb(34, 34, 34);   
+    color: white;
+    inset: 0;
+    margin:auto;
+    position: fixed;
+    z-index: 1000;
+    border-radius:30px; 
+    width:85%;
+    height: 77%; 
+    overflow-x: hidden;
+    overflow-y: auto;
+box-shadow: 2px #141414;
+      animation: popIn2 0.5s ease-out forwards;
+
+  }
+    #t9Div {
+    display: none;
+    margin-top: 20px;
+    padding: 10px;
+background: linear-gradient(
+        145deg,
+        rgba(0, 0, 0, 0.842),
+        rgba(0, 0, 0, 0.534)
+      );
+border: 1px solid rgb(34, 34, 34);   
+    color: white;
+    inset: 0;
+    margin:auto;
+    position: fixed;
+    z-index: 1000;
+    border-radius:30px; 
+    width:25%;
+    height: 40%; 
+    overflow-x: hidden;
+    overflow-y: auto;
+box-shadow: 2px #141414;
+      animation: popIn2 0.5s ease-out forwards;
+      top:155px;
+
+  }
+  #settingsDiv {
+    display: none;
+    margin-top: 20px;
+    padding: 10px;
+  background: rgba(0, 0, 0, 0.3); 
+border: 1px solid rgba(255, 255, 255, 0.15);   
+    color: white;
+    inset: 0;
+    margin:auto;
+    position: fixed;
+    z-index: 1000;
+    border-radius:20px; 
+    opacity:85%; 
+    width:600px;
+    height: 500px; 
+    overflow-x: hidden;
+    overflow-y: auto;
+      animation: popIn 0.5s ease-out forwards;
+
+  }
+  #appsDiv {
+    display: none;
+    margin-top: 20px;
+    padding: 10px;
+    background: rgba(0,0,0,0.4);   
+backdrop-filter: blur(7px);   
+    color: white;
+    inset: 0;
+    margin:auto;
+    position: fixed;
+    z-index: 1000;
+    border-radius:20px; 
+    opacity:85%; 
+    width:600px;
+    height: 500px; 
+    overflow-x: hidden;
+    overflow-y: auto;
+      animation: popIn 0.5s ease-out forwards;
+
+  }
+    #updateDiv {
+    margin-top: 20px;
+    padding: 10px;
+  background: rgba(0, 0, 0, 0.3); 
+border: 1px solid rgba(255, 255, 255, 0.15);  
+    color: white;
+    inset: 0;
+    margin:auto;
+    position: fixed;
+    z-index: 1000;
+    border-radius:20px; 
+    opacity:85%; 
+    width:600px;
+    height: 500px; 
+    overflow-x: hidden;
+    overflow-y: auto;
+      animation: popIn 0.5s ease-out forwards;
+
+  }
+    #widgetDiv {
+    margin-top: 20px;
+    padding: 10px;
+    background: rgba(0,0,0,0.4);    
+backdrop-filter: blur(7px);   
+border: 1px solid rgba(255, 255, 255, 0.15);   
+    color: white;
+   right:50px;
+   top:50px;
+    position: fixed;
+    z-index: 1000;
+    border-radius:20px; 
+    opacity:85%; 
+    width:150px;
+    height: 150px; 
+    overflow-x: hidden;
+    overflow-y: auto;
+      animation: popIn 0.5s ease-out forwards;
+
+  }
+  #collabDiv {
+    display: none;
+    margin-top: 20px;
+    padding: 10px;
+  background: rgba(0, 0, 0, 0.3); 
+border: 1px solid rgba(255, 255, 255, 0.15);   
+    color: white;
+    inset: 0;
+    margin:auto;
+    position: fixed;
+    z-index: 1000;
+    border-radius:20px; 
+    opacity:85%; 
+    width:600px;
+    height: 500px; 
+    overflow-x: hidden;
+    overflow-y: auto;
+      animation: popIn 0.5s ease-out forwards;
+
+  }
+    #soundDiv {
+    display: none;
+    margin-top: 20px;
+    padding: 10px;
+  background: rgba(0, 0, 0, 0.3); 
+border: 1px solid rgba(255, 255, 255, 0.15);  
+    color: white;
+    inset: 0;
+    margin:auto;
+    position: fixed;
+    z-index: 1000;
+    border-radius:20px; 
+    opacity:85%; 
+    width:600px;
+    height: 500px; 
+    overflow-x: hidden;
+    overflow-y: auto;
+      animation: popIn 0.5s ease-out forwards;
+
+  }
+   #hacksDiv {
+    display: none;
+    margin-top: 20px;
+    padding: 10px;
+  background: rgba(0, 0, 0, 0.3); 
+border: 1px solid rgba(255, 255, 255, 0.15);  
+    color: white;
+    inset: 0;
+    margin:auto;
+    position: fixed;
+    z-index: 1000;
+    border-radius:20px; 
+    opacity:85%; 
+    width:600px;
+    height: 500px; 
+    overflow-x: hidden;
+    overflow-y: auto;
+      animation: popIn 0.5s ease-out forwards;
+
+  }
+   #emulatorDiv {
+    display: none;
+    margin-top: 20px;
+    padding: 10px;
+   background: rgba(0, 0, 0, 0.3); 
+border: 1px solid rgba(255, 255, 255, 0.15);  
+    color: white;
+    inset: 0;
+    margin:auto;
+    position: fixed;
+    z-index: 1000;
+    border-radius:20px; 
+    opacity:85%; 
+    width:600px;
+    height: 500px; 
+    overflow-x: hidden;
+    overflow-y: auto;
+      animation: popIn 0.5s ease-out forwards;
+
+  }
+  #searchDiv {
+    display: none;
+    margin-top: 20px;
+    padding: 10px;
+background-color: #1b1b1bbd;
+border: 1px solid rgba(255, 255, 255, 0.15);   
+    color: white;
+    inset: 0;
+    margin:auto;
+    position: fixed;
+    z-index: 1000;
+    border-radius:30px; 
+    width:90%;
+    height: 80%; 
+    overflow-x: hidden;
+    overflow-y: auto;
+box-shadow: 2px #141414;
+      animation: popIn2 0.5s ease-out forwards;
+
+  }
+    #adminDiv {
+    display: none;
+    margin-top: 20px;
+    padding: 10px;
+  background: rgba(0, 0, 0, 0.3); 
+border: 1px solid rgba(255, 255, 255, 0.15);   
+    color: white;
+    inset: 0;
+    margin:auto;
+    position: fixed;
+    z-index: 1000;
+    border-radius:20px; 
+    opacity:85%; 
+    width:85%;
+    height: 73%; 
+    overflow-x: hidden;
+    overflow-y: auto;
+      animation: popIn 0.5s ease-out forwards;
+
+  }
+
+  /* Logo Styles */
+  #logo {
+    display:none;
+    inset: 0;
+    margin:auto;
+      position:fixed;
+    position: fixed;
+    font-size: 200px;
+    font-family: 'Luckiest Guy', cursive;
+    width:400px;
+      animation: popIn 0.5s ease-out forwards;
+
+   
+  color: white;
+
+  }
+  .Lbtn{
+    padding:10px 20px; 
+    background-color:black;
+    border-radius: 15px;
+    color:white;
+    text-decoration: none;
+
+    
+  }
+   .btn {
+    width: 150px;
+    height: 150px;
+    border-radius: 200px ; /* Add !important to ensure it overrides other styles */
+    gap: 150px;
+    transition: transform 0.3s ease-in-out;
+    font-family: sans-serif;
+      transition: all 0.3s ease;   /* smooth hover */
+    font-size: 15px;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: none;
+    border-radius: 50px !important; /* Ensure hover state also has the same border-radius */
+
+}
+     .gtext{
+          text-align:center;
+          font-family: sans-serif;
+background:none;  
+border-radius: 20px;           
+          color:#ffffff;
+                  
+     }
+     #leaderboardDiv {
+    display: none;
+    margin-top: 20px;
+    padding: 10px;
+  background: rgba(0, 0, 0, 0.3); 
+border: 1px solid rgba(255, 255, 255, 0.15);   
+    color: white;
+    inset: 0;
+    margin:auto;
+    position: fixed;
+    z-index: 1000;
+    border-radius:20px; 
+    opacity:85%; 
+    width:600px;
+    height: 500px; 
+    overflow-x: hidden;
+    overflow-y: auto;
+    animation: fadeIn 0.3s ease-in-out;
+
+  }
+  .ui-top {
+    background-color: #ffffff; /* Different color for the top section */
+    padding: 15px 20px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+ @keyframes popIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      100% {
+        opacity: 80%;
+        transform: scale(1);
+      }
+    }
+     @keyframes popIn2 {
+      0% {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      100% {
+        opacity: 100%;
+        transform: scale(1);
+      }
+    }
+  
+#searchBar{
+  text-align:center;
+  background: rgba(0, 0, 0, 0.3); 
+border: 1px solid rgba(255, 255, 255, 0.15);  
+  color: white;
+  border-radius: 15px;
+  position: absolute;
+  left:43%;
+  padding: 10px 20px;
+  border-style: solid;
+  border-width: 2px;
+  border-color:rgb(255, 255, 255);
+
+}
+
+  
+</style>
+</head>
+<body>
+
+
+
+<!-- Navbar -->
+<div id="navbar" class="navbar">
+  <a onclick="t9()">
+    <img src="favicon.png">
+  </a>
+  <a id="toggleDivButton">
+    <img src="gameicon.png">
+  </a>
+   <a onclick="ai()">
+    <img src="ai.png">
+  </a>
+  <a onclick="movie()">
+    <img src="movie2.png">
+  </a>
+   <a onclick="music()">
+    <img src="music3.png">
+  </a>
+  <a onclick="s()">
+    <img  src="search.png">
+  </a>
+  
+  <a onclick="emulator()">
+    <img src="apps1.png">
+  </a>
+
+    <a onclick="Chat()">
+    <img src="chat2.png">
+  </a>
+  
+
+
+</div>
+
+<!-- Hidden Div -->
+<div id="appsDiv">
+  <button class="close-btn" onclick="document.getElementById('appsDiv').style.display = 'none';">●</button>
+  <h1 class="gtext"> Apps </h1>
+  <p color="white" text-align="center">Warning if it says page not found refresh then it should work</p>
+
+          
+     <a href='https://t9os.com/active/iframe#https://netflix.com'>
+     <img class="btn" src="netflix.png">
+          </a>
+          <a href='https://t9os.com/active/iframe#https://discord.com'>
+           <img class="btn" src="dc.png">
+                </a>
+                <a href='https://t9os.com/active/iframe#https://www.xbox.com/en-US/play/games/fortnite/BT5P2X999VH2'>
+                  <img class="btn" src="fortnite.png">
+                       </a>
+                       <a href='https://t9os.com/active/iframe#https://www.tiktok.com/'>
+                        <img class="btn" src="tiktok.png">
+                             </a>
+           
+     
+        
+       
+
+          
+</div>
+
+<div id="collabDiv">
+  <button class="close-btn" onclick="document.getElementById('collabDiv').style.display = 'none';">●</button>
+  <h1 class="gtext"> Partners </h1>
+  <p color="white" style="text-align: center;"></p>
+
+          
+     <a href="https://ratgames.vercel.app/">
+     <img class="btn" src="rat.gif">
+          </a>
+          
+           <a href="https://1anime.app">
+     <img class="btn" src="anime-partner.png">
+          </a>
+        
+           <a href="https://ducky-ea0.pages.dev">
+     <img class="btn" src="duckmath.png">
+          </a>
+
+            <a href="https://demonzero.space/">
+     <img class="btn" src="demon.png">
+          </a>
+     
+     
+        
+       
+
+          
+</div>
+
+<div id="updateDiv">
+  <button class="close-btn" onclick="document.getElementById('updateDiv').style.display = 'none';">●</button>
+
+<h1 style="text-align: center;">Version 2.61</h1>
+
+                        <h3 style="text-align: center; color:white;">T9 OS V3 coming soon. Its gonna have more games, looks better, better functionality and more.</h3>
+
+                <h3 style="text-align: center; color:white;">Links: t9os.vercel.app t9osclass.vercel.app learningbooks.vercel.app. More links in the link docs</h3>
+
+
+  <a style="background-color: white; padding:10px 20px; color:black; border-radius: 10px; text-align: center; font-family: sans-serif; text-decoration: none; " href="https://docs.google.com/document/d/1mR-52jkUgqwVoEXaIC1CmPccFzuLK18fQ-jCn9VkZn0/edit?usp=sharing"  target="_blank">Current links</a>
+
+
+
+        <h3 style="text-align: center; color:white;">If you would like to help out T9 OS please donate to our Ko-Fi, It helps us buy domains/links, Servers if needed, and more. Thank you!</h3>
+                <h3 style="text-align: center; color:white;">Donaters get early access to updates, go on the wll of fame, and gets special perks on dc server.</h3>
+
+
+
+
+
+
+  <a style="background-color: white; padding:10px 20px; color:black; border-radius: 10px; text-align: center; font-family: sans-serif; text-decoration: none; " href="https://ko-fi.com/t9oss"  target="_blank">Donate!</a>
+
+    <a style="background-color: 	#7289da; padding:10px 20px; color:rgb(255, 255, 255); border-radius: 10px; text-align: center; font-family: sans-serif; text-decoration: none; " href="https://dsc.gg/t9os"  target="_blank">Join server!</a>
+
+
+
+
+        
+       
+
+          
+</div>
+
+<div id="widgetDiv">
+  <button class="close-btn" onclick="document.getElementById('widgetDiv').style.display = 'none';">●</button>
+
+
+
+      <h2 style="transform: translateX(-50%); top:20px; position:fixed; left:50%; text-align:center; color:white; ">CPU  usage:   <span id="cpu"></span></h2>
+<img src="memory.png" style="width:30px; bottom:0; position: fixed; transform: translateX(-50%); left:50%;">
+ 
+<script>
+  function updateStats() {
+    let cpuPercent = Math.floor(Math.random() * 100);
+    document.getElementById('cpu').textContent = cpuPercent + '%';
+  }
+
+  setInterval(updateStats, 1000);
+</script>
+
+<style>
+  #cpu{
+      font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+      text-shadow: white 10px;
+  }
+</style>
+    
+
+
+
+
+
+
+
+        
+       
+
+          
+</div>
+
+<div id="ChatDiv">
+  <button class="close-btn" onclick="document.getElementById('ChatDiv').style.display = 'none';">●</button>
+
+
+ 
+<iframe class="frame" src="chat3.html"></iframe>
+  <style>
+    .frame{
+      width:100%;
+      height:95%;
+      bottom:0;
+      position: absolute;
+      border:none;
+      border-radius:0px 0px 20px 20px;
+      left:0;
+    }
+     #ChatDiv {
+    display: none;
+    margin-top: 20px;
+    padding: 10px;
+background-color: #1b1b1bbd;
+       border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    inset: 0;
+    margin:auto;
+    position: fixed;
+    z-index: 1000;
+    border-radius:20px; 
+    opacity:85%; 
+    width:85%;
+    height: 73%; 
+    overflow-x: hidden;
+    overflow-y: auto;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.589);
+
+      animation: popIn 0.5s ease-out forwards;
+
+  }
+  </style>
+ 
+           
+</div>
+
+<div id="terminalDiv">
+  <button class="close-btn" onclick="document.getElementById('terminalDiv').style.display = 'none';">●</button>
+        <h3 style="  left: 50%; color:white; top:-9.5px; position: absolute;   transform: translateX(-50%);" >Terminal</h3>
+
+
+
+ 
+<iframe class="frame3" src="terminal.html"></iframe>
+  <style>
+    .frame3{
+      width:100%;
+      height:95%;
+      bottom:10px;
+      position: absolute;
+      border:none;
+      border-radius:0px 0px 20px 20px;
+      left: 0;
+      bottom: 0;
+    }
+   
+  </style>
+ 
+           
+</div>
+
+<div id="movieDiv">
+  <button class="close-btn" onclick="document.getElementById('movieDiv').style.display = 'none';">●</button>
+      <button class="full-btn" onclick="fullscreenIframe3()">●</button>
+
+        <h3 style="  left: 50%; color:white; top:-9.5px; position: absolute;   transform: translateX(-50%);" >Movies</h3>
+
+
+
+ 
+<iframe id="mframe" class="mframe" src="movie.html"></iframe>
+  <style>
+    .mframe{
+      width:100%;
+      height:95%;
+      bottom:10px;
+      position: absolute;
+      border:none;
+      border-radius:0px 0px 20px 20px;
+      left: 0;
+      bottom: 0;
+    }
+   
+  </style>
+   <script>
+    function fullscreenIframe3() {
+      let iframe = document.getElementById("mframe");
+      if (iframe.requestFullscreen) {
+        iframe.requestFullscreen();
+      } else if (iframe.mozRequestFullScreen) { 
+        iframe.mozRequestFullScreen();
+      } else if (iframe.webkitRequestFullscreen) { 
+        iframe.webkitRequestFullscreen();
+      } else if (iframe.msRequestFullscreen) { 
+        iframe.msRequestFullscreen();
+      }
+    }
+  </script>
+           
+</div>
+
+<div id="hacksDiv">
+  <button class="close-btn" onclick="document.getElementById('hacksDiv').style.display = 'none';">●</button>
+  <h1 class="gtext"> Bookmarklets </h1>
+  <p color="white" style="text-align: center;">Drag the buttons to ur bookmarks bar .</p>
+
+
+          <a href="javascript:(function(x,y){if(!window.click){window.click=!0,document.body.style.cursor='crosshair';var cps=prompt('Autoclicker CPS: (Under 200 recommended)');if(!cps||isNaN(cps)?(alert(%27You entered something wrong. Try running the script again.%27),end()):alert(%27Autoclicker activated at %27+cps+%27 CPS! Do [ctrl+e] to stop.%27),addEventListener(%27mousemove%27,e=>{x=e.clientX,y=e.clientY}),addEventListener(%27keydown%27,e=>{%27e%27===e.key&&e.ctrlKey&&(alert(%27Autoclicker deactivated! Click the bookmark again to reactivate!%27),end())}),window.click)var int=setInterval(function(){var e=document.elementFromPoint(x,y);e&&e.click()},1e3/cps);function end(){clearInterval(int),window.click=!1,document.body.style.cursor=%27default%27}}})();">
+      <button class="btn" >AutoClicker</button>
+      </a>
+<a href="javascript:if(document.body.contentEditable !== 'true') {    document.body.contentEditable = 'true'; document.designMode='on'; void 0} else {    document.body.contentEditable = 'false'; document.designMode='off'; void 0}">
+      <button class="btn" >Edit Anything</button>
+      </a>
+  
+        <script>
+        const buttons = document.querySelectorAll('.btn');
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const soundFile = button.getAttribute('data-sound');
+                
+                const audio = new Audio(soundFile);
+                
+                audio.play();
+            });
+        });
+    </script>
+
+        
+     
+        
+       
+
+          
+</div>
+
+<script>
+  function Chat(){
+    const div = document.getElementById('ChatDiv');
+    div.style.display = div.style.display === 'block' ? 'none' : 'block';
+  }
+</script>
+<script>
+  function t9(){
+    const div = document.getElementById('t9Div');
+    div.style.display = div.style.display === 'block' ? 'none' : 'block';
+  }
+</script>
+
+<div id="emulatorDiv">
+  <button class="close-btn" onclick="document.getElementById('emulatorDiv').style.display = 'none';">×</button>
+  <h1 class="gtext">| Apps |</h1>
+  <p color="white" style="text-align: center;"></p>
+
+  
+           <a href='/windows11.html'>
+     <img class="btn" src="windows11.png">
+          </a>
+        
+           <a href='/emulatorjs.html'>
+     <img class="btn" src="emulatorjs.png">
+          </a>
+
+           <a href='/webretro.html'>
+     <img class="btn" src="emulator.png">
+          </a>
+
+          
+           <a href='/music.html'>
+     <img class="btn" src="music2.png">
+          </a>
+
+              <a href='/yt.html'>
+     <img class="btn" src="yt.png">
+          </a>
+        
+
+
+        
+     
+        
+       
+
+          
+</div>
+
+<div id="t9Div">
+  <button class="close-btn2" onclick="document.getElementById('t9Div').style.display = 'none';">●</button>
+      <h4 style="  left: 50%; color:white; top:-9.5px; position: absolute;   transform: translateX(-50%);" >T9 OS</h4>
+
+
+  &nbsp;&nbsp;&nbsp;&nbsp; 
+  
+  <div class="btn-container">
+    <a onclick="terminal()"><img class="t9btn" src="terminal.png"></a>
+  </div>
+<script>
+  function terminal() {
+    const div = document.getElementById('terminalDiv');
+    if (div.style.display === 'block') {
+      div.style.display = 'none';
+    } else {
+      div.style.display = 'block';
+    }
+    document.getElementById('t9Div').style.display = 'none';
+  }
+</script>
+
+
+
+
+</script>
+</script>
+  <style>
+    .btn-container {
+      display: flex;
+      gap: 10px; /* space between buttons */
+      position: absolute;
+      top: 30px;
+      left: 30px;
+    }
+
+    .t9btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 15px;
+      transition: all 0.3s ease;
+      font-family: sans-serif;
+      font-size: 15px;
+      border: #ffffff 0.2px solid;
+      display: inline-block;
+      cursor: pointer;
+    }
+  </style>
+  </a>
+<style>
+  .warn{
+    top:0;
+    font-family: sans-serif;
+    position: absolute;
+    right:0;
+  }
+   .close-btn2 {
+    background: none;
+    border: none;
+    color: rgb(255, 0, 0);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    font-size:20px;
+    top:0;
+} 
+
+  </style>
+
+  <p class="warn"></p>
+
+
+           
+        
+       
+
+          
+</div>
+<div id="searchDiv">
+  <button class="close-btn2" onclick="document.getElementById('searchDiv').style.display = 'none';">●</button>
+      <button class="full-btn" onclick="fullscreenIframe2()">●</button>
+      <h3 style="  left: 50%; color:white; top:-9.5px; position: absolute;   transform: translateX(-50%);" >Browser</h3>
+
+
+  &nbsp;&nbsp;&nbsp;&nbsp; <!-- Adds manual spacing -->
+  <a href='/t9os.html'>
+  </a>
+<style>
+  .warn{
+    top:0;
+    font-family: sans-serif;
+    position: absolute;
+    right:0;
+  }
+   .close-btn2 {
+    background: none;
+    border: none;
+    color: rgb(255, 0, 0);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    font-size:20px;
+    top:0;
+} 
+
+  </style>
+
+  <p class="warn"></p>
+
+  <iframe id="frame3" class="frame" src="https://98sxnh-8080.csb.app"></iframe>
+  <style>
+    .frame{
+      width:100%;
+      height:95.6%;
+      bottom:0;
+      position: absolute;
+      border:none;
+      border-radius:0px 0px 20px 20px;
+      left:0;
+    }
+  </style>
+
+   <script>
+    function fullscreenIframe2() {
+      let iframe = document.getElementById("frame3");
+      if (iframe.requestFullscreen) {
+        iframe.requestFullscreen();
+      } else if (iframe.mozRequestFullScreen) { 
+        iframe.mozRequestFullScreen();
+      } else if (iframe.webkitRequestFullscreen) { 
+        iframe.webkitRequestFullscreen();
+      } else if (iframe.msRequestFullscreen) { 
+        iframe.msRequestFullscreen();
+      }
+    }
+  </script>
+           
+        
+       
+
+          
+</div>
+
+<div id="leaderboardDiv">
+  <button class="close-btn" onclick="document.getElementById('leaderboardDiv').style.display = 'none';">●</button>
+
+
+ 
+    <section>
+    <h2>Welcome to T9 OS - Leaderboard</h2>
+    <p>This where you upload your high scores in games</p>
+    <p class="post">Posted by: T9 OS</p>
+  </section>
+
+
+<style>
+  section {
+  background-color:black;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius:20px;
+    color:white;
+}
+
+</style>
+
+<style>
+   .post {
+    color:#adacac;
+    font-size:14px;
+   }
+    
+</style>
+
+</div>
+
+
+<style>
+  .tnav {
+    top:0;
+    height:25px;
+    opacity:50%; 
+    background-color:black;
+    position:fixed;
+    left:50%;
+transform: translateX(-50%);
+    width:25%;
+    border-radius: 0px 0px 15px 15px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    
+  }
+  .timg{
+    width:17px;
+    transform: translateY(-3px);
+    gap:70px;
+
+  }
+  .timg:hover{
+    transform: translateY(-4x);
+
+
+  }
+
+  
+ 
+</style>
+
+
+   
+             
+</div>
+<div id="hiddenDiv">
+<button class="close-btn" onclick="document.getElementById('hiddenDiv').style.display = 'none';">●</button>
+    <button class="full-btn" onclick="fullscreenIframe()">●</button>
+
+  <button class="back" style="top:10px; left: 50px; position: fixed; color:white;"    onclick="document.getElementById('frame2').src = 'test99.html';">←</button>
+<h3 style="  left: 50%; color:white; top:-9.5px; position: absolute;   transform: translateX(-50%);      " >Games</h3>
+<h3  id="fpsCounter" style="  left: 80%; color:white; top:-9.5px; position: absolute;   transform: translateX(-80%);      " ></h3>
+ 
+
+
+
+<iframe id="frame2" src="test99.html"></iframe>
+  <style>
+    #frame2{
+      width:100%;
+      height:95%;
+      bottom:0;
+      position: absolute;
+      border:none;
+      border-radius:0px 0px 20px 20px;
+      left:0;
+      border-top: 1px solid rgb(37, 37, 37);
+    }
+    .back {
+    background: none;
+    border: none;
+    color: rgb(255, 255, 255);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    font-size:20px;
+        transform: translateY(2px);
+        top:-2px;
+
+}
+     #ChatDiv {
+    display: none;
+    margin-top: 20px;
+    padding: 10px;
+     background: rgba(0,0,0,0.4);   
+backdrop-filter: blur(7px);   
+    color: white;
+    inset: 0;
+    margin:auto;
+    position: fixed;
+    z-index: 1000;
+    border-radius:20px; 
+    opacity:85%; 
+    width:85%;
+    height: 73%; 
+    overflow-x: hidden;
+    overflow-y: auto;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+
+      animation: popIn 0.5s ease-out forwards;
+
+  }
+  </style>
+
+  <script>
+let lastTime = performance.now();
+let frameCount = 0;
+let fps = 0;
+
+function trackFPS() {
+  frameCount++;
+  const now = performance.now();
+  const delta = now - lastTime;
+  if (delta >= 1000) { 
+    fps = Math.round((frameCount * 1000) / delta);
+    document.getElementById('fpsCounter').innerText = 'FPS: ' + fps;
+    frameCount = 0;
+    lastTime = now;
+  }
+  requestAnimationFrame(trackFPS);
+}
+
+requestAnimationFrame(trackFPS);
+</script>
+
+  <script>
+    function fullscreenIframe() {
+      let iframe = document.getElementById("frame2");
+      if (iframe.requestFullscreen) {
+        iframe.requestFullscreen();
+      } else if (iframe.mozRequestFullScreen) { 
+        iframe.mozRequestFullScreen();
+      } else if (iframe.webkitRequestFullscreen) { 
+        iframe.webkitRequestFullscreen();
+      } else if (iframe.msRequestFullscreen) { 
+        iframe.msRequestFullscreen();
+      }
+    }
+  </script>
+ 
+           
+</div>
+
+<div id="musicDiv">
+  <button class="close-btn" onclick="document.getElementById('musicDiv').style.display = 'none';">●</button>
+    <button class="full-btn" onclick="fullscreenIframeMusic()">●</button>
+
+<h3 style="  left: 50%; color:white; top:-9.5px; position: absolute;   transform: translateX(-50%);      " >Music</h3>
+ 
+
+
+
+<iframe id="frameMusic" src="music2.html"></iframe>
+  <style>
+    #frameMusic{
+      width:100%;
+      height:95%;
+      bottom:0;
+      position: absolute;
+      border:none;
+      border-radius:0px 0px 20px 20px;
+      left:0;
+      border-top: 1px solid rgb(37, 37, 37);
+    }
+  
+  </style>
+
+    <script>
+    function fullscreenIframeMusic() {
+      let iframe = document.getElementById("frameMusic");
+      if (iframe.requestFullscreen) {
+        iframe.requestFullscreen();
+      } else if (iframe.mozRequestFullScreen) { 
+        iframe.mozRequestFullScreen();
+      } else if (iframe.webkitRequestFullscreen) { 
+        iframe.webkitRequestFullscreen();
+      } else if (iframe.msRequestFullscreen) { 
+        iframe.msRequestFullscreen();
+      }
+    }
+  </script>
+
+
+ 
+           
+</div>
+<div id="aiDiv">
+  <button class="close-btn" onclick="document.getElementById('aiDiv').style.display = 'none';">●</button>
+    <button class="full-btn" onclick="fullscreenIframeAI()">●</button>
+
+<h3 style="  left: 50%; color:white; top:-9.5px; position: absolute;   transform: translateX(-50%);      " >AI</h3>
+<h3  id="fpsCounter" style="  left: 80%; color:white; top:-9.5px; position: absolute;   transform: translateX(-80%);      " ></h3>
+ 
+
+
+
+<iframe id="frame5" src="/ai/index.html"></iframe>
+  <style>
+    #frame5{
+      width:100%;
+      height:95%;
+      bottom:0;
+      position: absolute;
+      border:none;
+      border-radius:0px 0px 20px 20px;
+      left:0;
+      border-top: 1px solid rgb(37, 37, 37);
+    }
+    .back {
+    background: none;
+    border: none;
+    color: rgb(255, 255, 255);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    font-size:20px;
+        transform: translateY(2px);
+        top:-2px;
+
+}
+     #ChatDiv {
+    display: none;
+    margin-top: 20px;
+    padding: 10px;
+     background: rgba(0,0,0,0.4);   
+backdrop-filter: blur(7px);   
+    color: white;
+    inset: 0;
+    margin:auto;
+    position: fixed;
+    z-index: 1000;
+    border-radius:20px; 
+    opacity:85%; 
+    width:85%;
+    height: 73%; 
+    overflow-x: hidden;
+    overflow-y: auto;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+
+      animation: popIn 0.5s ease-out forwards;
+
+  }
+  </style>
+
+  
+ 
+  <script>
+    function fullscreenIframeAI() {
+      let iframe = document.getElementById("frame5");
+      if (iframe.requestFullscreen) {
+        iframe.requestFullscreen();
+      } else if (iframe.mozRequestFullScreen) { 
+        iframe.mozRequestFullScreen();
+      } else if (iframe.webkitRequestFullscreen) { 
+        iframe.webkitRequestFullscreen();
+      } else if (iframe.msRequestFullscreen) { 
+        iframe.msRequestFullscreen();
+      }
+    }
+  </script>
+           
+</div>
+
+<div class="tnav">
+
+   
+
+  <a href="https://discord.gg/tknXENDkzY">
+    <img class="timg" src="discord.png">
+  </a>  
+
+  <a onclick="settings()">
+    <img class="timg" src="settings22.png">
+  </a>
+
+  <a href='/'>
+    <img class="timg" src="home.png">
+  </a>
+
+  <a id="fullscreen-button">
+    <img class="timg" src="fullscreen.png">
+  </a>
+
+
+
+  <a onclick="collab()">
+    <img class="timg" src="collab.png">
+  </a>
+
+    
+    
+
+  
+    <a onclick="hacks()">
+    <img class="timg" src="hacks.png">
+  </a>
+
+ 
+
+
+
+
+</div>
+  <h2 class="battery" id="batteryPercentage"></h2>
+  <div class="clock" id="time"></div>
+<style>
+  .timeBattery{
+    background-color:black;
+    opacity: 50%;
+  }
+</style>
+
+<img src="logo-new.png" id="logo">
+
+
+<div id="settingsDiv">
+  <button class="close-btn" onclick="document.getElementById('settingsDiv').style.display = 'none';">×</button>
+
+  <h1 class="seth">|| Settings ||</h1>
+  
+   <label class="label" for="background-select">Select Background:</label>
+<select id="background-select">
+  <option value="t9os6.png">Default</option>
+                      <option value="abstract.png">T9 Abstract</option>
+
+                                                  <option value="silver2.gif">Silver Surfer live </option>
+
+                            <option value="silver.jpeg">Silver Surfer</option>
+                          <option value="naruto.png">Naruto</option>
+                  <option value="red.jpg">Red Abstract</option>
+                  <option value="halloween.png">halloween</option>
+
+                  <option value="purplecity2.png">T9 OS city</option>
+
+                <option value="toyota.jpg">Toyota GR supra</option>
+
+              <option value="car.jpeg">Hennessey Venom F5 car</option>
+
+            <option value="goku.jpg">Goku</option>
+
+          <option value="ocean.png">Moonlit Voyage</option>
+
+          <option value="vibes.gif">Synthwave sunset</option>
+
+        <option value="deadpool.gif">Deadpool</option>
+
+  <option value="city.jpg">City</option>
+  <option value="sunset.jpg">Sunset</option>
+  <option value="mountains.jpg">Mountains</option>
+  <option value="tree.jpg">Tropical trees</option>
+  <option value="space.jpg">Space</option>
+    <option value="psky.jpg">Purple sky</option>
+    <option value="abstract.jpg">Abstract</option>
+    <option value="cyberpunk.gif">Cyberpunk</option>
+    <option value="luffy.gif">Luffy Straw hat</option>
+    <option value="tmoon.gif">Samurai Spirit Under the Moon</option>
+      <option value="pbWaves.jpg">Purple Blue Abstract</option>
+
+</select>
+
+
+  
+<a   onclick="openGame()"  class="round-btn">Hide url</a>
+<a  id="toggleBTN" class="round-btn">Toggle logo</a>
+   <label class="label" for="preset">Select Tab Cloak:</label>
+
+ <select style="padding:10px 20px; border-radius:10px; font-family: sans-serif; text-align: center;" id="preset">
+    <option value="default">Default (T9 OS)</option>
+    <option value="google">Google</option>
+    <option value="classroom">Google Classroom</option>
+    <option value="vocab">Vocabulary.com</option>
+  </select>
+
+<style>
+   .round-btn {
+    border-radius: 12px;
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    padding: 10px 20px;
+    font-size:medium;
+   }
+   .seth{
+    text-align: center;
+    font-family: sans-serif;
+   }
+  
+</style>
+
+
+  
+</div>
+  
+
+
+
+<script>
+    const presetSelect = document.getElementById("preset");
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const saved = localStorage.getItem("cloak_preset") || "default";
+      presetSelect.value = saved;
+    });
+
+    presetSelect.addEventListener("change", () => {
+      localStorage.setItem("cloak_preset", presetSelect.value);
+      console.log("✅ Preset saved:", presetSelect.value);
+    });
+  </script>
+
+<script>
+  // If no background is saved yet, set default
+  if (!localStorage.getItem("bg")) {
+    localStorage.setItem("bg", "url('t9os6.png') no-repeat center center fixed");
+  }
+
+  // Always apply the saved background
+  document.body.style.background = localStorage.getItem("bg");
+  document.body.style.backgroundSize = "cover"; // makes sure image fits screen
+</script>
+
+<script>
+  function updateTime() {
+  var date = new Date();
+  var options = { hour: 'numeric', minute: 'numeric',  hour12: true };
+  var formattedTime = date.toLocaleTimeString('en-US', options);
+  document.getElementById("time").innerHTML = formattedTime;
+  }
+  
+  setInterval(updateTime, 1000); 
+
+  // Battery Status
+  if ('getBattery' in navigator) {
+    navigator.getBattery().then(function(battery) {
+      updateBatteryStatus(battery);
+      battery.addEventListener('levelchange', function() {
+        updateBatteryStatus(battery);
+      });
+    });
+  } else {
+    document.getElementById('batteryPercentage').innerHTML = 'Battery API not supported.';
+  }
+
+  function updateBatteryStatus(battery) {
+    var percentage = Math.floor(battery.level * 100);
+    document.getElementById('batteryPercentage').innerHTML = percentage + '%';
+  }
+
+  // Toggle Div Visibility
+  const button = document.getElementById('toggleDivButton');
+  const hiddenDiv = document.getElementById('hiddenDiv');
+
+  button.addEventListener('click', () => {
+    if (hiddenDiv.style.display === 'none' || hiddenDiv.style.display === '') {
+      hiddenDiv.style.display = 'block';
+    } else {
+      hiddenDiv.style.display = 'none';
+    }
+  });
+</script>
+<script>
+  function updateTime() {
+    const date = new Date();
+    const options = { hour: 'numeric', minute: 'numeric', hour12: true };
+    const formattedTime = date.toLocaleTimeString('en-US', options);
+
+    const hour = date.getHours();
+    let emoji = "⏰";
+
+    if (hour >= 5 && hour < 12) {
+      emoji = "🌅"; 
+    } else if (hour >= 12 && hour < 17) {
+      emoji = "🌞"; 
+    } else if (hour >= 17 && hour < 21) {
+      emoji = "🌇"; 
+    } else {
+      emoji = "🌙"; 
+    }
+
+    document.getElementById("wtime").innerHTML = `${formattedTime} ${emoji}`;
+  }
+
+  setInterval(updateTime, 1000);
+  updateTime(); 
+</script>
+
+
+<script>
+  function admin(){
+    const div = document.getElementById('adminDiv');
+    div.style.display = div.style.display === 'block' ? 'none' : 'block';
+  }
+</script>
+
+
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getDatabase, ref, onValue, push, onDisconnect, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+  // 🔥 Your Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyDB4VU2JNQGO5pMgXGaasIiY6kFxgsb-84",
+    authDomain: "chat-99dfe.firebaseapp.com",
+    databaseURL: "https://chat-99dfe-default-rtdb.firebaseio.com",
+    projectId: "chat-99dfe",
+    storageBucket: "chat-99dfe.firebasestorage.app",
+    messagingSenderId: "17277094525",
+    appId: "1:17277094525:web:989d19d04fdde769de7f14",
+    measurementId: "G-NEXJFPJPCP"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // Reference for connections
+  const connectionsRef = ref(db, "connections");
+
+  // Human detection
+  let isHuman = false;
+  window.addEventListener("mousemove", () => { isHuman = true; }, { once: true });
+  window.addEventListener("touchstart", () => { isHuman = true; }, { once: true });
+
+  // Create a new unique connection for THIS user if human
+  let myConnection;
+  function connectIfHuman() {
+    if (!isHuman) return; // skip bots
+    myConnection = push(connectionsRef);
+    set(myConnection, true);
+    onDisconnect(myConnection).remove();
+  }
+
+  // Wait a short time for human interaction
+  setTimeout(connectIfHuman, 3000); // 3 seconds delay
+
+  // Update live user count
+  onValue(connectionsRef, (snapshot) => {
+    document.getElementById("count").innerText = snapshot.numChildren();
+  });
+</script>
+
+
+<script>
+  function emulator(){
+    const div = document.getElementById('emulatorDiv');
+    div.style.display = div.style.display === 'block' ? 'none' : 'block';
+  }
+</script>
+
+
+<script>
+  function sound(){
+    const div = document.getElementById('soundDiv');
+    div.style.display = div.style.display === 'block' ? 'none' : 'block';
+  }
+</script>
+<script>
+  function ai(){
+    const div = document.getElementById('aiDiv');
+    div.style.display = div.style.display === 'block' ? 'none' : 'block';
+  }
+</script>
+
+<script>
+  function hacks(){
+    const div = document.getElementById('hacksDiv');
+    div.style.display = div.style.display === 'block' ? 'none' : 'block';
+  }
+</script>
+
+
+<script>
+  function settings(){
+    const div = document.getElementById('settingsDiv');
+    div.style.display = div.style.display === 'block' ? 'none' : 'block';
+  }
+</script>
+<script>
+  function music(){
+    const div = document.getElementById('musicDiv');
+    div.style.display = div.style.display === 'block' ? 'none' : 'block';
+  }
+</script>
+<script>
+  function movie(){
+    const div = document.getElementById('movieDiv');
+    div.style.display = div.style.display === 'block' ? 'none' : 'block';
+  }
+</script>
+<script>
+  function leader(){
+    const div = document.getElementById('leaderboardDiv');
+    div.style.display = div.style.display === 'block' ? 'none' : 'block';
+  }
+</script>
+<script>
+  function apps(){
+    const div = document.getElementById('appsDiv');
+    div.style.display = div.style.display === 'block' ? 'none' : 'block';
+  }
+</script>
+
+<script>
+  function collab(){
+    const div = document.getElementById('collabDiv');
+    div.style.display = div.style.display === 'block' ? 'none' : 'block';
+  }
+</script>
+
+<script>
+  function s(){
+    const div = document.getElementById('searchDiv');
+    div.style.display = div.style.display === 'block' ? 'none' : 'block';
+  }
+</script>
+
+
+<script>
+  const fullscreenButton = document.getElementById('fullscreen-button');
+
+  fullscreenButton.addEventListener('click', toggleFullscreen);
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  }
+</script>
+
+<script>
+  function openGame() {
+    var win = window.open ()
+    var url = "index.html"
+    var iframe = win.document.createElement('iframe')
+    iframe.style.width = "100%"
+    iframe.style.height = "100%"
+    iframe.style.border = "none"
+    iframe.src = url
+    win.document.body.appendChild(iframe)
+  }
+  </script>
+
+<script>
+  document.getElementById('searchBar').addEventListener('input', function () {
+    const searchTerm = this.value.toLowerCase();
+    const images = document.querySelectorAll('#imageContainer img');
+
+    images.forEach(image => {
+      const altText = image.getAttribute('alt') || '';
+      if (altText.toLowerCase().includes(searchTerm)) {
+        image.style.display = 'inline-block';
+      } else {
+        image.style.display = 'none';
+      }
+    });
+  });
+</script>
+
+<style>
+  /* Style for the select dropdown */
+#background-select {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9; /* Fallback color */
+    font-size: 16px;
+    width: 200px;
+    font-family: Poppins;
+    background-repeat: no-repeat;
+}
+
+</style>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+// Get the select element
+var select = document.getElementById("background-select");
+
+// Set initial background image based on stored preference or default
+var selectedBackground = localStorage.getItem("selectedBackground");
+
+if (selectedBackground) {
+  document.body.style.backgroundImage = "url(" + selectedBackground + ")";
+  select.value = selectedBackground;
+}
+
+ // Listen for changes in the select element
+ select.addEventListener("change", function() {
+   var newBackground = this.value;
+   document.body.style.backgroundImage = "url(" + newBackground + ")";
+   localStorage.setItem("selectedBackground", newBackground);
+ });
+});
+
+</script>
+
+<script>
+  const btn = document.getElementById("toggleBTN");
+  const img = document.getElementById("logo");
+
+  btn.addEventListener("click", () => {
+    if (img.style.display === "block") {
+      img.style.display = "none"; 
+    } else {
+      img.style.display = "block";  
+    }
+  });
+</script>
+
+ <div id="imgBox">
+
+
+ </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+    // 🔥 Your Firebase config (same as Page A)
+    const firebaseConfig = {
+      apiKey: "AIzaSyDB4VU2JNQGO5pMgXGaasIiY6kFxgsb-84",
+      authDomain: "chat-99dfe.firebaseapp.com",
+      databaseURL: "https://chat-99dfe-default-rtdb.firebaseio.com",
+      projectId: "chat-99dfe",
+      storageBucket: "chat-99dfe.firebasestorage.app",
+      messagingSenderId: "17277094525",
+      appId: "1:17277094525:web:989d19d04fdde769de7f14",
+      measurementId: "G-NEXJFPJPCP"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const imgBox = document.getElementById("imgBox");
+
+    // Listen to changes in globalImage in real-time
+    const imageRef = ref(db, "globalImage");
+    onValue(imageRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data && data.url) {
+        imgBox.innerHTML = `<img src="${data.url}">`;
+      } else {
+        imgBox.innerHTML = "";
+      }
+    });
+  </script>
+  <style>
+      #imgBox img {
+      max-width: 600px;
+      border-radius: 10px;
+      margin-top: 30px;
+      width:200px;
+      color:yellow;
+      font-family: sans-serif;
+      font-size:50px;
+    }
+  </style>
+
+</body>
+
+<script>
+
+  if (!localStorage.getItem("bg")) {
+    localStorage.setItem("bg", "url('t9os6.png') no-repeat center center fixed");
+  }
+
+ 
+  document.body.style.background = localStorage.getItem("bg");
+  document.body.style.backgroundSize = "cover"; 
+</script>
+<div id="notifications"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getDatabase, ref, onChildAdded, get } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+  // 🔥 Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyDB4VU2JNQGO5pMgXGaasIiY6kFxgsb-84",
+    authDomain: "chat-99dfe.firebaseapp.com",
+    databaseURL: "https://chat-99dfe-default-rtdb.firebaseio.com",
+    projectId: "chat-99dfe",
+    storageBucket: "chat-99dfe.firebasestorage.app",
+    messagingSenderId: "17277094525",
+    appId: "1:17277094525:web:989d19d04fdde769de7f14",
+    measurementId: "G-NEXJFPJPCP"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const messagesRef = ref(db, "globalMessages");
+
+  const container = document.getElementById("notifications");
+
+  // Function to show a toast
+  function showNotification(text) {
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.textContent = text;
+    container.appendChild(toast);
+
+    // Remove after 5 seconds
+    setTimeout(() => {
+      toast.style.transition = "opacity 0.5s ease";
+      toast.style.opacity = "0";
+      setTimeout(() => toast.remove(), 500);
+    }, 5000);
+  }
+
+  // ✅ Record current timestamp when user loads the page
+  const pageLoadTime = Date.now();
+
+  // Listen for new messages only AFTER page load
+  onChildAdded(messagesRef, (snapshot) => {
+    const msg = snapshot.val();
+    if (!msg.timestamp || msg.timestamp >= pageLoadTime) {
+      showNotification(msg.text);
+    }
+  });
+</script>
+
+<style>
+  #notifications {
+    position: fixed;
+    top: 29.5px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .toast {
+    background-color:#1b1b1bbd;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    animation: slideDown 0.3s ease-out;
+    font-size: 16px;
+    opacity: 0.95;
+    max-width: 80%;
+    text-align: center;
+    opacity:85%;
+  }
+
+  @keyframes slideDown {
+    from {
+      transform: translateY(-30px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+</style>
+<p style="color:#acacac; position: fixed; bottom: -3px; left: 10px; opacity: 0.6;">Version 2.6</p>
+<p style="color:#acacac; position: fixed; bottom: -3px; left: 100px; opacity: 0.6;" id="myId">ID: <span id="idValue"></span></p>
+
+<!-- Include Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+  // ========== CONFIG ==========
+  const OWNER_ID = "0635354315"; // your owner ID
+  const ID_KEY = "numericUserID";
+  // ============================
+
+  // Your Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyD74Fi2RKsvv1sXTAEIiTYrRKCv22MRhh8",
+    authDomain: "t9oschat.firebaseapp.com",
+    databaseURL: "https://t9oschat-default-rtdb.firebaseio.com",
+    projectId: "t9oschat",
+    storageBucket: "t9oschat.firebasestorage.app",
+    messagingSenderId: "930534704832",
+    appId: "1:930534704832:web:c154890c3b5f36736f8f25",
+    measurementId: "G-STPKYT658F"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  // Generate numeric ID (~10 digits)
+  function generateNumericID() {
+    const timestamp = Date.now().toString().slice(-6);
+    const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    return random + timestamp;
+  }
+
+  // Protect critical functions
+  (function() {
+    'use strict';
+    
+    // Store original localStorage methods
+    const originalSetItem = Storage.prototype.setItem;
+    const originalRemoveItem = Storage.prototype.removeItem;
+    const originalClear = Storage.prototype.clear;
+    
+    let isLocked = false;
+    let myID = null;
+
+    // Function to lock screen
+    function lockScreen() {
+      if (isLocked) return;
+      isLocked = true;
+      
+      // Clear the page
+      document.body.innerHTML = "";
+      document.body.style.cssText = "background: red; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 40px; overflow: hidden; margin: 0; height: 100vh; text-align:center;";
+
+      // SHOW BANNED + ID
+      document.body.innerHTML = `
+        <div>BANNED</div>
+                <div>appeal ban at dsc.gg/t9os </div>
+
+        <div style="font-size:22px;margin-top:15px;opacity:0.85;">
+          Your ID: <b>${myID}</b>
+        </div>
+      `;
+
+      // Prevent all interactions
+      const preventAll = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      };
+      
+      ['keydown', 'keyup', 'keypress', 'mousedown', 'mouseup', 'click', 
+       'touchstart', 'touchend', 'contextmenu', 'beforeunload'].forEach(event => {
+        document.addEventListener(event, preventAll, true);
+        window.addEventListener(event, preventAll, true);
+      });
+
+      // Prevent localStorage manipulation
+      Storage.prototype.setItem = function() { return; };
+      Storage.prototype.removeItem = function() { return; };
+      Storage.prototype.clear = function() { return; };
+      
+      Object.freeze(localStorage);
+      Object.freeze(sessionStorage);
+      
+      window.onbeforeunload = () => true;
+      history.pushState(null, null, location.href);
+      window.onpopstate = () => history.go(1);
+      
+      window.db = null;
+      window.firebase = null;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Get or create user ID using original methods
+      myID = originalSetItem.call(localStorage, ID_KEY, localStorage.getItem(ID_KEY) || generateNumericID()) || localStorage.getItem(ID_KEY);
+      if (!myID) {
+        myID = generateNumericID();
+        originalSetItem.call(localStorage, ID_KEY, myID);
+      }
+
+      // Show ID
+      const idSpan = document.getElementById("idValue");
+      if (idSpan) idSpan.textContent = myID;
+
+      // Monitor localStorage changes - prevent ID tampering
+      const checkInterval = setInterval(() => {
+        const currentID = localStorage.getItem(ID_KEY);
+        if (currentID !== myID) {
+          originalSetItem.call(localStorage, ID_KEY, myID);
+        }
+        
+        if (isLocked) {
+          lockScreen();
+        }
+      }, 100);
+
+      // Check banned list from Firebase
+      const bannedRef = db.ref("bannedIDs");
+      bannedRef.on("value", (snapshot) => {
+        const bannedIDs = snapshot.val() || [];
+        if (bannedIDs.includes(myID)) {
+          lockScreen();
+        }
+      });
+
+      // Owner shortcut: press "," to ban/unban
+      document.addEventListener("keydown", async (e) => {
+        if (myID !== OWNER_ID) return;
+        if (e.key === ",") {
+          const action = prompt("Type 'ban' to ban or 'unban' to unban:");
+          if (!action) return;
+          const targetID = prompt("Enter the ID to " + action + ":");
+          if (!targetID) return;
+
+          const snapshot = await bannedRef.get();
+          let bannedIDs = snapshot.val() || [];
+
+          if (action.toLowerCase() === "ban") {
+            if (!bannedIDs.includes(targetID)) {
+              bannedIDs.push(targetID);
+              await bannedRef.set(bannedIDs);
+              alert("User banned: " + targetID);
+            } else {
+              alert("User is already banned.");
+            }
+          } else if (action.toLowerCase() === "unban") {
+            bannedIDs = bannedIDs.filter(id => id !== targetID);
+            await bannedRef.set(bannedIDs);
+            alert("User unbanned: " + targetID);
+          } else {
+            alert("Invalid action.");
+          }
+        }
+      });
+    });
+  })();
+</script>
+
+<!--test2-->
+
+
+<script>
+/* ===============================
+   T9 OS – Hidden Iframe Freeze & Mute
+   =============================== */
+
+const APP_WINDOWS = [
+  "hiddenDiv",
+  "aiDiv",
+  "movieDiv",
+  "terminalDiv",
+  "searchDiv",
+  "ChatDiv",
+  "emulatorDiv",
+  "appsDiv"
+];
+
+const PAUSE_MESSAGE = { type: "pause" };
+const RESUME_MESSAGE = { type: "resume" };
+const MUTE_MESSAGE = { type: "mute" };
+const UNMUTE_MESSAGE = { type: "unmute" };
+
+// Send message to iframe to pause/resume/mute/unmute
+function sendMessage(frame, message) {
+  frame.contentWindow?.postMessage(message, "*");
+}
+
+// Freeze and mute iframe
+function freezeIframe(frame) {
+  sendMessage(frame, PAUSE_MESSAGE);
+  sendMessage(frame, MUTE_MESSAGE);
+  frame.dataset.paused = "true";
+}
+
+// Restore and unmute iframe
+function restoreIframe(frame) {
+  sendMessage(frame, RESUME_MESSAGE);
+  sendMessage(frame, UNMUTE_MESSAGE);
+  delete frame.dataset.paused;
+}
+
+// Freeze/mute all iframes in a container
+function freezeContainer(containerId) {
+  const box = document.getElementById(containerId);
+  if (!box) return;
+
+  box.querySelectorAll("iframe").forEach(frame => freezeIframe(frame));
+}
+
+// Restore/unmute all iframes in a container
+function restoreContainer(containerId) {
+  const box = document.getElementById(containerId);
+  if (!box) return;
+
+  box.querySelectorAll("iframe").forEach(frame => restoreIframe(frame));
+}
+
+// Observe div visibility changes
+APP_WINDOWS.forEach(id => {
+  const box = document.getElementById(id);
+  if (!box) return;
+
+  const observer = new MutationObserver(() => {
+    if (getComputedStyle(box).display === "none") {
+      freezeContainer(id);
+    } else {
+      restoreContainer(id);
+    }
+  });
+
+  observer.observe(box, { attributes: true, attributeFilter: ["style"] });
+});
+
+// Pause/mute everything if browser tab is hidden
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    APP_WINDOWS.forEach(freezeContainer);
+  } else {
+    APP_WINDOWS.forEach(restoreContainer);
+  }
+});
+</script>
+
+
+
+
+
+</body>
+
+
+
+</html>
+
+
+

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>calc</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      width: 100vw;
+      height: 100vh;
+      font-family: Arial;
+      color:white;
+    }
+
+    .calc {
+      width: 100%;
+      height: 100%;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+
+    }
+
+    #display {
+      width: 100%;
+      height: 15%;
+      font-size: 30px;
+      text-align: right;
+      margin-bottom: 20px;
+      padding-right: 10px;
+      border-radius:30px;
+      color:white;
+      text-align:center;
+      border:none;
+                  background-color:rgba(0, 179, 255, 0.73);
+
+      
+    }
+
+    .buttons {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: 15px;
+      
+    }
+
+    button {
+      font-size: 35px;
+      cursor: pointer;
+      border-radius:20px;
+      border:none;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="calc">
+  <input id="display" disabled>
+
+  <div class="buttons">
+    <button onclick="add('7')">7</button>
+    <button onclick="add('8')">8</button>
+    <button onclick="add('9')">9</button>
+    <button onclick="add('/')">÷</button>
+
+    <button onclick="add('4')">4</button>
+    <button onclick="add('5')">5</button>
+    <button onclick="add('6')">6</button>
+    <button onclick="add('*')">×</button>
+
+    <button onclick="add('1')">1</button>
+    <button onclick="add('2')">2</button>
+    <button onclick="add('3')">3</button>
+    <button onclick="add('-')">−</button>
+
+    <button onclick="clearDisplay()">C</button>
+    <button onclick="add('0')">0</button>
+    <button onclick="calculate()">=</button>
+    <button onclick="add('+')">+</button>
+  </div>
+</div>
+
+<script>
+  const display = document.getElementById("display");
+
+  function add(x) {
+    display.value += x;
+  }
+
+  function clearDisplay() {
+    display.value = "";
+  }
+
+  function calculate() {
+    display.value = eval(display.value);
+  }
+</script>
+
+</body>
+</html>

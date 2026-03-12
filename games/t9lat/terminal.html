@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fullscreen Terminal Top Input</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    background: black;
+    font-family: monospace;
+    color: #02f50f;
+    transition: background 0.5s;
+  }
+
+  .terminal {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .output {
+    flex: 1;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    margin-bottom: 10px;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .input-line {
+    display: flex;
+    align-items: center;
+  }
+
+  .prompt {
+    margin-right: 5px;
+  }
+
+  #commandBox {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #02f50f;
+    font-family: monospace;
+    font-size: 16px;
+  }
+
+  #commandBox::placeholder {
+    color: #02f50faa;
+  }
+
+  .error {
+    color: #ff4444;
+  }
+
+  .success {
+    color: #02f50f;
+  }
+
+  .info {
+    color: #44aaff;
+  }
+</style>
+</head>
+<body>
+<div class="terminal">
+  <div class="output" id="output">Welcome to T9 OS V3! Type "help" for commands.</div>
+  <div class="input-line">
+    <span class="prompt" id="promptText">user/$></span>
+    <input type="text" id="commandBox" placeholder="Type command..." autocomplete="off">
+  </div>
+</div>
+
+<!-- Admin sound -->
+<audio id="adminSound" src="scare.mp3" loop></audio>
+
+<script>
+const output = document.getElementById('output');
+const input = document.getElementById('commandBox');
+const adminSound = document.getElementById('adminSound');
+const promptText = document.getElementById('promptText');
+
+// File system simulation
+let currentDir = '/home/user';
+const fileSystem = {
+  '/': {
+    type: 'dir',
+    contents: {
+      'home': {
+        type: 'dir',
+        contents: {
+          'user': {
+            type: 'dir',
+            contents: {
+              'documents': {
+                type: 'dir',
+                contents: {
+                  'readme.txt': { type: 'file', content: 'Welcome to the terminal!\nThis is a simulated file system.' }
+                }
+              },
+              'projects': {
+                type: 'dir',
+                contents: {}
+              },
+              'welcome.txt': { type: 'file', content: 'Hello! This is your home directory.' }
+            }
+          }
+        }
+      },
+      'bin': {
+        type: 'dir',
+        contents: {}
+      },
+      'etc': {
+        type: 'dir',
+        contents: {
+          'config.txt': { type: 'file', content: 'System configuration file' }
+        }
+      }
+    }
+  }
+};
+
+// Command history
+let commandHistory = [];
+let historyIndex = -1;
+
+const commands = { 
+  help: 'Available commands:\n' +
+        '  help          - Show this help\n' +
+        '  ls [dir]      - List directory contents\n' +
+        '  cd <dir>      - Change directory\n' +
+        '  pwd           - Print working directory\n' +
+        '  cat <file>    - Display file contents\n' +
+        '  mkdir <dir>   - Make directory\n' +
+        '  touch <file>  - Create empty file\n' +
+        '  echo <text>   - Print text\n' +
+        '  clear         - Clear terminal\n' +
+        '  whoami        - Display current user\n' +
+        '  date          - Show current date/time\n' +
+        '  js <code>     - Execute JavaScript\n' +
+        '  google        - Open Google\n' +
+        '  version       - Show version\n' +
+        '  !early        - Early access page\n' +
+        '  !gms          - Open games\n' +
+        '  !xploits      - Open xploits\n' +
+        '  !ai           - Open AI\n' +
+        '  !admin        - Admin only (scary!)',
+  google: 'Opening Google...',
+  version: 'WebTerminal version 2.5 - Enhanced Edition',
+  '!early': 'Opening early access page...',
+  '!gms': 'Opening games...',
+  '!xploits': 'Opening xploits...',
+  '!apps': 'Opening games...',
+  '!ai': 'Opening AI......',
+  '!admin': 'DONT LOOK BEHIND YOU!!!!!!!!!!!!'
+};
+
+const redirects = {
+  google: 'https://www.google.com',
+  '!early': 'testing.html',
+  '!gms': 'g2.html',
+  '!ai': '/ai/index.html',
+  '!xploits': '/xploits/index.html',
+};
+
+function printOutput(text, className = '') {
+  const span = document.createElement('span');
+  if (className) span.className = className;
+  span.textContent = text + '\n';
+  output.appendChild(span);
+  output.scrollTop = output.scrollHeight;
+}
+
+function getNode(path) {
+  if (path === '/') return fileSystem['/'];
+  
+  const parts = path.split('/').filter(p => p);
+  let node = fileSystem['/'];
+  
+  for (const part of parts) {
+    if (node.type !== 'dir' || !node.contents[part]) {
+      return null;
+    }
+    node = node.contents[part];
+  }
+  return node;
+}
+
+function resolvePath(path) {
+  if (path.startsWith('/')) {
+    return path;
+  }
+  
+  if (path === '..') {
+    const parts = currentDir.split('/').filter(p => p);
+    parts.pop();
+    return '/' + parts.join('/');
+  }
+  
+  if (path === '.') {
+    return currentDir;
+  }
+  
+  if (currentDir === '/') {
+    return '/' + path;
+  }
+  
+  return currentDir + '/' + path;
+}
+
+function executeCommand(cmd) {
+  const parts = cmd.split(' ');
+  const command = parts[0].toLowerCase();
+  const args = parts.slice(1);
+
+  printOutput(`> ${cmd}`);
+
+  // Check for predefined commands
+  if (commands[command]) {
+    printOutput(commands[command], 'success');
+
+    if (command === '!admin') {
+      document.body.style.backgroundImage = 'url("scare.png")';
+      document.body.style.backgroundSize = 'cover';
+      document.body.style.backgroundPosition = 'center';
+      document.body.style.backgroundRepeat = 'no-repeat';
+      adminSound.volume = 0.7;
+      adminSound.play().catch(()=>{});
+    }
+
+    if (redirects[command] && command !== '!admin') {
+      setTimeout(() => {
+        window.location.href = redirects[command];
+      }, 1000);
+    }
+    return;
+  }
+
+  // Unix-like commands
+  switch (command) {
+    case 'ls':
+      const lsPath = args[0] ? resolvePath(args[0]) : currentDir;
+      const lsNode = getNode(lsPath);
+      if (!lsNode) {
+        printOutput(`ls: cannot access '${args[0]}': No such file or directory`, 'error');
+      } else if (lsNode.type !== 'dir') {
+        printOutput(args[0] || lsPath.split('/').pop());
+      } else {
+        const items = Object.keys(lsNode.contents);
+        if (items.length === 0) {
+          printOutput('(empty directory)', 'info');
+        } else {
+          printOutput(items.join('  '));
+        }
+      }
+      break;
+
+    case 'cd':
+      if (!args[0]) {
+        currentDir = '/home/user';
+      } else {
+        const newPath = resolvePath(args[0]);
+        const node = getNode(newPath);
+        if (!node) {
+          printOutput(`cd: ${args[0]}: No such file or directory`, 'error');
+        } else if (node.type !== 'dir') {
+          printOutput(`cd: ${args[0]}: Not a directory`, 'error');
+        } else {
+          currentDir = newPath === '' ? '/' : newPath;
+        }
+      }
+      updatePrompt();
+      break;
+
+    case 'pwd':
+      printOutput(currentDir);
+      break;
+
+    case 'cat':
+      if (!args[0]) {
+        printOutput('cat: missing file operand', 'error');
+      } else {
+        const catPath = resolvePath(args[0]);
+        const catNode = getNode(catPath);
+        if (!catNode) {
+          printOutput(`cat: ${args[0]}: No such file or directory`, 'error');
+        } else if (catNode.type !== 'file') {
+          printOutput(`cat: ${args[0]}: Is a directory`, 'error');
+        } else {
+          printOutput(catNode.content);
+        }
+      }
+      break;
+
+    case 'mkdir':
+      if (!args[0]) {
+        printOutput('mkdir: missing operand', 'error');
+      } else {
+        const mkdirPath = resolvePath(args[0]);
+        const parentPath = mkdirPath.substring(0, mkdirPath.lastIndexOf('/')) || '/';
+        const dirName = mkdirPath.split('/').pop();
+        const parentNode = getNode(parentPath);
+        
+        if (!parentNode || parentNode.type !== 'dir') {
+          printOutput(`mkdir: cannot create directory '${args[0]}': No such file or directory`, 'error');
+        } else if (parentNode.contents[dirName]) {
+          printOutput(`mkdir: cannot create directory '${args[0]}': File exists`, 'error');
+        } else {
+          parentNode.contents[dirName] = { type: 'dir', contents: {} };
+          printOutput(`Created directory: ${args[0]}`, 'success');
+        }
+      }
+      break;
+
+    case 'touch':
+      if (!args[0]) {
+        printOutput('touch: missing file operand', 'error');
+      } else {
+        const touchPath = resolvePath(args[0]);
+        const parentPath = touchPath.substring(0, touchPath.lastIndexOf('/')) || '/';
+        const fileName = touchPath.split('/').pop();
+        const parentNode = getNode(parentPath);
+        
+        if (!parentNode || parentNode.type !== 'dir') {
+          printOutput(`touch: cannot touch '${args[0]}': No such file or directory`, 'error');
+        } else {
+          if (!parentNode.contents[fileName]) {
+            parentNode.contents[fileName] = { type: 'file', content: '' };
+          }
+          printOutput(`Created file: ${args[0]}`, 'success');
+        }
+      }
+      break;
+
+    case 'echo':
+      printOutput(args.join(' '));
+      break;
+
+    case 'clear':
+      output.innerHTML = '';
+      break;
+
+    case 'whoami':
+      printOutput('user');
+      break;
+
+    case 'date':
+      printOutput(new Date().toString());
+      break;
+
+    case 'js':
+      if (!args.length) {
+        printOutput('js: missing JavaScript code', 'error');
+      } else {
+        try {
+          const code = parts.slice(1).join(' ');
+          const result = eval(code);
+          if (result !== undefined) {
+            printOutput(String(result), 'info');
+          }
+        } catch (e) {
+          printOutput(`JavaScript Error: ${e.message}`, 'error');
+        }
+      }
+      break;
+
+    default:
+      printOutput(`Command not found: ${command}`, 'error');
+  }
+}
+
+function updatePrompt() {
+  const shortPath = currentDir === '/home/user' ? '~' : currentDir;
+  promptText.textContent = `user:${shortPath}$>`;
+}
+
+input.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    const cmd = input.value.trim();
+    if (cmd) {
+      commandHistory.unshift(cmd);
+      historyIndex = -1;
+      executeCommand(cmd);
+    }
+    input.value = '';
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (historyIndex < commandHistory.length - 1) {
+      historyIndex++;
+      input.value = commandHistory[historyIndex];
+    }
+  } else if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (historyIndex > 0) {
+      historyIndex--;
+      input.value = commandHistory[historyIndex];
+    } else {
+      historyIndex = -1;
+      input.value = '';
+    }
+  }
+});
+
+// Auto-focus input
+input.focus();
+document.addEventListener('click', () => input.focus());
+</script>
+</body>
+</html>

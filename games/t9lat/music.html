@@ -1,0 +1,989 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Music Player</title>
+    <style>
+        /* -------------------------------------- */
+        /* --- BASE LAYOUT & CORE ELEMENTS --- */
+        /* -------------------------------------- */
+        body {
+            margin: 0;
+            background: #000;
+            color: #fff;
+            font-family: sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+        }
+
+        /* --- 1. Left Sidebar: Playlist --- */
+        #sidebar {
+            /* UPDATE 4: Increased width for better song readability */
+            width: 350px;
+            background: #1e1e1e;
+            padding: 1rem;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            color: #aaa;
+            position: relative;
+        }
+
+        #playlist-title {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #333;
+            padding-bottom: 0.5rem;
+        }
+
+        #playlist-list {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .playlist-item {
+            padding: 0.5rem;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            background: #333;
+            color: white;
+            display: flex; 
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .playlist-item-title {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex-grow: 1;
+        }
+
+        /* ⚠️ Removed the 'pulse' and data-loading:after CSS for the dots */
+
+        .playlist-item .delete-btn {
+            background: none;
+            border: none;
+            color: #aaa;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 0.9rem;
+            padding: 0 5px;
+            transition: color 0.2s;
+            flex-shrink: 0;
+        }
+
+        .playlist-item .delete-btn:hover {
+            color: #f44336;
+        }
+
+        .playlist-item.playing {
+            background: #1db954;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .playlist-item.playing .delete-btn {
+            color: #000;
+        }
+
+        #empty-state {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        /* Spotify Import Section */
+        #spotify-import {
+            padding-top: 1rem;
+            border-top: 1px solid #333;
+        }
+
+        /* SHUFFLE BUTTON STYLING */
+        #shuffle-container {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            border-top: 1px solid #333;
+        }
+        
+        #shuffle-container button {
+            width: 100%;
+            padding: 0.8rem;
+            background: #ff9800; /* Orange color for shuffle */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        
+        #shuffle-container button:hover {
+            background: #e68a00;
+        }
+
+        #spotify-import button {
+            width: 100%;
+            padding: 0.8rem;
+            background: #1db954;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        #spotify-import button:hover {
+            background: #1ed760;
+        }
+
+
+        /* --- 2. Right Main Area --- */
+        #main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Search Bar Positioning */
+        #search-container {
+            padding: 1rem 2rem;
+            background: #0d0d0d;
+            z-index: 20;
+            display: flex;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        #search-container input {
+            padding: 0.8rem;
+            width: 300px;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: none;
+        }
+
+        /* Common button styling */
+        #search-container button {
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            margin-left: 10px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #search-btn {
+            background: #444;
+            color: #fff;
+        }
+
+        /* Fix Button Styling in Search Bar */
+        #fix-song-btn {
+            background: #f44336;
+            color: white;
+            transition: background 0.2s, opacity 0.2s;
+        }
+
+        #fix-song-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+
+        /* --- Search Results Popup (Central positioning) --- */
+        #results-popup {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: rgba(15, 15, 15, 0.95);
+            border-radius: 10px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
+            padding: 1rem;
+            z-index: 30;
+            display: none;
+        }
+
+        #results {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .video {
+            cursor: pointer;
+            width: 180px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .video:hover {
+            transform: scale(1.05);
+        }
+
+        .video img {
+            width: 100%;
+            border-radius: 6px;
+        }
+
+        .video p {
+            font-size: 0.9rem;
+            margin: 0.5rem 0 0 0;
+            height: 3.5em;
+            overflow: hidden;
+        }
+
+
+        #player-area {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        #player-area-content {
+            /* UPDATE 3: Set max width for smaller iframe */
+            max-width: 700px; 
+            width: 100%;
+            height: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #player-area-content.hidden {
+            display: none;
+        }
+
+        #yt-player-placeholder {
+            width: 100%;
+            height: 100%;
+            max-width: 100%;
+            /* Enforce 16:9 ratio within the max-width container */
+            aspect-ratio: 16 / 9;
+            object-fit: contain;
+        }
+
+        #no-player-state {
+            font-size: 2rem;
+            color: #333;
+            text-align: center;
+        }
+
+        /* -------------------------------------- */
+        /* --- NEW: MODAL AND NOTIFICATION CSS --- */
+        /* -------------------------------------- */
+
+        /* --- Notification System (Bottom Right) --- */
+        #notification-area {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 300px;
+        }
+
+        .notification {
+            background-color: #333;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            transform: translateY(100%);
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Spotify Modal --- */
+        #modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+        }
+
+        #spotify-modal {
+            background: #1e1e1e;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
+            width: 400px;
+            color: white;
+        }
+
+        #spotify-modal h3 {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            color: #1db954;
+            text-align: center;
+        }
+
+        #spotify-modal input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background: #0d0d0d;
+            color: white;
+            box-sizing: border-box;
+        }
+
+        #modal-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        #modal-actions button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        #modal-import-btn {
+            background: #1db954;
+            color: white;
+        }
+
+        #modal-cancel-btn {
+            background: #444;
+            color: white;
+        }
+
+        #modal-import-btn:hover {
+            background: #1ed760;
+        }
+
+        #modal-cancel-btn:hover {
+            background: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="sidebar">
+        <div id="playlist-title">Your Queue</div>
+        <div id="empty-state">
+            Playlist Empty
+        </div>
+        <div id="playlist-list">
+            </div>
+
+        <div id="shuffle-container">
+            <button id="shuffleButton" onclick="shufflePlay()">🔀 Shuffle Play</button>
+        </div>
+
+        <div id="spotify-import">
+            <button onclick="promptSpotifyImport()">🔗 Import Spotify Playlist</button>
+        </div>
+    </div>
+
+    <div id="main-content">
+
+        <div id="search-container">
+            <input type="text" id="query" placeholder="Search for a song..."
+                onkeyup="if(event.key === 'Enter') searchSongsFromInput()" />
+            <button id="search-btn" onclick="searchSongsFromInput()">Search</button>
+
+            <button id="fix-song-btn" onclick="fixCurrentlyPlayingSong()" disabled>Song Broken? Change It!</button>
+        </div>
+
+        <div id="results-popup">
+            <div id="results">Loading...</div>
+        </div>
+
+        <div id="player-area">
+            <div id="player-area-content" class="hidden">
+                <div id="yt-player-placeholder"></div>
+            </div>
+            <div id="no-player-state">
+                Search a song to start playing!
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <div id="modal-overlay">
+        <div id="spotify-modal">
+            <h3>🔗 Import Spotify Playlist</h3>
+            <input type="text" id="spotify-url-input" placeholder="Enter Spotify Playlist Link or ID" />
+            <div id="modal-actions">
+                <button id="modal-cancel-btn" onclick="closeSpotifyModal()">Cancel</button>
+                <button id="modal-import-btn" onclick="handleSpotifyImport()">Import Playlist</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification-area">
+        </div>
+
+    <script>
+        let currentPlaylist = [];
+        let currentVideoId = null;
+        let playlistCounter = 0;
+        let player = null;
+        let playlistItemToFixId = null;
+        
+        // ❗ NEW: State for shuffle playback
+        let shuffleMode = false;
+        let shuffledOrder = [];
+        let shuffleIndex = 0;
+
+
+        const PROXY_URL = 'https://ratproxy.vercel.app?';
+
+
+        /* -------------------------------------- */
+        /* --- CUSTOM UI: MODAL AND NOTIFICATIONS --- */
+        /* -------------------------------------- */
+
+        /**
+         * Shows a transient notification in the bottom right corner.
+         * @param {string} message The message to display.
+         */
+        function showNotification(message) {
+            const area = document.getElementById('notification-area');
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            area.appendChild(notification);
+
+            // Show
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10); // Small delay to trigger CSS transition
+
+            // Hide and remove after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+                // Wait for transition to finish before removal
+                notification.addEventListener('transitionend', () => {
+                    notification.remove();
+                });
+            }, 3000);
+        }
+
+        function promptSpotifyImport() {
+            document.getElementById('modal-overlay').style.display = 'flex';
+            document.getElementById('spotify-url-input').focus();
+        }
+
+        function closeSpotifyModal() {
+            document.getElementById('modal-overlay').style.display = 'none';
+            document.getElementById('spotify-url-input').value = '';
+        }
+
+        function handleSpotifyImport() {
+            const url = document.getElementById('spotify-url-input').value;
+            closeSpotifyModal();
+
+            if (url) {
+                const playlistId = getPlaylistId(url);
+                if (playlistId) {
+                    importPlaylist(playlistId);
+                } else {
+                    showNotification("Invalid Spotify Playlist Link or ID. Please use a full Spotify URL.");
+                }
+            }
+        }
+
+        /* -------------------------------------- */
+        /* ❗ UPDATED: SHUFFLE PLAY FUNCTION ❗ */
+        /* -------------------------------------- */
+
+        /**
+         * Starts shuffle playback mode, choosing a random song from the playlist.
+         */
+        function shufflePlay() {
+            if (currentPlaylist.length === 0) {
+                showNotification("Playlist is empty. Add songs first!");
+                return;
+            }
+
+            // Set shuffle mode to true
+            shuffleMode = true;
+            
+            // 1. Create a shallow copy and shuffle the IDs of the entire playlist
+            shuffledOrder = [...currentPlaylist];
+            for (let i = shuffledOrder.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffledOrder[i], shuffledOrder[j]] = [shuffledOrder[j], shuffledOrder[i]];
+            }
+
+            // 2. Start playback at the first item of the new shuffled order
+            shuffleIndex = 0;
+            const nextSong = shuffledOrder[shuffleIndex];
+            
+            openPlayer(nextSong.videoId, nextSong.title, nextSong.id);
+            showNotification('Shuffle Play Activated! 🔀');
+        }
+
+
+        /* -------------------------------------- */
+        /* --- DELETE SONG FUNCTION --- */
+        /* -------------------------------------- */
+
+        /**
+         * Removes a song from the playlist and handles player state if it was playing.
+         * @param {string} itemId The ID of the playlist item to delete.
+         * @param {Event} event The click event to stop propagation.
+         */
+        function deleteSong(itemId, event) {
+            // Prevent the parent list item's click event (openPlayer) from firing
+            event.stopPropagation();
+            
+            const songIndex = currentPlaylist.findIndex(item => item.id === itemId);
+
+            if (songIndex === -1) return;
+
+            // Check if the song being deleted is the currently playing song
+            const isPlaying = currentPlaylist[songIndex].videoId === currentVideoId;
+
+            // Remove from the main playlist
+            currentPlaylist.splice(songIndex, 1);
+            showNotification('Song deleted from queue.');
+            
+            // If in shuffle mode, also remove from the shuffled queue
+            if (shuffleMode) {
+                shuffledOrder = shuffledOrder.filter(item => item.id !== itemId);
+                // Adjust shuffleIndex if the song before it was deleted
+                if (shuffleIndex > 0 && shuffledOrder.findIndex(item => item.id === itemId) < shuffleIndex) {
+                    shuffleIndex--;
+                }
+            }
+
+            if (isPlaying) {
+                // If the deleted song was playing, move to the next song using the current mode
+                moveToNextSong();
+            }
+
+            renderPlaylist();
+        }
+
+        /* -------------------------------------- */
+        /* --- SPOTIFY INTEGRATION FUNCTIONS --- */
+        /* -------------------------------------- */
+
+        async function getToken() {
+            const res = await fetch('https://spotify-nu-six.vercel.app/api/token');
+            const data = await res.json();
+            return data.access_token;
+        }
+
+        function getPlaylistId(url) {
+            const match = url.match(/playlist\/([a-zA-Z0-9]+)/);
+            return match ? match[1] : null;
+        }
+
+        async function importPlaylist(playlistId) {
+            try {
+                const token = await getToken();
+                const playlistApiUrl = `https://api.spotify.com/v1/playlists/${playlistId}/tracks?market=US&fields=items(track(name,artists(name),id))`;
+
+                const res = await fetch(playlistApiUrl, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const data = await res.json();
+
+                if (!data.items) {
+                    showNotification('Could not load playlist. Check ID or if playlist is private.');
+                    return;
+                }
+
+                let songsAdded = 0;
+                data.items.forEach(item => {
+                    if (item.track) {
+                        const artistName = item.track.artists[0] ? item.track.artists[0].name : '';
+                        const title = `${item.track.name} - ${artistName}`;
+
+                        currentPlaylist.push({
+                            id: `playlist-item-${playlistCounter++}`,
+                            spotifyId: item.track.id,
+                            videoId: null,
+                            title: title,
+                            originalQuery: `${item.track.name} ${artistName} lyrics`
+                        });
+                        songsAdded++;
+                    }
+                });
+
+                renderPlaylist();
+                showNotification(`Successfully added ${songsAdded} songs to the queue!`);
+
+            } catch (error) {
+                console.error('Spotify import failed:', error);
+                showNotification('Failed to import playlist. See console for details.');
+            }
+        }
+
+        /* -------------------------------------- */
+        /* --- YOUTUBE API & PLAYBACK LOGIC --- */
+        /* -------------------------------------- */
+
+        function onYouTubeIframeAPIReady() {
+            console.log('YouTube Iframe API is ready.');
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.ENDED) {
+                moveToNextSong();
+            }
+        }
+
+        /**
+         * Determines the next song based on current mode (Sequential or Shuffle)
+         */
+        function moveToNextSong() {
+            let nextSong = null;
+            
+            if (shuffleMode) {
+                // Use the shuffled order
+                shuffleIndex = (shuffleIndex + 1) % shuffledOrder.length;
+                nextSong = shuffledOrder[shuffleIndex];
+            } else {
+                // Use the sequential order
+                const currentIndex = currentPlaylist.findIndex(item => item.videoId === currentVideoId);
+                const nextSequentialIndex = (currentIndex + 1) % currentPlaylist.length;
+                nextSong = currentPlaylist[nextSequentialIndex];
+                
+                // If playlist only has 1 song, end playback instead of looping
+                if (currentPlaylist.length === 1) {
+                    nextSong = null; 
+                }
+            }
+            
+            if (currentPlaylist.length === 0) {
+                 nextSong = null;
+            }
+
+            if (nextSong) {
+                console.log(`Moving to next song: ${nextSong.title}`);
+                openPlayer(nextSong.videoId, nextSong.title, nextSong.id);
+            } else {
+                console.log('End of playlist.');
+                if (player) player.stopVideo();
+                currentVideoId = null;
+                renderPlaylist();
+                // Show 'no player' state if playlist is not set to loop
+                document.getElementById("player-area-content").classList.add("hidden");
+                document.getElementById("no-player-state").style.display = 'block';
+                document.getElementById('fix-song-btn').disabled = true;
+            }
+        }
+
+        /**
+         * Performs the YouTube search for a query and displays results in the popup.
+         * @param {string} query The search string.
+         * @param {string | null} targetItemId Optional ID of the playlist item being fixed.
+         */
+        async function searchSongs(query, targetItemId = null) {
+            if (!query.trim()) return;
+
+            const resultsPopup = document.getElementById("results-popup");
+            resultsPopup.style.display = 'flex'; // Use flex to center 'Loading...'
+            document.getElementById("results").innerHTML = "Loading...";
+
+            playlistItemToFixId = targetItemId;
+
+            const targetUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}+lyrics`;
+            const url = PROXY_URL + encodeURIComponent(targetUrl);
+
+            try {
+                const res = await fetch(url);
+                const html = await res.text();
+
+                const videoRegex = /"videoRenderer":\s*{(.*?)"videoId":"(.*?)".*?"title":\{"runs":\[\{"text":"(.*?)"\}/gs;
+                let match;
+                const results = [];
+
+                while ((match = videoRegex.exec(html)) !== null && results.length < 10) {
+                    const [_, block, id, title] = match;
+                    if (!results.find(r => r.id === id)) {
+                        const cleanedTitle = title.replace(/\\u\d+./g, '').replace(/"/g, '"').replace(/'/g, "'");
+                        results.push({
+                            id,
+                            title: cleanedTitle
+                        });
+                    }
+                }
+
+                let htmlOut = results.map(res => {
+                    const thumb = `https://img.youtube.com/vi/${res.id}/mqdefault.jpg`;
+
+                    // FIX: Safely prepare the title string for JavaScript argument passing
+                    const safeTitle = res.title.replace(/'/g, "\\'").replace(/"/g, "");
+
+                    const clickAction = targetItemId ?
+                        `selectFix('${res.id}', '${safeTitle}', '${targetItemId}')` :
+                        `addToPlaylistAndPlay('${res.id}', \`${safeTitle}\`, true)`;
+
+                    return `
+                        <div class="video" onclick="${clickAction}">
+                            <img src="${thumb}" alt="${res.title}" />
+                            <p>${res.title}</p>
+                        </div>
+                    `;
+                }).join('');
+
+                document.getElementById("results").innerHTML = htmlOut || "No results found.";
+
+            } catch (error) {
+                console.error('Search failed:', error);
+                document.getElementById("results").innerHTML = "Error loading results.";
+            }
+        }
+
+        function searchSongsFromInput() {
+            const query = document.getElementById("query").value;
+            searchSongs(query);
+        }
+
+        /**
+         * Finds the best YouTube video ID for a given search query (the "lazy" part).
+         */
+        async function searchYouTubeLazily(songItem) {
+            const query = songItem.originalQuery || songItem.title + ' lyrics';
+
+            const targetUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+            const url = PROXY_URL + encodeURIComponent(targetUrl);
+
+            try {
+                const res = await fetch(url);
+                const html = await res.text();
+
+                const videoRegex = /"videoRenderer":\s*{(.*?)"videoId":"(.*?)".*?"title":\{"runs":\[\{"text":"(.*?)"\}/gs;
+                const match = videoRegex.exec(html);
+
+                if (match) {
+                    const videoId = match[2];
+                    const index = currentPlaylist.findIndex(item => item.id === songItem.id);
+                    if (index !== -1) {
+                        currentPlaylist[index].videoId = videoId;
+                        // ⚠️ Removed the attribute change for loading dots
+                    }
+                    return videoId;
+                }
+                return null;
+
+            } catch (error) {
+                console.error('Lazy YouTube search failed:', error);
+                return null;
+            }
+        }
+
+
+        /**
+         * Initializes or loads the YT.Player. Also updates the Fix button state.
+         */
+        async function openPlayer(videoId, title, playlistItemId) {
+            const playerContainer = document.getElementById("player-area-content");
+            const noPlayerState = document.getElementById("no-player-state");
+
+            let targetVideoId = videoId;
+            const songItem = currentPlaylist.find(item => item.id === playlistItemId);
+
+            if (songItem && !songItem.videoId) {
+                // Show a brief loading indication
+                showNotification(`Searching for video for: ${title}`);
+                renderPlaylist(); // Update the list to show loading state if desired
+
+                targetVideoId = await searchYouTubeLazily(songItem);
+
+                if (!targetVideoId) {
+                    showNotification(`Could not find a YouTube video for "${title}". Skipping.`);
+                    currentVideoId = null;
+                    document.getElementById('fix-song-btn').disabled = true;
+                    // Try moving to the next song if one wasn't found
+                    return moveToNextSong(); 
+                }
+            }
+
+            currentVideoId = targetVideoId;
+            renderPlaylist();
+
+            document.getElementById('fix-song-btn').disabled = false;
+
+            playerContainer.classList.remove("hidden");
+            noPlayerState.style.display = 'none';
+
+            if (player) {
+                player.loadVideoById(targetVideoId);
+            } else {
+                player = new YT.Player('yt-player-placeholder', {
+                    height: '100%',
+                    width: '100%',
+                    videoId: targetVideoId,
+                    playerVars: {
+                        host: 'https://www.youtube-nocookie.com',
+                        autoplay: 1,
+                        playsinline: 1,
+                        controls: 1,
+                        modestbranding: 1
+                    },
+                    events: {
+                        'onReady': (event) => {
+                            event.target.playVideo();
+                        },
+                        'onStateChange': onPlayerStateChange
+                    }
+                });
+            }
+            
+            // If selecting a song manually, turn off shuffle mode
+            if (shuffleMode) {
+                 shuffleMode = false;
+                 showNotification('Shuffle Play Disabled (Manual song selection).');
+            }
+        }
+
+        /* -------------------------------------- */
+        /* --- FIX SONG LOGIC --- */
+        /* -------------------------------------- */
+
+        /**
+         * Called when the global 'Fix Song' button is pressed.
+         */
+        function fixCurrentlyPlayingSong() {
+            const item = currentPlaylist.find(i => i.videoId === currentVideoId);
+            if (item) {
+                searchSongs(item.title, item.id);
+            }
+        }
+
+        /**
+         * Called when a video is selected from the search popup while in fix mode.
+         */
+        function selectFix(videoId, title, playlistItemId) {
+            document.getElementById("results-popup").style.display = 'none';
+
+            const index = currentPlaylist.findIndex(item => item.id === playlistItemId);
+
+            if (index !== -1) {
+                currentPlaylist[index].videoId = videoId;
+                currentPlaylist[index].title = title;
+
+                showNotification(`Updated song: ${title}`);
+
+                renderPlaylist();
+
+                openPlayer(videoId, title, playlistItemId);
+            }
+
+            playlistItemToFixId = null;
+        }
+
+
+        /* -------------------------------------- */
+        /* --- NORMAL SEARCH / UI LOGIC --- */
+        /* -------------------------------------- */
+
+        function addToPlaylistAndPlay(videoId, title, isDirectVideo = false) {
+            document.getElementById("results-popup").style.display = 'none';
+
+            const newId = `playlist-item-${playlistCounter++}`;
+
+            const item = {
+                id: newId,
+                videoId: isDirectVideo ? videoId : null,
+                title: title,
+                originalQuery: title + ' lyrics'
+            };
+
+            currentPlaylist.push(item);
+            renderPlaylist();
+
+            openPlayer(item.videoId, item.title, newId);
+        }
+
+        function renderPlaylist() {
+            const listContainer = document.getElementById("playlist-list");
+            const emptyState = document.getElementById("empty-state");
+            listContainer.innerHTML = '';
+
+            if (!currentVideoId || currentPlaylist.length === 0) {
+                document.getElementById('fix-song-btn').disabled = true;
+            } else {
+                document.getElementById('fix-song-btn').disabled = false;
+            }
+
+            if (currentPlaylist.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+
+            currentPlaylist.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'playlist-item' + (item.videoId === currentVideoId ? ' playing' : '');
+                itemDiv.id = item.id;
+                itemDiv.title = item.title;
+                itemDiv.onclick = () => openPlayer(item.videoId, item.title, item.id);
+
+                // Song Title Span (for visual separation from the button)
+                const titleSpan = document.createElement('span');
+                titleSpan.className = 'playlist-item-title';
+
+                // Add a simple indicator if videoId hasn't been found yet
+                titleSpan.textContent = item.title + (item.videoId ? '' : '  ');
+
+                // Delete Button Element
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.innerHTML = '❌';
+                deleteBtn.title = 'Remove Song';
+                deleteBtn.onclick = (e) => deleteSong(item.id, e); 
+                
+                itemDiv.appendChild(titleSpan);
+                itemDiv.appendChild(deleteBtn);
+
+                listContainer.appendChild(itemDiv);
+            });
+        }
+
+        renderPlaylist();
+    </script>
+    <script>
+        alert("credits: Rat Games")
+    </script>
+</body>
+</html>

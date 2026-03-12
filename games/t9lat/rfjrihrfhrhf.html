@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global Message Sender</title>
+</head>
+<body style="font-family: Arial; background: #f3f4f6; padding: 30px;">
+<h2>🌍 Send a Global Message</h2>
+
+<input id="msg" placeholder="Type your message..."
+style="padding: 10px; width: 250px; border-radius: 8px; border: 1px solid #ccc;">
+<button id="send"
+style="padding: 10px 16px; border: none; background: #2563eb; color: white; border-radius: 8px; cursor: pointer;">
+Send
+</button>
+
+<p id="status" style="margin-top: 10px; color: gray;"></p>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+// 🔥 Your Firebase config:
+const firebaseConfig = {
+apiKey: "AIzaSyDB4VU2JNQGO5pMgXGaasIiY6kFxgsb-84",
+authDomain: "chat-99dfe.firebaseapp.com",
+databaseURL: "https://chat-99dfe-default-rtdb.firebaseio.com",
+projectId: "chat-99dfe",
+storageBucket: "chat-99dfe.firebasestorage.app",
+messagingSenderId: "17277094525",
+appId: "1:17277094525:web:989d19d04fdde769de7f14",
+measurementId: "G-NEXJFPJPCP"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const messagesRef = ref(db, "globalMessages");
+
+const input = document.getElementById("msg");
+const sendBtn = document.getElementById("send");
+const status = document.getElementById("status");
+
+sendBtn.onclick = async () => {
+const text = input.value.trim();
+if (!text) return;
+
+const newMsg = push(messagesRef);
+await set(newMsg, {
+text: text,
+timestamp: Date.now()
+});
+
+status.textContent = "✅ Message sent!";
+input.value = "";
+setTimeout(() => status.textContent = "", 2000);
+};
+</script>
+</body>
+</html>

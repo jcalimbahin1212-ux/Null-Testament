@@ -1,0 +1,91 @@
+<div class="typewriter">
+    <h1>T9 Lite</h1>
+</div>
+<div class="container">
+<a class="btn" href="gnmath.html">Start</a>
+</div>
+<style>
+    .container {
+    display: grid;
+    place-items: center; /* Centers both horizontally and vertically */
+  }
+  .btn{
+    padding:15px 30px;
+    width:50px;
+    border-radius: 15px;
+    text-decoration: none;
+    color:white;
+    font-family: sans-serif;
+    top:50%;
+    position:absolute;
+    font-size: 20px;
+    background: #2A7B9B;
+background: linear-gradient(90deg,rgb(63, 100, 251) 0%, rgb(90, 22, 207) 50%, rgb(63, 100, 251) 100%);
+              transition: all 0.4s ease-in-out; 
+
+  }
+  .btn:hover{
+            transform: translateY(-3px);
+            border-radius:30px;
+
+
+  }
+  
+    body {
+  background-repeat: no-repeat;
+  background-size: cover;   /* make sure images cover the whole screen */
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  text-decoration: none;
+  }
+  .typewriter h1 {
+  color: #ffffff;
+  font-family: monospace;
+  overflow: hidden; /* Ensures the content is not revealed until the animation */
+  white-space: nowrap; /* Keeps the content on a single line */
+  margin: 0 auto; /* Gives that scrolling effect as the typing happens */
+  letter-spacing: .15em; /* Adjust as needed */
+  text-align:center;
+    top:200px;
+    position:relative;
+    font-size:50px;
+}
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const select = document.getElementById("background-select");
+  const upload = document.getElementById("background-upload");
+  const body = document.body;
+
+  // Apply background
+  function setBackground(src) {
+    body.style.backgroundImage = src ? `url(${src})` : "";
+    localStorage.setItem("selectedBackground", src || "");
+  }
+
+  // Load saved background
+  const savedBg = localStorage.getItem("selectedBackground");
+  if (savedBg) setBackground(savedBg);
+
+  // Dropdown change
+  select.addEventListener("change", () => {
+    if (select.value) {
+      setBackground(select.value);
+    }
+  });
+
+  // Upload custom background
+  upload.addEventListener("change", () => {
+    const file = upload.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setBackground(reader.result); // base64 image
+      select.value = ""; // reset dropdown
+    };
+    reader.readAsDataURL(file);
+  });
+});
+</script>

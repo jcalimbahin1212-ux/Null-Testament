@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Classroom Dashboard</title>
+  <meta name="google-adsense-account" content="ca-pub-7176221127189774" />
+  <script src="learning.js"></script>
+  <link rel="icon" type="image/x-icon" href="${faviconUrl}" />
+  <link rel="icon" type="image/png" href="https://ssl.gstatic.com/classroom/ic_product_classroom_48.png">
+
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --google-blue: #1a73e8;
+      --google-blue-hover: #1765d1;
+      --card-bg: #ffffff;
+      --border-radius: 14px;
+      --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      --shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Roboto", sans-serif;
+      background: #f7f8fa;
+      color: #333;
+    }
+
+    /* HEADER */
+    header {
+      background: var(--google-blue);
+      padding: 22px;
+      color: white;
+      font-size: 2rem;
+      font-weight: 500;
+      text-align: left;
+      box-shadow: var(--shadow);
+      letter-spacing: 0.3px;
+      padding-left: 40px;
+    }
+
+    /* TOP BUTTON */
+    .top-button {
+      text-align: left;
+      margin: 25px 40px 0 40px;
+    }
+
+    .top-button button {
+      background: var(--google-blue);
+      color: white;
+      border: none;
+      padding: 12px 26px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: 0.2s ease;
+    }
+
+    .top-button button:hover {
+      background: var(--google-blue-hover);
+      transform: translateY(-2px);
+    }
+
+    /* GRID */
+    main {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 25px;
+      padding: 35px 40px;
+    }
+
+    /* GOOGLE CLASSROOM CARD STYLE */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      transition: 0.25s ease;
+      border-top: 6px solid var(--google-blue);
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .card h2 {
+      margin: 0;
+      margin-bottom: 12px;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--google-blue);
+    }
+
+    ul {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    li {
+      background: #f1f3f4;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 400;
+      transition: 0.2s;
+    }
+
+    li:hover {
+      background: #e2e5e7;
+    }
+
+    /* BOTTOM BUTTON */
+    .bottom {
+      text-align: center;
+      margin: 40px 0 60px;
+    }
+
+    .bottom button {
+      background: var(--google-blue);
+      color: white;
+      border: none;
+      padding: 14px 35px;
+      font-size: 1.15rem;
+      font-weight: 500;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: 0.2s;
+    }
+
+    .bottom button:hover {
+      background: var(--google-blue-hover);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+
+<body>
+
+<header>📘 Classroom Dashboard</header>
+  <!--Classwork, Homework,and dates-->
+
+<div class="top-button">
+  <button onclick="openT9()">Go to T9 OS Class</button>
+</div>
+
+<main>
+  <div class="card">
+    <h2>Upcoming Quizzes</h2>
+    <ul>
+      <li>Math Quiz — Friday, Oct 10</li>
+      <li>History Pop Quiz — Oct 12</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Homework</h2>
+    <ul>
+      <li>Science Worksheet — Due Tomorrow</li>
+      <li>Reading Log — Due Friday</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Classwork</h2>
+    <ul>
+      <li>Finish Essay Outline</li>
+      <li>Group Project Slides</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Announcements</h2>
+    <ul>
+      <li>Parent-Teacher Meeting next week</li>
+      <li>No school Monday</li>
+    </ul>
+  </div>
+</main>
+
+<div class="bottom">
+  <button onclick="window.open('https://classroom.google.com', '_blank')">
+    Go to Google Classroom
+  </button>
+</div>
+
+</body>
+</html>

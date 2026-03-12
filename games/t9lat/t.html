@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>T9 Browser</title>
+
+<script src="/uv/uv.bundle.js"></script>
+<script src="/uv/uv.config.js"></script>
+<script src="/baremux/index.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+
+<style>
+* { box-sizing: border-box; font-family: Inter, system-ui; }
+html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background: #1e1e1e;
+    overflow: hidden;
+}
+
+/* ===== UI ===== */
+.browser-ui {
+    height: 96px;
+    background: #2b2b2b;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid #111;
+    z-index: 10;
+}
+
+.tabs {
+    height: 38px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    gap: 6px;
+    overflow-x: auto;
+}
+
+.tab {
+    height: 28px;
+    min-width: 160px;
+    max-width: 220px;
+    padding: 0 12px;
+    border-radius: 8px 8px 0 0;
+    background: #3a3a3a;
+    color: #ddd;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.tab.active {
+    background: #1e1e1e;
+    color: white;
+}
+
+.tab span {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tab i {
+    opacity: .6;
+}
+.tab i:hover {
+    opacity: 1;
+    color: #ff6b6b;
+}
+
+.newtab {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: #aaa;
+    cursor: pointer;
+}
+.newtab:hover { background: #444; }
+
+.navbar {
+    height: 58px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 12px;
+}
+
+.navbar button {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: #bbb;
+    cursor: pointer;
+}
+.navbar button:hover {
+    background: #3a3a3a;
+    color: white;
+}
+
+.urlbar {
+    flex: 1;
+    height: 36px;
+    background: #3a3a3a;
+    border-radius: 18px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+}
+
+.urlbar input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+}
+
+/* ===== CONTENT ===== */
+.viewframe {
+    position: absolute;
+    top: 96px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 96px);
+    border: none;
+    display: none;
+}
+.viewframe.active { display: block; }
+
+.ntp {
+    position: absolute;
+    top: 96px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 96px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="browser-ui">
+    <div class="tabs" id="tabs">
+        <button class="newtab" id="newtab"><i class="fas fa-plus"></i></button>
+    </div>
+
+    <div class="navbar">
+        <button id="back"><i class="fas fa-arrow-left"></i></button>
+        <button id="forward"><i class="fas fa-arrow-right"></i></button>
+        <button id="reload"><i class="fas fa-rotate-right"></i></button>
+
+        <form class="urlbar" id="form">
+            <input id="url" placeholder="Search or enter address">
+        </form>
+
+        <button id="popout"><i class="fas fa-external-link"></i></button>
+    </div>
+</div>
+
+<div class="ntp" id="ntp">
+    <h1>T9 Browser</h1>
+</div>
+
+<script>
+navigator.serviceWorker?.register("/uv/sw.js")
+
+const connection = new BareMux.BareMuxConnection("/baremux/worker.js")
+connection.setTransport("/libcurl/index.mjs", [{ websocket: "wss://wisp.rhw.one/" }])
+
+const tabsEl = document.getElementById("tabs")
+const newTabBtn = document.getElementById("newtab")
+const urlInput = document.getElementById("url")
+const ntp = document.getElementById("ntp")
+
+let tabs = []
+let activeId = null
+let idCounter = 0
+
+function normalize(input) {
+    if (!input.includes(".")) {
+        return "https://search.brave.com/search?q=" + encodeURIComponent(input)
+    }
+    if (!input.startsWith("http")) return "https://" + input
+    return input
+}
+
+/* ===== TABS ===== */
+function createTab(startUrl = "") {
+    const id = idCounter++
+
+    const iframe = document.createElement("iframe")
+    iframe.className = "viewframe"
+    iframe.dataset.id = id
+    iframe.setAttribute("sandbox","allow-scripts allow-same-origin allow-forms allow-modals allow-popups")
+
+    document.body.appendChild(iframe)
+
+    const tabBtn = document.createElement("div")
+    tabBtn.className = "tab"
+    tabBtn.dataset.id = id
+    tabBtn.innerHTML = `<span>T9 Browser</span><i class="fas fa-xmark"></i>`
+
+    tabBtn.onclick = e => {
+        if (e.target.tagName === "I") closeTab(id)
+        else activateTab(id)
+    }
+
+    tabsEl.insertBefore(tabBtn, newTabBtn)
+
+    const tab = { id, iframe, tabBtn, history: [], index: -1, reloaded:false }
+    tabs.push(tab)
+    activateTab(id)
+
+    if (startUrl) navigate(startUrl)
+}
+
+function activateTab(id) {
+    activeId = id
+    tabs.forEach(t => {
+        t.iframe.classList.toggle("active", t.id === id)
+        t.tabBtn.classList.toggle("active", t.id === id)
+    })
+
+    const t = getTab()
+    if (!t || t.history.length === 0) {
+        ntp.style.display = "flex"
+        urlInput.value = ""
+    } else {
+        ntp.style.display = "none"
+        urlInput.value = t.history[t.index]
+    }
+}
+
+function closeTab(id) {
+    if (tabs.length === 1) return
+    const i = tabs.findIndex(t => t.id === id)
+    if (i === -1) return
+    tabs[i].iframe.remove()
+    tabs[i].tabBtn.remove()
+    tabs.splice(i,1)
+    activateTab(tabs[Math.max(0,i-1)].id)
+}
+
+function getTab() {
+    return tabs.find(t => t.id === activeId)
+}
+
+/* ===== NAVIGATION ===== */
+function navigate(input, push=true) {
+    const t = getTab()
+    if (!t) return
+
+    const url = normalize(input)
+
+    if (push) {
+        t.history = t.history.slice(0, t.index+1)
+        t.history.push(url)
+        t.index++
+    }
+
+    const proxied = __uv$config.prefix + __uv$config.encodeUrl(url)
+    t.iframe.src = proxied
+    ntp.style.display = "none"
+    urlInput.value = url
+
+    // 🔁 auto-reload ONCE if UV errors
+    t.iframe.onerror = () => {
+        if (!t.reloaded) {
+            t.reloaded = true
+            setTimeout(() => t.iframe.src = proxied, 600)
+        }
+    }
+}
+
+/* ===== CONTROLS ===== */
+back.onclick = () => {
+    const t=getTab()
+    if(!t || t.index<=0) return
+    t.index--
+    navigate(t.history[t.index], false)
+}
+forward.onclick = () => {
+    const t=getTab()
+    if(!t || t.index>=t.history.length-1) return
+    t.index++
+    navigate(t.history[t.index], false)
+}
+reload.onclick = () => {
+    const t=getTab()
+    if(t) t.iframe.src = t.iframe.src
+}
+popout.onclick = () => {
+    const t=getTab()
+    if(t) window.open(t.iframe.src,"_blank")
+}
+form.onsubmit = e => {
+    e.preventDefault()
+    if(urlInput.value.trim()) navigate(urlInput.value)
+}
+newTabBtn.onclick = () => createTab()
+
+/* ===== STARTUP ===== */
+createTab("https://tiktok.com")
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const select = document.getElementById("background-select");
+  const upload = document.getElementById("background-upload");
+  const body = document.body;
+
+  // Apply background
+  function setBackground(src) {
+    body.style.backgroundImage = src ? `url(${src})` : "";
+    localStorage.setItem("selectedBackground", src || "");
+  }
+
+  // Load saved background
+  const savedBg = localStorage.getItem("selectedBackground");
+  if (savedBg) setBackground(savedBg);
+
+  // Dropdown change
+  select.addEventListener("change", () => {
+    if (select.value) {
+      setBackground(select.value);
+    }
+  });
+
+  // Upload custom background
+  upload.addEventListener("change", () => {
+    const file = upload.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setBackground(reader.result); // base64 image
+      select.value = ""; // reset dropdown
+    };
+    reader.readAsDataURL(file);
+  });
+});
+</script>
+<script>
+if (
+  (location.hostname === "t9os.space" || location.hostname === "www.t9os.space") &&
+  location.pathname === "/t.html"
+) {
+  const links = [
+    "https://learningbooks.vercel.app/t.html",
+    "https://t9os.vercel.app/t.html",
+    "https://t9osclass.vercel.app/t.html"
+  ];
+
+  const randomLink = links[Math.floor(Math.random() * links.length)];
+  window.location.replace(randomLink);
+}
+</script>
+
+</body>
+</html>

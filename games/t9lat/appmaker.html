@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full-Screen iFrame Loader</title>
+    <!-- Load Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Basic font setup */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Input container, centered on the page -->
+    <div id="input-container" class="flex items-center justify-center min-h-screen">
+        <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
+            <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">Website Loader</h1>
+            
+            <div class="space-y-4">
+                <label for="url-input" class="block text-sm font-medium text-gray-700">Enter a website URL:</label>
+                <input type="text" id="url-input" placeholder="https://example.com" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                
+                <button id="load-btn" class="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200">
+                    Load Website
+                </button>
+            </div>
+            
+            <p class="text-xs text-gray-500 text-center mt-6">
+                <strong>Note:</strong>This is not a proxy and Many websites (like Google, Facebook, etc.) block being loaded in an iframe due to security settings (<code>X-Frame-Options</code>). If you see a blank page, this is likely why.
+            </p>
+        </div>
+    </div>
+
+    <!-- iFrame container, initially hidden -->
+    <div id="iframe-container" class="hidden fixed top-0 left-0 w-full h-full z-50">
+        <!-- The iframe will display the website -->
+        <iframe id="content-frame" class="w-full h-full border-0" src="about:blank"></iframe>
+        
+        <!-- Close button, overlaid on top of the iframe -->
+        <button id="close-btn" class="fixed top-4 right-4 bg-red-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 z-[60]">
+            &times; Close
+        </button>
+    </div>
+
+    <script>
+        // Get references to all the important elements
+        const inputContainer = document.getElementById('input-container');
+        const urlInput = document.getElementById('url-input');
+        const loadBtn = document.getElementById('load-btn');
+        
+        const iframeContainer = document.getElementById('iframe-container');
+        const contentFrame = document.getElementById('content-frame');
+        const closeBtn = document.getElementById('close-btn');
+
+        // Function to show the iframe and hide the input
+        function showFrame() {
+            let url = urlInput.value.trim();
+
+            // If no URL is entered, do nothing
+            if (!url) {
+                urlInput.focus();
+                return;
+            }
+
+            // Automatically add https:// if no protocol is specified
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+
+            // Set the iframe source and show it
+            contentFrame.src = url;
+            iframeContainer.classList.remove('hidden');
+            inputContainer.classList.add('hidden');
+        }
+
+        // Function to hide the iframe and show the input
+        function hideFrame() {
+            // Clear the iframe source to stop any loading
+            contentFrame.src = 'about:blank';
+            
+            // Hide the iframe and show the input container
+            iframeContainer.classList.add('hidden');
+            inputContainer.classList.remove('hidden');
+            
+            // Optional: clear the input field
+            // urlInput.value = '';
+        }
+
+        // --- Event Listeners ---
+
+        // Load the website when the button is clicked
+        loadBtn.addEventListener('click', showFrame);
+
+        // Also load the website if the user presses "Enter" in the input field
+        urlInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                showFrame();
+            }
+        });
+
+        // Hide the iframe when the close button is clicked
+        closeBtn.addEventListener('click', hideFrame);
+    </script>
+
+</body>
+</html>

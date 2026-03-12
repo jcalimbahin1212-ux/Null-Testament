@@ -1,0 +1,117 @@
+
+   <style>
+        .clock {
+          display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+           color:white;
+           font-size: 50px;
+          
+
+        }
+    </style>
+    <script>
+      document.addEventListener('keydown', function(event) {
+  window.location.href = 'test4.html';
+});
+
+    </script>
+    
+      <script>
+    function updateTime() {
+      var date = new Date();
+      var options = { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true, timeZone: 'America/New_York' };
+      var formattedTime = date.toLocaleTimeString('en-US', options);
+      document.getElementById("time").innerHTML = formattedTime;
+    }
+
+    setInterval(updateTime, 1000); // Update time every second
+  </script>
+
+  <h1 class="clock" id="time"></h1>
+
+      
+    <style>
+         .battery {
+            border: 2px solid black;
+            padding: 10px 20px;
+            display: inline-block;
+            color:white;
+            background-color: transparent;
+            border-radius: 12px;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+              transform: translateY(-25%);
+                border-color: transparent;
+                padding:10px;
+                font-size:30px;
+        }
+    </style>
+
+    
+
+ 
+ <p class="battery"  id="batteryPercentage"></p>
+ 
+
+  <script>
+
+    // Check if Battery API is supported by the browser
+    if ('getBattery' in navigator) {
+      navigator.getBattery().then(function(battery) {
+        updateBatteryStatus(battery);
+
+        // Update battery status whenever it changes
+        battery.addEventListener('levelchange', function() {
+          updateBatteryStatus(battery);
+        });
+      });
+    } else {
+      document.getElementById('batteryPercentage').innerHTML = 'Battery API not supported.';
+    }
+
+    function updateBatteryStatus(battery) {
+      var percentage = Math.floor(battery.level * 100);
+      document.getElementById('batteryPercentage').innerHTML = percentage + '%';
+    }
+  </script>
+
+
+<center>
+<p> <span class="date"></span></p>
+</center>
+
+<script>
+    // Get the current date
+    var currentDate = new Date();
+
+    // Get the day and month separately
+    var day = currentDate.getDate();
+    var month = currentDate.getMonth() + 1; // Adding 1 because months are zero-based
+
+    // Update the HTML element with the date
+    var dateElement = document.querySelector('.date');
+    dateElement.textContent = month + '/' + day;
+</script>
+<style>
+  .date {
+      display: inline-block;
+      font-weight: bold;
+      color:white;
+      top: 195px;
+      position: fixed;
+  }
+</style>
+
+
+
+
+<style>
+    body {
+        background-image:url("ocean2.jpg");
+        font-family: sans;
+    }
+</style>
+ 

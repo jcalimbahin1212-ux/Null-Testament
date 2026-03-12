@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Westbrook Valley High School • Student Access</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Westbrook Valley High School student access for schedules and school updates.">
+<meta name="author" content="WVHS District">
+<style>
+  body { margin:0; font-family: Arial, sans-serif; background:#f0f2f5; }
+  header { background:#2b436b; color:#fff; padding:14px 20px; font-size:18px; display:flex; justify-content:space-between; align-items:center; }
+  header .sub { font-size:13px; opacity:0.9; }
+  #mainContent { display:flex; gap:20px; padding:20px; min-height:calc(100vh - 100px); box-sizing:border-box; }
+  #info { flex:2; }
+  h2.section { color:#2b436b; border-bottom:2px solid #e1e6ee; padding-bottom:6px; margin:0 0 12px; font-weight:600; }
+  table { width:100%; border-collapse:collapse; background:#fff; border-radius:5px; overflow:hidden; margin-top:8px; }
+  th, td { border:1px solid #ddd; padding:8px; font-size:14px; text-align:left; }
+  th { background:#e9eef6; font-weight:600; }
+  ul { background:#fff; padding:12px 20px; border-radius:6px; list-style: disc; margin-top:8px; border:1px solid #ddd; }
+
+  /* Login Box */
+  #loginBox { width:320px; background:#fff; border:1px solid #d2d7df; border-radius:6px; padding:20px; box-shadow:0px 2px 5px rgba(0,0,0,0.08); }
+  #loginBox h3 { text-align:center; color:#2b436b; margin:0 0 14px; font-weight:600; }
+  label { display:block; margin-top:10px; font-size:14px; font-weight:600; }
+  input { width:100%; padding:8px; margin-top:4px; border:1px solid #aaa; border-radius:4px; font-size:14px; }
+  button { width:100%; padding:10px; margin-top:16px; border-radius:4px; border:none; cursor:pointer; font-size:14px; font-weight:600; }
+  .login-btn { background:#2b436b; color:#fff; }
+  .login-btn:hover { background:#1e304c; }
+  .forgot-btn { background:#ddd; color:#2b436b; margin-top:10px; }
+  #error { color:#c00; text-align:center; margin-top:10px; display:none; font-size:13px; font-weight:600; }
+
+  footer { background:#ddd; border-top:1px solid #bbb; text-align:center; padding:10px; font-size:12px; position:fixed; bottom:0; width:100%; }
+
+  #portalFrame { display:none; position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; border:none; z-index:9999; background:#fff; }
+
+  /* Password Modal */
+  #modalBG {
+    display:none; position:fixed; top:0; left:0; width:100vw; height:100vh;
+    background:rgba(0,0,0,0.45); z-index:10000; justify-content:center; align-items:center;
+  }
+  #modalBox {
+    background:white; padding:20px; border-radius:8px; width:260px; box-shadow:0px 2px 10px rgba(0,0,0,0.25);
+    text-align:center; font-size:15px;
+  }
+  #closeModal { margin-top:12px; width:100%; padding:8px; border:none; border-radius:4px; background:#2b436b; color:white; cursor:pointer; }
+  @media (max-width:800px){ #mainContent { flex-direction:column; } #loginBox { width:100%; margin-top:15px; } }
+</style>
+</head>
+<body>
+
+<header id="pageHeader">
+  <div>
+    <div style="font-weight:700">Westbrook Valley High School</div>
+    <div class="sub">Student Information & Bell Schedule</div>
+  </div>
+  <div id="headerRight" style="font-size:13px; opacity:0.9">wvhs-campus.edu</div>
+</header>
+
+<div id="mainContent">
+  <div id="info">
+    <h2 class="section">Daily Class Schedule</h2>
+    <table aria-label="Daily schedule">
+      <thead>
+        <tr><th>Period</th><th>Class</th><th>Time</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>English II</td><td>7:45 AM - 8:35 AM</td></tr>
+        <tr><td>2</td><td>Geometry</td><td>8:40 AM - 9:30 AM</td></tr>
+        <tr><td>3</td><td>World History</td><td>9:35 AM - 10:25 AM</td></tr>
+        <tr><td>4</td><td>Biology</td><td>10:30 AM - 11:20 AM</td></tr>
+        <tr><td>Lunch</td><td>—</td><td>11:20 AM - 11:55 AM</td></tr>
+        <tr><td>5</td><td>Computer Science</td><td>12:00 PM - 12:50 PM</td></tr>
+        <tr><td>6</td><td>Physical Education</td><td>12:55 PM - 1:45 PM</td></tr>
+      </tbody>
+    </table>
+
+    <h2 class="section" style="margin-top:18px">Announcements</h2>
+    <ul aria-label="Announcements">
+      <li>Spirit Week starts Monday.</li>
+      <li>Final exams begin December 15.</li>
+      <li>Yearbook photos due January 10.</li>
+      <li>Library closes at 4:10 PM this week.</li>
+    </ul>
+  </div>
+
+  <aside id="loginBox" aria-labelledby="loginTitle">
+    <h3 id="loginTitle">Student Access</h3>
+    <label for="studentId">Student ID (optional)</label>
+    <input id="studentId" type="text" autocomplete="username" placeholder="e.g. 20253127">
+    <label for="pass">Password</label>
+    <input id="pass" type="password" autocomplete="current-password" placeholder="Enter Password">
+    <button class="login-btn" id="signinBtn">Continue</button>
+    <button class="forgot-btn" id="forgotBtn">Forgot Password?</button>
+    <div id="error">Incorrect password.</div>
+  </aside>
+</div>
+
+<iframe id="portalFrame" title="Student Access Window"></iframe>
+
+<footer id="pageFooter">© 2025 Westbrook Valley High School — All Rights Reserved</footer>
+
+<!-- Modal -->
+<div id="modalBG">
+  <div id="modalBox">
+    <strong>Password:</strong><br>
+    <span id="passText" style="font-weight:700; color:#2b436b;">student213</span>
+    <button id="closeModal">Close</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const correctPassword = "student213";
+  const signin = document.getElementById("signinBtn");
+  const msg = document.getElementById("error");
+  const frame = document.getElementById("portalFrame");
+  const header = document.getElementById("pageHeader");
+  const main = document.getElementById("mainContent");
+  const footer = document.getElementById("pageFooter");
+
+  // Login
+  signin.addEventListener("click", function(){
+    const pass = document.getElementById("pass").value.trim();
+    if(pass === correctPassword){
+      header.style.display='none';
+      main.style.display='none';
+      footer.style.display='none';
+      frame.src='t9os.html';  // Make sure this exists
+      frame.style.display='block';
+    } else {
+      msg.style.display='block';
+      setTimeout(()=>msg.style.display='none',3000);
+    }
+  });
+
+  // Modal Password Popup
+  document.getElementById("forgotBtn").addEventListener("click", function(){
+    document.getElementById("modalBG").style.display="flex";
+  });
+
+  document.getElementById("closeModal").addEventListener("click", function(){
+    document.getElementById("modalBG").style.display="none";
+  });
+
+  // Enter key login
+  document.getElementById("pass").addEventListener("keydown",function(e){
+    if(e.key==='Enter') signin.click();
+  });
+})();
+</script>
+
+</body>
+</html>

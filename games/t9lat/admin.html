@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin page</title>
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+    }
+    body {
+        background-image: url("scare.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+</style>
+</head>
+<body>
+
+<audio id="bgMusic" loop autoplay>
+    <source src="scare.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio>
+
+<script>
+    const music = document.getElementById("bgMusic");
+
+    // Try to force play
+    function playAudio() {
+        music.volume = 0.65;
+        music.play().catch(err => {
+            console.warn("Autoplay failed:", err);
+        });
+    }
+
+    // Immediately attempt to play
+    playAudio();
+
+    // Try repeatedly (aggressive)
+    let attempts = 0;
+    const interval = setInterval(() => {
+        attempts++;
+        playAudio();
+        if (attempts > 10) clearInterval(interval);
+    }, 1000);
+</script>
+
+</body>
+</html>

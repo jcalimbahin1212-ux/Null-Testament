@@ -1,0 +1,68 @@
+<script>
+var win = window.open();
+var url = "thetestbase99.html";   // same-origin page
+var defaultFavicon = "favicon.png"; // fallback
+
+// Create about:blank shell
+win.document.write(`
+<!DOCTYPE html>
+<html>
+<head>
+  <title>T9 OS</title>
+  <link rel="icon" type="image/x-icon" href="${defaultFavicon}">
+</head>
+<body style="margin:0; padding:0; overflow:hidden;"></body>
+</html>
+`);
+win.document.close();
+
+// Add iframe
+var iframe = win.document.createElement("iframe");
+iframe.style.position = "fixed";
+iframe.style.top = "0";
+iframe.style.left = "0";
+iframe.style.width = "100vw";
+iframe.style.height = "100vh";
+iframe.style.border = "none";
+iframe.src = url;
+win.document.body.appendChild(iframe);
+
+// Reference to favicon in about:blank tab
+var favicon = win.document.querySelector("link[rel='icon']");
+
+// Function to sync title + favicon from iframe
+function syncFromIframe(iframeDoc) {
+  // Mirror title
+  win.document.title = iframeDoc.title || "T9 OS";
+
+  // Mirror favicon
+  const iframeIcon = iframeDoc.querySelector("link[rel~='icon']");
+  if (iframeIcon) {
+    favicon.href = iframeIcon.href;
+  } else {
+    favicon.href = defaultFavicon;
+  }
+}
+
+// Listen for iframe load
+iframe.addEventListener("load", () => {
+  try {
+    const iframeDoc = iframe.contentDocument;
+    syncFromIframe(iframeDoc);
+
+    // Watch <head> for changes (title or favicon)
+    const observer = new MutationObserver(() => {
+      syncFromIframe(iframeDoc);
+    });
+
+    observer.observe(iframeDoc.head, {
+      childList: true,    // detect new/removed nodes
+      subtree: true,      // detect inside children
+      attributes: true,   // detect attribute changes
+      attributeFilter: ["href", "rel"] // watch only these attributes
+    });
+  } catch (e) {
+    console.warn("Cannot mirror iframe (cross-origin?)", e);
+  }
+});
+</script>

@@ -1,0 +1,403 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Password redirect demo</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:0}
+    #overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+             z-index:9999}
+    #panel{background:#fff;padding:20px;border-radius:8px;width:340px;text-align:center}
+    input{width:100%;padding:8px;margin-top:10px}
+    button{margin-top:10px;padding:8px 12px}
+  </style>
+</head>
+<body>
+  <div id="overlay">
+    <div id="panel">
+      <h3>Enter password to enter the Admin panel</h3>
+      <p style="text-align:center;">Admins only</p>
+      <input id="pw" type="password" placeholder="password"/>
+      <div><button id="go">Enter</button></div>
+      <p id="msg" style="color:red;display:none">Wrong password</p>
+    </div>
+  </div>
+
+  <main id="content" style="display:none;padding:20px">
+    <h1>Protected content</h1>
+    <p>This is for Admins only</p>
+  </main>
+
+  
+
+  <script>
+// Block key combos
+document.addEventListener("keydown", (e) => {
+  const isCtrlU = e.ctrlKey && !e.shiftKey && e.key.toLowerCase() === "u";
+  const isCtrlShiftI = e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "i";
+  const isF12 = e.key === "F12";
+
+  if (isCtrlU || isCtrlShiftI || isF12) {
+    e.preventDefault();
+    e.stopPropagation();
+    alert("Blocked: " + (isCtrlU ? "Ctrl+U" : isCtrlShiftI ? "Ctrl+Shift+I" : "F12"));
+  }
+}, true);
+
+// Block right-click
+document.addEventListener("contextmenu", (e) => {
+  e.preventDefault();
+  alert("Right-click disabled");
+});
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <script src="t9os.js"></script>

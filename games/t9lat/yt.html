@@ -1,0 +1,601 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>Yt</title>
+<style>
+    /* --- Global Styles and Variables ---
+    Using custom CSS for a modern, dark, responsive design.
+    */
+    :root{
+        --bg:#060712;
+        --bar:#ffffff;
+        --text-color:#071127;
+        --primary-color:#1e40af; /* Blue 700 */
+        --primary-hover:#1d4ed8; /* Blue 600 */
+        --muted:#94a3b8;
+        --shadow:0 12px 40px rgba(2,6,23,0.6);
+    }
+    html,body{height:100%;margin:0;font-family:'Inter',system-ui,Segoe UI,Roboto,Arial,sans-serif;}
+    body{
+        background:var(--bg);
+        color: #fff;
+        overflow:hidden;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        transition:justify-content 400ms ease;
+    }
+
+    /* Active search state (moves search bar up) */
+    .has-results {
+        justify-content:flex-start;
+        padding-top: 4vh;
+    }
+
+    /* --- Background Player --- */
+    #player {
+        position:fixed;
+        inset:0;
+        z-index:0;
+        background:#000;
+        transition: opacity 500ms ease;
+        opacity: 0; /* Starts hidden */
+    }
+    #player.active {
+        opacity: 1; /* Visible when video launched */
+    }
+    #player iframe{
+        width:100%;
+        height:100%;
+        border:0;
+        display:block;
+    }
+
+    /* --- Center Search Bar --- */
+    .bar-wrap {
+        position:relative;
+        z-index:2;
+        width:min(880px,92%);
+        max-width:980px;
+        pointer-events:auto;
+        /* Ensures the bar-wrap is centered horizontally */
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .bar {
+        width:100%;
+        display:flex;
+        align-items:center;
+        gap:12px;
+        background:var(--bar);
+        color:var(--text-color);
+        padding:14px 18px;
+        border-radius:12px;
+        box-shadow:var(--shadow);
+        transition: transform 0ms, opacity 0ms; /* No transition initially */
+    }
+
+    .bar input{
+        flex:1;
+        border:0;
+        outline:0;
+        font-size:16px;
+        font-weight:600;
+        background:transparent;
+        color:inherit;
+    }
+    .bar button{
+        background:var(--primary-color);
+        color:#fff;
+        border:0;
+        padding:10px 14px;
+        border-radius:8px;
+        font-weight:700;
+        cursor:pointer;
+        transition:background 200ms;
+    }
+    .bar button:hover {
+        background:var(--primary-hover);
+    }
+
+    /* Shake for invalid input */
+    .shake { animation:shake 420ms; }
+    @keyframes shake {
+        0%{ transform:translateX(0) } 20%{ transform:translateX(-8px) }
+        40%{ transform:translateX(6px) } 60%{ transform:translateX(-4px) }
+        80%{ transform:translateX(2px) } 100%{ transform:translateX(0) }
+    }
+
+    /* Animation: Search bar lifts away and video launches */
+    .launched .bar {
+        animation: liftAway 820ms forwards;
+        animation-timing-function: linear;
+        opacity:1;
+    }
+
+    @keyframes liftAway {
+        0%   { transform: translateY(0); opacity:1; }
+        25%  { transform: translateY(-6vh); opacity:0.98; }
+        55%  { transform: translateY(-30vh); opacity:0.86; }
+        80%  { transform: translateY(-80vh); opacity:0.6; }
+        100% { transform: translateY(-140vh); opacity:0; }
+    }
+    .gone { display:none !important; }
+
+    /* --- Search Results Area --- */
+    #results {
+        max-width:980px;
+        width:92%;
+        margin-top: 30px;
+        list-style: none;
+        padding: 0;
+        color: #fff;
+        z-index: 1; /* Above player, below search bar */
+        overflow-y: auto;
+        max-height: 80vh;
+        border-radius: 12px;
+        pointer-events: none; /* Default state */
+        opacity: 0;
+        transition: opacity 300ms ease;
+    }
+    .has-results #results {
+        pointer-events: auto;
+        opacity: 1;
+    }
+
+    .video-result {
+        display: flex;
+        align-items: flex-start; /* Aligns info block to the top of the thumbnail */
+        gap: 20px; /* Increased gap for better spacing */
+        padding: 16px 18px; /* Increased padding */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+        background: rgba(255, 255, 255, 0.03);
+        transition: background 200ms ease;
+        border-radius: 8px;
+        margin-bottom: 8px;
+    }
+
+    .video-result:hover {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .video-result:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+
+    /* Larger Thumbnail Size for Desktop */
+    .video-thumbnail {
+        width: 240px;
+        height: 135px; /* Standard 16:9 aspect ratio */
+        min-width: 240px;
+        background-color: #1e293b;
+        border-radius: 6px;
+        overflow: hidden;
+        position: relative;
+        flex-shrink: 0; /* Prevents thumbnail from shrinking */
+    }
+
+    .video-thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .video-info {
+        flex: 1;
+        /* Aligns text vertically with the top of the thumbnail */
+        padding-top: 2px;
+    }
+
+    .video-title {
+        font-size: 1.1rem; /* Slightly larger title */
+        font-weight: 600;
+        margin: 0 0 6px 0;
+        color: #fff;
+        line-height: 1.4;
+    }
+
+    .video-metadata {
+        font-size: 0.9rem; /* Slightly larger metadata */
+        color: var(--muted);
+    }
+
+    /* Message box styles */
+    #messageBox {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #fef2f2;
+        color: #dc2626;
+        padding: 16px 24px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        font-weight: 600;
+        z-index: 100;
+        display: none;
+        opacity: 0;
+        transition: opacity 300ms;
+    }
+    #messageBox.show {
+        display: block;
+        opacity: 1;
+    }
+
+    /* --- Mobile adjustments --- */
+    @media (max-width:640px){
+        .bar { padding:12px 12px; font-size:15px; gap:8px; }
+        .bar button{ padding:9px 10px; }
+        
+        /* Stack thumbnail above info on mobile */
+        .video-result {
+            flex-direction: column; 
+            align-items: flex-start;
+            padding: 10px;
+        }
+        
+        /* Thumbnail uses full width on mobile */
+        .video-thumbnail {
+            width: 100%;
+            height: auto; 
+            min-width: unset;
+        }
+        
+        /* Remove top padding when stacked */
+        .video-info {
+            padding-top: 10px; 
+        }
+        
+        .video-title {
+             font-size: 1rem;
+        }
+        .video-metadata {
+            font-size: 0.85rem;
+        }
+    }
+</style>
+</head>
+<body>
+    <!-- Player in background -->
+    <div id="player" aria-hidden="true">
+        <iframe id="ytframe"
+            src=""
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+            title="YouTube player"></iframe>
+    </div>
+
+    <!-- Center input bar -->
+    <div class="bar-wrap" id="barWrap">
+        <form id="form" class="bar" autocomplete="off" spellcheck="false" novalidate>
+            <input id="input" type="text" placeholder="Search a keyword or paste a link" aria-label="YouTube search or link" />
+            <button type="submit">Search / Launch</button>
+        </form>
+    </div>
+
+    <!-- Search Results List -->
+    <ul id="results">
+        <!-- Results will be dynamically inserted here -->
+    </ul>
+
+    <!-- Custom Message Box (instead of alert) -->
+    <div id="messageBox"></div>
+
+<script>
+(function(){
+    const form = document.getElementById('form');
+    const input = document.getElementById('input');
+    const frame = document.getElementById('ytframe');
+    const player = document.getElementById('player');
+    const body = document.body;
+    const wrap = document.getElementById('barWrap');
+    const resultsList = document.getElementById('results');
+    const messageBox = document.getElementById('messageBox');
+
+    // --- Configuration ---
+    // NOTE: This proxy URL structure is based on your request.
+    const PROXY_URL = 'https://ratproxy.vercel.app?';
+    const YOUTUBE_SEARCH_BASE_URL = 'https://www.youtube.com/results?search_query=';
+
+    /**
+     * Shows a temporary error message in the custom message box.
+     * @param {string} msg 
+     */
+    function showMessage(msg) {
+        messageBox.textContent = msg;
+        messageBox.classList.add('show');
+        setTimeout(() => {
+            messageBox.classList.remove('show');
+        }, 3000);
+    }
+
+    /**
+     * Extracts a YouTube video ID from various link formats or checks if it's an ID.
+     * If it's not a valid ID/link, it returns the input as a search query.
+     * @param {string} text - The raw input text.
+     * @returns {{id: string}|{query: string}|null} - Object containing id or query, or null on error.
+     */
+    function processInput(text){
+        if(!text) return null;
+        text = text.trim();
+        const idRegex = /^[A-Za-z0-9_-]{11}$/;
+
+        // 1. Check for raw ID
+        if(idRegex.test(text)) {
+            return { id: text };
+        }
+
+        // 2. Attempt to parse as URL
+        try {
+            const maybeUrl = text.includes('://') ? text : 'https://'+text;
+            const url = new URL(maybeUrl);
+            const host = url.hostname.toLowerCase();
+            
+            // a. youtu.be short URL
+            if(host === 'youtu.be'){
+                const id = url.pathname.slice(1).split(/[?/]/)[0];
+                if(id && idRegex.test(id)) return { id: id };
+            }
+
+            // b. youtube.com watch URL (v= parameter)
+            if(host.endsWith('youtube.com') || host.endsWith('youtube-nocookie.com')){
+                const v = url.searchParams.get('v');
+                if(v && idRegex.test(v)) return { id: v };
+            }
+        } catch(e) {
+            // Ignore URL parsing errors, treat as search query
+        }
+
+        // 3. Fallback: Treat as search query
+        // Only return a query if it contains non-whitespace characters
+        if (text.length > 0) {
+            return { query: text };
+        }
+        
+        return null;
+    }
+
+    /**
+     * Launches the fullscreen player with the given video ID.
+     * @param {string} id - The 11-character YouTube video ID.
+     */
+    function launchPlayer(id){
+        // Ensure the ID is valid before attempting to launch
+        if (!/^[A-Za-z0-9_-]{11}$/.test(id)) {
+             showMessage('Invalid video ID detected.');
+             return;
+        }
+
+        const src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&playsinline=1&modestbranding=1&rel=0`;
+        
+        // 1. Set src before animation so it loads as the bar moves
+        frame.src = src;
+
+        // 2. Animate and hide search bar
+        body.classList.add('launched');
+        wrap.style.pointerEvents = 'none';
+        
+        // 3. Show player immediately
+        player.classList.add('active');
+
+        // 4. Clean up after launch animation completes
+        const onAnimEnd = function(){
+            if(wrap && wrap.parentNode){
+                wrap.classList.add('gone');
+            }
+            form.removeEventListener('animationend', onAnimEnd);
+        };
+        form.addEventListener('animationend', onAnimEnd);
+        input.blur();
+        
+        // Remove results list
+        resultsList.innerHTML = '';
+        body.classList.remove('has-results');
+    }
+
+    /**
+     * Parses the raw HTML string returned by the proxy and extracts video data.
+     * NOTE: This parsing is highly dependent on YouTube's current HTML structure and is fragile.
+     * @param {string} htmlString - The raw HTML content from the proxy request.
+     * @returns {Array<{id: string, title: string, channel: string}>} - An array of video objects.
+     */
+    function parseHtmlForVideos(htmlString) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlString, 'text/html');
+        const scriptTags = doc.querySelectorAll('script');
+        let rawJson = null;
+
+        // YouTube embeds massive JSON data in a script tag; we need to find it.
+        for (const script of scriptTags) {
+            if (script.textContent.includes('var ytInitialData =')) {
+                // Isolate the JSON string part
+                const match = script.textContent.match(/var ytInitialData = (\{.*\});/s);
+                if (match) {
+                    try {
+                        rawJson = JSON.parse(match[1]);
+                        break;
+                    } catch (e) {
+                        console.error("Failed to parse YouTube initial data JSON:", e);
+                        return [];
+                    }
+                }
+            }
+        }
+
+        if (!rawJson) {
+            console.error("Could not find ytInitialData script tag.");
+            return [];
+        }
+
+        const results = [];
+        
+        // Navigate the complex JSON path to find the video items
+        const contents = rawJson.contents?.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer?.contents;
+
+        if (!contents) return [];
+
+        for (const section of contents) {
+            const itemSection = section.itemSectionRenderer?.contents;
+            if (itemSection) {
+                for (const item of itemSection) {
+                    const videoRenderer = item.videoRenderer;
+                    
+                    if (videoRenderer) {
+                        const id = videoRenderer.videoId;
+                        const title = videoRenderer.title?.runs?.[0]?.text;
+                        const channel = videoRenderer.ownerText?.runs?.[0]?.text || 'Unknown Channel';
+                        
+                        if (id && title) {
+                             results.push({ id, title, channel });
+                             if (results.length >= 10) break; // Limit to 10 results
+                        }
+                    }
+                }
+            }
+            if (results.length >= 10) break;
+        }
+
+        return results;
+    }
+
+
+    /**
+     * Fetches search results and renders them to the UI.
+     * @param {string} query 
+     */
+    async function fetchAndRenderResults(query) {
+        if (!query) return;
+
+        // Clear previous results and show loading indicator
+        resultsList.innerHTML = '<li style="text-align:center; padding: 20px; color:var(--muted);">Searching for "' + query + '"...</li>';
+        body.classList.add('has-results');
+
+        try {
+            const searchUrl = YOUTUBE_SEARCH_BASE_URL + encodeURIComponent(query);
+            const proxyUrl = PROXY_URL + encodeURIComponent(searchUrl);
+
+            // Implementing exponential backoff for API calls
+            let response;
+            let attempts = 0;
+            const maxAttempts = 3;
+            let success = false;
+
+            while (attempts < maxAttempts && !success) {
+                attempts++;
+                try {
+                    response = await fetch(proxyUrl);
+                    if (response.ok) {
+                        success = true;
+                        break;
+                    }
+                } catch (e) {
+                    // Network or other fetch error, will retry
+                }
+
+                if (!success && attempts < maxAttempts) {
+                    // Wait 2^attempts * 1000 ms before retrying
+                    await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempts) * 1000));
+                }
+            }
+
+            if (!success || !response.ok) {
+                throw new Error(`Failed to fetch search results after ${maxAttempts} attempts.`);
+            }
+
+            const htmlString = await response.text();
+            const videos = parseHtmlForVideos(htmlString);
+
+            renderResults(videos);
+
+        } catch (error) {
+            console.error('Search failed:', error);
+            resultsList.innerHTML = '<li style="text-align:center; padding: 20px; color:#ef4444;">Search failed. The proxy or parsing logic may be broken.</li>';
+        }
+    }
+
+    /**
+     * Renders video results to the list.
+     * @param {Array<{id: string, title: string, channel: string}>} videos 
+     */
+    function renderResults(videos) {
+        resultsList.innerHTML = '';
+        if (videos.length === 0) {
+            resultsList.innerHTML = '<li style="text-align:center; padding: 20px; color:var(--muted);">No videos found. Try a different search term.</li>';
+            return;
+        }
+
+        videos.forEach(video => {
+            const li = document.createElement('li');
+            li.className = 'video-result';
+            li.dataset.videoId = video.id;
+
+            // CORRECTED: Use the standard YouTube thumbnail URL structure 
+            // {mqdefault} is medium quality, reliable, and 320x180.
+            const thumbnailUrl = `https://img.youtube.com/vi/${video.id}/mqdefault.jpg`;
+            
+            // Placeholder for when the image fails to load
+            const placeholderUrl = 'https://placehold.co/240x135/334155/f8fafc?text=VIDEO';
+
+            const thumbnail = `
+                <div class="video-thumbnail">
+                    <img src="${thumbnailUrl}" onerror="this.onerror=null;this.src='${placeholderUrl}';" alt="Video Thumbnail">
+                </div>
+            `;
+            
+            // Info block
+            const info = `
+                <div class="video-info">
+                    <p class="video-title">${video.title}</p>
+                    <p class="video-metadata">${video.channel}</p>
+                </div>
+            `;
+
+            li.innerHTML = thumbnail + info;
+            
+            // Attach click listener to launch the player
+            li.addEventListener('click', () => {
+                launchPlayer(video.id);
+            });
+
+            resultsList.appendChild(li);
+        });
+    }
+
+    /**
+     * Main form submission handler.
+     */
+    form.addEventListener('submit', function(e){
+        e.preventDefault();
+        const processed = processInput(input.value);
+        
+        if(!processed){
+            wrap.classList.add('shake');
+            setTimeout(()=> wrap.classList.remove('shake'), 420);
+            return;
+        }
+
+        if(processed.id){
+            // If ID/Link is found, launch player immediately
+            launchPlayer(processed.id);
+            // Hide the results list if it was visible
+            body.classList.remove('has-results'); 
+        } else if (processed.query) {
+            // If it's a search query, fetch and display results
+            fetchAndRenderResults(processed.query);
+        }
+    });
+
+})();
+</script>
+<script>
+  alert("credits: Rat Games")
+</script>
+</body>
+</html>

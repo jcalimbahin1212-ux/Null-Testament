@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>nothing</title>
+     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7176221127189774"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+     <input style="background: rgba(0,0,0,0.4);  
+ 
+" type="text" id="searchBar" placeholder="Search games by name...">
+
+
+     <h1 class="gtext"></h1>
+
+ 
+
+     <div id="imageContainer">
+  <a href='/windows11.html'>
+          <img class="btn" src="windows11.png" alt="windows 11">
+         </a> 
+          <a href='/emulatorjs.html'>
+          <img class="btn" src="emulatorjs.png" alt="emulator js">
+         </a> 
+         <a href='/ruffle.html'>
+          <img class="btn" src="ruffle.png" alt="ruffle emulator">
+         </a> 
+            <a href='/d.html'>
+          <img class="btn" src="d.png" alt="discord">
+         </a> 
+             <a href='/t.html'>
+          <img class="btn" src="tiktok.png" alt="tiktok">
+         </a> 
+          <a href='/andr.html'>
+          <img class="btn" src="andr.png" alt="android">
+         </a> 
+          <a href='/blk.html'>
+          <img class="btn" src="blk.png" alt="blooket hacks">
+         </a> 
+          
+
+<style>
+      .btn {
+    width: 200px;
+    height: 200px;
+    border-radius: 100px ; /* Add !important to ensure it overrides other styles */
+    gap: 125px;
+    transition: transform 0.2s ease-in-out;
+    font-family: sans-serif;
+      transition: all 0.2s ease;   /* smooth hover */
+    font-size: 15px;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: none;
+    border-radius: 50px !important; /* Ensure hover state also has the same border-radius */
+
+}
+#searchBar{
+  text-align:center;
+  background: rgba(0, 0, 0, 0.3); 
+border: 1px solid rgba(255, 255, 255, 0.15);  
+  color: white;
+  border-radius: 15px;
+  left:43%;
+  padding: 10px 20px;
+  border-style: solid;
+  border-width: 2px;
+  border-color:rgb(255, 255, 255);
+    position: fixed; 
+  top: 10px;       
+  left: 50%;
+  transform: translateX(-50%); 
+  z-index: 1000; 
+
+}
+#searchBar:focus{
+       border-color: #8fdcff;
+  box-shadow: 0 0 18px rgba(140,220,255,0.45);
+}
+#imageContainer {
+  margin-top: 70px; 
+}
+    .gtext{
+          text-align:center;
+          font-family: sans-serif;
+background:none;  
+border-radius: 20px;           
+          color:#ffffff;
+                  
+     }
+      img {
+    width: 35px;
+    padding: 10px 20px;
+    border-radius: 25px;
+    transition: transform 0.3s ease-in-out;
+  }
+
+  img:hover {
+    transform: translateY(-3px);
+    box-shadow: none;
+    border-radius: 15px;
+  }
+  a{
+     outline:none;
+  }
+  a:focus{
+     outline:none;
+  }
+/* Hide scrollbar on the whole page but keep scrolling */
+html, body {
+  height: 100%;
+  overflow: hidden; /* hide the scrollbar container */
+}
+
+body {
+  overflow: auto; /* still allow scrolling */
+  width: 100vw; /* prevent extra space from scrollbar */
+  background-image: url("space2.png");
+    background-repeat: no-repeat;
+  background-size: cover;   /* make sure images cover the whole screen */
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  text-decoration: none;
+}
+
+/* Hide scrollbar for Webkit browsers */
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+
+ 
+</style>
+
+<script>
+  document.getElementById('searchBar').addEventListener('input', function () {
+    const searchTerm = this.value.toLowerCase();
+    const images = document.querySelectorAll('#imageContainer img');
+
+    images.forEach(image => {
+      const altText = image.getAttribute('alt') || '';
+      if (altText.toLowerCase().includes(searchTerm)) {
+        image.style.display = 'inline-block';
+      } else {
+        image.style.display = 'none';
+      }
+    });
+  });
+</script>
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const select = document.getElementById("background-select");
+  const upload = document.getElementById("background-upload");
+  const body = document.body;
+
+  // Apply background
+  function setBackground(src) {
+    body.style.backgroundImage = src ? `url(${src})` : "";
+    localStorage.setItem("selectedBackground", src || "");
+  }
+
+  // Load saved background
+  const savedBg = localStorage.getItem("selectedBackground");
+  if (savedBg) setBackground(savedBg);
+
+  // Dropdown change
+  select.addEventListener("change", () => {
+    if (select.value) {
+      setBackground(select.value);
+    }
+  });
+
+  // Upload custom background
+  upload.addEventListener("change", () => {
+    const file = upload.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setBackground(reader.result); // base64 image
+      select.value = ""; // reset dropdown
+    };
+    reader.readAsDataURL(file);
+  });
+});
+</script>
+</body>
+</html>

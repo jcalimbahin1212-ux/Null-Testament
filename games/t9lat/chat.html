@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chat</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      text-align:center;
+    }
+    #chatBox {
+      border: 1px solid #ccc;
+      padding: 10px;
+      height: 300px;
+      overflow-y: scroll;
+      margin-bottom: 10px;
+      background-color: #0687dd;
+      border-radius: 10px;
+      color:rgb(255, 255, 255);
+      font-weight: bold;
+    }
+    #messageInput, #nameInput {
+      width: 40%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+    }
+    #sendBtn {
+      padding: 8px 12px;
+      border-radius: 10px;
+    }
+    .msg {
+      margin: 5px 0;
+    }
+    .nameTag {
+      font-weight: bolder ;
+      margin-right: 5px;
+      color:#b20a0a;
+    }
+  </style>
+
+  <!-- Firebase CDN scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+</head>
+<body>
+
+  <h2 style="color:#ffffff; font-family: sans-serif; font:bold; outline: white;">T9 OS chat</h2>
+  <input type="text" id="nameInput" placeholder="Enter your name..." />
+  <div id="chatBox"></div>
+  <input type="text" id="messageInput" placeholder="Type your message..." disabled />
+  <button id="sendBtn" disabled>Send</button>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDB4VU2JNQGO5pMgXGaasIiY6kFxgsb-84",
+      authDomain: "chat-99dfe.firebaseapp.com",
+      projectId: "chat-99dfe",
+      storageBucket: "chat-99dfe.firebasestorage.app",
+      messagingSenderId: "17277094525",
+      appId: "1:17277094525:web:989d19d04fdde769de7f14",
+      measurementId: "G-NEXJFPJPCP",
+      databaseURL: "https://chat-99dfe-default-rtdb.firebaseio.com"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const nameInput = document.getElementById('nameInput');
+    const chatBox = document.getElementById('chatBox');
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+
+    let username = '';
+
+    nameInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') setName();
+    });
+
+    nameInput.addEventListener('blur', setName);
+
+    function setName() {
+      const name = nameInput.value.trim();
+      if (name !== '') {
+        username = name;
+        nameInput.disabled = true;
+        messageInput.disabled = false;
+        sendBtn.disabled = false;
+        messageInput.focus();
+      }
+    }
+
+    // its a chat filter bro dont worry dawg why u even checking page source
+    const bannedWords = ["fuck", "porn", "shit", "bitch", "asshole", "dick", "bastard", "cunt", "nigger", "nigga", "fag", "slut", "faggot", "whore"]; 
+
+    function containsProfanity(text) {
+      const lower = text.toLowerCase();
+      return bannedWords.some(word => lower.includes(word));
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    function sendMessage() {
+      const message = messageInput.value.trim();
+      if (message !== '' && username !== '') {
+        // 🚫 Block profanity
+        if (containsProfanity(message)) {
+          window.location.href = "warn.html"; 
+          return;
+        }
+
+        const msgData = {
+          text: message,
+          name: username,
+          timestamp: Date.now()
+        };
+        db.ref('messages').push(msgData);
+        messageInput.value = '';
+      }
+    }
+
+    // Clear chat every 2 minutes
+    setInterval(() => {
+      db.ref('messages').remove();
+      chatBox.innerHTML = '';
+    }, 120000);
+
+    db.ref('messages').on('child_added', (snapshot) => {
+      const msg = snapshot.val();
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'msg';
+      msgDiv.innerHTML = `<span class="nameTag">${msg.name || 'Anon'}:</span> ${msg.text}`;
+      chatBox.appendChild(msgDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    });
+  </script>
+
+</body>
+</html>

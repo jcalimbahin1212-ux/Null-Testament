@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<link rel="shortcut icon" type="image/jpg" href="favicon.ico"/>
+<head>
+<title>Class Session | Learnify</title>
+<style>
+    body{
+        margin: 0; /* Remove default margin */
+    }
+    iframe{      
+        display: block;  /* iframes are inline by default */   
+        height: 100vh;  /* Set height to 100% of the viewport height */   
+        width: 100vw;  /* Set width to 100% of the viewport width */     
+        border: none; /* Remove default border */
+        background: lightyellow; /* Just for styling */
+    }
+  
+</style>
+</head>
+<body>
+    <iframe src="start.html"></iframe>
+ 
+<script>
+  function setFavicon(url) {
+    // Remove ALL existing favicons
+    document.querySelectorAll("link[rel*='icon']").forEach(e => e.remove());
+
+    const icon = document.createElement("link");
+    icon.rel = "icon";
+    icon.type = "image/png";
+
+    // Cache buster so browser is forced to reload
+    icon.href = url + "?v=" + Date.now();
+
+    document.head.appendChild(icon);
+  }
+
+  function applyCloak(preset) {
+    switch (preset) {
+      case "google":
+        document.title = "Google";
+        setFavicon("https://www.google.com/favicon.ico");
+        break;
+
+      case "classroom":
+        document.title = "Classes";
+        setFavicon("https://www.gstatic.com/classroom/favicon.png");
+        break;
+
+      case "vocab":
+        document.title = "Vocabulary.com";
+        setFavicon("https://www.vocabulary.com/favicon.ico");
+        break;
+
+      case "default":
+      default:
+        document.title = "T9 OS";
+        setFavicon("/favicon.ico");
+        break;
+    }
+  }
+
+  window.addEventListener("DOMContentLoaded", () => {
+    const preset = localStorage.getItem("cloak_preset") || "default";
+    console.log("🎭 Cloak applied:", preset);
+    applyCloak(preset);
+  });
+</script>
+  
+
+</body>
+
+</html>

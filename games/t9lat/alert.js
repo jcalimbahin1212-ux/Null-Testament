@@ -1,0 +1,1 @@
+alert("Please allow your pop ups and then refresh to go to T9 OS  'class' ")

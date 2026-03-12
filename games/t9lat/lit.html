@@ -1,0 +1,251 @@
+<div id="navbar" class="navbar sidebar">
+  
+  <a onclick="loadPage()">
+    <img src="game.png">
+  </a>
+  <a onclick="document.getElementById('framel').src = 'terminal.html';">
+    <img src="terminal.png">
+  </a>
+   <a onclick="document.getElementById('framel').src = 'test100.html';">
+    <img src="ai.png">
+  </a>
+  <a onclick="document.getElementById('framel').src = 'movie.html';">
+    <img src="movie2.png">
+  </a>
+   <a onclick="document.getElementById('framel').src = 'music3.html';">
+    <img src="music3.png">
+  </a>
+  <a onclick="document.getElementById('framel').src = 'r.html';">
+    <img  src="search.png">
+  </a>
+  
+  <a onclick="document.getElementById('framel').src = 'a.html';">
+    <img src="apps1.png">
+  </a>
+
+    <a onclick="document.getElementById('framel').src = 'chat3.html';">
+    <img src="chat2.png">
+  </a>
+  
+
+
+</div>
+
+<style>
+    .navbar {
+      position: fixed;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 56px;
+         background: linear-gradient(160deg,
+        rgba(255,255,255,0.08),
+        rgba(0,0,0,0.65)
+      );
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 12px;
+      padding: 0 10px;
+      backdrop-filter: blur(2px) saturate(140%);
+       box-shadow: 
+    0 12px 28px rgba(0,0,0,0.45),
+    0 0 0 1px rgba(255,255,255,0.15) inset;
+      transition: height 0.2s ease, border-radius 0.2s ease, border-color 0.2s ease;
+      opacity: 0.92;
+      z-index: 9999;
+      will-change: height, border-radius;
+
+    }
+
+    .navbar:hover {
+      height: 64px;
+      border-radius: 20px;
+      border-color: rgba(0,180,255,0.6);
+    }
+
+    .navbar::after {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      border-radius: inherit;
+      pointer-events: none;
+      background: radial-gradient(circle at center,  rgba(255,255,255,0.08), transparent 70%);
+      opacity: 1;
+      transition: opacity 0.2s ease;
+    }
+
+    .navbar:hover::after {
+      opacity: 1;
+      background: radial-gradient(circle at center, rgba(255, 255, 255, 0.08), transparent 70%);
+    }
+
+    .navbar img {
+      width: 30px;
+      height: 30px;
+      transition: transform 0.15s ease;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,.6));
+      cursor: pointer;
+      will-change: transform;
+    }
+
+    .navbar img:hover {
+      transform: scale(1.25) translateY(-3px);
+    }
+    .navbar img:active{
+        transform: scale(0.97);
+    }
+
+      .navbar.sidebar {
+      position: fixed;
+      top: 50%;
+      left: 12px;
+      bottom: auto;
+      transform: translateY(-50%);
+      width: 64px;
+      height: auto;
+      flex-direction: column;
+      gap: 14px;
+      padding: 12px 0;
+      border-radius: 18px;
+      transition: width 0.25s cubic-bezier(.2,.8,.2,1), border-radius 0.25s cubic-bezier(.2,.8,.2,1), top 0.3s ease, left 0.3s ease, bottom 0.3s ease, height 0.3s ease, transform 0.3s ease;
+    }
+
+    .navbar.sidebar:hover {
+      width: 72px;
+      height: auto;
+      border-radius: 24px;
+    }
+
+    .navbar.sidebar img:hover {
+      transform: scale(1.25) translateX(3px);
+    }
+.navbar.sidebar img:active{
+        transform: scale(0.97);
+    }
+    .navbar.sidebar::after {
+      inset: 0;
+      box-shadow: 0 0 0 0 rgba(0,180,255,.5);
+      transition: box-shadow 0.3s;
+      background: none;
+    }
+
+    .navbar.sidebar:hover::after {
+      background: radial-gradient(circle at center, rgba(255, 255, 255, 0.08), transparent 70%);
+      background: none;
+    }
+     body {
+  background-repeat: no-repeat;
+  background-size: cover;   /* make sure images cover the whole screen */
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  text-decoration: none;
+  }
+   img {
+    width: 28px;
+    padding: 10px 20px;
+    border-radius: 25px;
+    transition: transform 0.3s ease-in-out;
+  }
+
+  img:hover {
+    box-shadow: none;
+    border-radius: 15px;
+        transform: translateY(-3px);
+
+  }
+    iframe{      
+        display: block;  /* iframes are inline by default */   
+        height: 100vh;  /* Set height to 100% of the viewport height */   
+        width: 100vw;  /* Set width to 100% of the viewport width */     
+        border: none; /* Remove default border */
+        background: lightyellow; /* Just for styling */
+    }
+</style>
+
+
+  <script>
+    // List of div IDs
+    const divIds = ['aiDiv', 'hiddenDiv', 'settingsDiv', 'widgetDiv', 'musicDiv', 'searchDiv', 'emulatorDiv', 'hacksDiv', 'movieDiv', 'terminalDiv', 'ChatDiv', 'updateDiv', 'collabDiv', 'tnav', 'navbar', 'roDiv', 'calcDiv'];
+
+    // Store each div's original colors when the page opens
+    const originalColors = {};
+    divIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            originalColors[id] = {
+                bg: getComputedStyle(el).backgroundColor,
+                border: getComputedStyle(el).borderColor
+            };
+        }
+    });
+
+    // Store original text shadows for time and battery
+    const timeEl = document.getElementById('time');
+    const batteryEl = document.getElementById('batteryPercentage');
+    const originalTextShadows = {
+        time: timeEl ? getComputedStyle(timeEl).textShadow : 'none',
+        battery: batteryEl ? getComputedStyle(batteryEl).textShadow : 'none'
+    };
+
+    // 1. Load saved progress from LocalStorage
+    window.addEventListener('load', () => {
+        const savedColor = localStorage.getItem('userColor');
+        if (savedColor) {
+            divIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.style.backgroundColor = savedColor;
+                    el.style.borderColor = savedColor;
+                }
+            });
+            
+            // Apply saved color to text shadows
+            if (timeEl) timeEl.style.textShadow = `0 0 10px ${savedColor}`;
+            if (batteryEl) batteryEl.style.textShadow = `0 0 10px ${savedColor}`;
+            
+            document.getElementById('picker').value = savedColor;
+        }
+    });
+
+    // 2. Change color for the list of divs
+    document.getElementById('picker').addEventListener('input', function() {
+        const newColor = this.value;
+
+        divIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.style.backgroundColor = newColor;
+                el.style.borderColor = newColor;
+            }
+        });
+
+        // Update text shadows for time and battery
+        if (timeEl) timeEl.style.textShadow = `0 0 10px ${newColor}`;
+        if (batteryEl) batteryEl.style.textShadow = `0 0 10px ${newColor}`;
+
+        localStorage.setItem('userColor', newColor);
+    });
+
+    // 3. Reset to "Normal" (Each div returns to its own original color)
+    document.getElementById('reset').addEventListener('click', () => {
+        divIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el && originalColors[id]) {
+                el.style.backgroundColor = originalColors[id].bg;
+                el.style.borderColor = originalColors[id].border;
+            }
+        });
+
+        // Reset text shadows to original
+        if (timeEl) timeEl.style.textShadow = originalTextShadows.time;
+        if (batteryEl) batteryEl.style.textShadow = originalTextShadows.battery;
+
+        localStorage.removeItem('userColor');
+    });
+</script>
+
+    <iframe id="framel" src="startl.html"></iframe>

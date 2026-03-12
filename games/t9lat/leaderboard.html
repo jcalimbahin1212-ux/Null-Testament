@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <h1>Leaderboard</h1>
+        <a href="https://forms.gle/GTLPZroB3EbVs8RM9">
+            <img class="upload" src="upload.png">
+
+
+        </a>
+
+        
+
+
+        <style>
+            h1{
+                text-align:center;
+                font-family:sans-serif;
+                color:white;
+                background:#141414;
+                opacity:0.9;
+                border-radius:15px;
+                padding:15px 25px;
+                height:35px;
+             
+            }
+            .leader{
+                border-radius:12px;
+                background-color:#141414;
+                padding:5px 15px;
+                opacity:0.7;
+            }
+            p{
+                color:white;
+                text-align:center;
+                font-family:sans-serif;
+                font-size: 24px;
+
+
+            }
+            h2{
+                color:white;
+                font-family:sans-serif;
+                left:0;
+                
+
+            }
+            h3{
+                color:white;
+                font-family:sans-serif;
+
+            }
+            body{
+                background-image:url("os2.jpg");
+    font-family: sans-serif;
+     -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+            }
+            .upload{
+              padding:10px 20px;
+              width:50px;
+              height:50px;
+              border-radius: 20px;
+              top:15px;
+              position:fixed;
+            }
+        </style>
+          <div class="leader">
+            <h2>Dress to impress</h2>
+            <p>Score: 1100001383383883838383838338388</p>
+            <h3>User: Bridger</h2>
+
+        </div>
+
+        <div class="leader">
+            <h2>Drive Mad</h2>
+            <p>Score: 9999</p>
+            <h3>User: T9</h2>
+
+        </div>
+
+        <style>
+            .clock {
+          
+              bottom:23px;
+              right:130px;
+              color:white;
+             font-size:24px;
+              position:fixed;
+             color:white;
+              background-color:black;
+              padding:10px 20px; 
+              border-radius:20px;
+                
+          
+            }
+          </style>
+          
+          
+          
+          <script>
+          function updateTime() {
+          var date = new Date();
+          var options = { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true };
+          var formattedTime = date.toLocaleTimeString('en-US', options);
+          document.getElementById("time").innerHTML = formattedTime;
+          }
+          
+          setInterval(updateTime, 1000); 
+          </script>
+          
+          <style>
+             .battery {
+               bottom:0;
+              right:0;
+              color:white;
+              position:fixed;
+              padding:10px 20px;
+               background-color:black;
+               border-radius:20px;
+               
+             }
+            .term{
+              border-radius:20px;
+            }
+          </style>
+          
+          
+          
+          <script>
+          if ('getBattery' in navigator) {
+          navigator.getBattery().then(function(battery) {
+            updateBatteryStatus(battery);
+          
+            battery.addEventListener('levelchange', function() {
+              updateBatteryStatus(battery);
+            });
+          });
+          } else {
+          document.getElementById('batteryPercentage').innerHTML = 'Battery API not supported.';
+          }
+          
+          function updateBatteryStatus(battery) {
+          var percentage = Math.floor(battery.level * 100);
+          document.getElementById('batteryPercentage').innerHTML = percentage + '%';
+          }
+          </script>
+          
+          <style>
+          .navbar {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          width: 690px;
+          background-color: black; 
+          border-radius:30px;
+          gap:30px; 
+            display: flex;
+          justify-content: center;
+          align-items: center;
+            bottom:0px;
+            left:24%;
+            opacity:85%;
+          }
+          </style>
+          
+          <div class="navbar">
+          <a href='test2.html'>
+          <img src="https://t9os.pages.dev/games.png">
+          </a>
+          <a href="/static/index.html">
+          <img src="https://t9os.pages.dev/web.png">
+          </a>
+          <a href="settings.html">
+          <img src="https://t9os.pages.dev/settings22.png">
+          </a>
+          <a class="color" href="leaderboard.html">
+          <img src="trophy.png">
+          </a>
+          <a href="news.html">
+          <img src="https://i.ibb.co/9whrkZw/image-removebg-preview-9.png">
+          </a>
+               <a href="terms.html">
+              <img class="term" src="TERM.png">
+            </a>
+          
+          
+          <p class="battery"  id="batteryPercentage"></p>
+              <div class="clock" id="time"></div>
+          
+          </div>
+          
+          <style>
+          img {
+            width:49px;
+            padding:10px 20px;
+            border-radius:15px;
+            transition: background-color 0.3s ease-in-out;
+          }
+          img:hover {
+            background-color:#141414;
+            border-radius:15px;
+          }
+          .color{
+              background-color:#141414;
+              border-radius:15px;
+              }
+                  
+          
+          </style>
+
+
+    </body>
+</html>

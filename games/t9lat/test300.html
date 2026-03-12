@@ -1,0 +1,39 @@
+<center>
+<select id="background-select">
+    <option value="default.jpg">Default</option>
+    <option value="img.gif">Image 1</option>
+    <option value="image2.jpg">Image 2</option>
+    <!-- Add more options as needed -->
+  </select>
+</center>
+
+<style>
+    select {
+        font-family:sans;
+        border-radius:10px;
+        width:145px;
+        height:100vh;
+    }
+</style>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+  // Get the select element
+  var select = document.getElementById("background-select");
+
+  // Set initial background image based on stored preference or default
+  var selectedBackground = localStorage.getItem("selectedBackground");
+  
+  if (selectedBackground) {
+    document.body.style.backgroundImage = "url(" + selectedBackground + ")";
+    select.value = selectedBackground;
+  }
+
+   // Listen for changes in the select element
+   select.addEventListener("change", function() {
+     var newBackground = this.value;
+     document.body.style.backgroundImage = "url(" + newBackground + ")";
+     localStorage.setItem("selectedBackground", newBackground);
+   });
+});
+
+  </script>

@@ -1,0 +1,10 @@
+<!DOCTYPE html> 
+<html> 
+  <head> 
+    <title>Live Online Users test</title>
+   </head>
+    <body style="text-align:center; font-family:Arial; margin-top:50px;"> 
+      <h2>👥 People Online: <span id="count">0</span></h2>
+       <script type="module"> import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"; import { getDatabase, ref, onValue, push, onDisconnect, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js"; // 🔥 Your Firebase config const firebaseConfig = { apiKey: "AIzaSyD74Fi2RKsvv1sXTAEIiTYrRKCv22MRhh8", authDomain: "t9oschat.firebaseapp.com", databaseURL: "https://t9oschat-default-rtdb.firebaseio.com", projectId: "t9oschat", storageBucket: "t9oschat.firebasestorage.app", messagingSenderId: "930534704832", appId: "1:930534704832:web:c154890c3b5f36736f8f25", measurementId: "G-STPKYT658F" }; // Initialize Firebase const app = initializeApp(firebaseConfig); const db = getDatabase(app); // Reference for connections const connectionsRef = ref(db, "connections"); // Create a new unique connection for THIS user const myConnection = push(connectionsRef); // Mark myself as connected set(myConnection, true); onDisconnect(myConnection).remove(); onValue(connectionsRef, (snapshot) => { document.getElementById("count").innerText = snapshot.size ?? snapshot.numChildren(); }); </script>
+     </body> 
+</html>

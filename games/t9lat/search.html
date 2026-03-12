@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>T9 OS search</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: none;
+    color: white;
+    font-family: Arial, sans-serif;
+  }
+
+  h1 {
+    margin-bottom: 20px;
+  }
+
+  form {
+    display: flex;
+    width: 80%;
+    max-width: 500px;
+  }
+
+  input[type="text"] {
+    flex: 1;
+    padding: 12px 15px;
+    border-radius: 25px 0 0 25px;
+    border: none;
+    font-size: 16px;
+  }
+
+  button {
+    padding: 12px 20px;
+    border-radius: 0 25px 25px 0;
+    border: none;
+    background-color: #4285F4;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+<h1>T9 OS search</h1>
+<form id="searchForm">
+  <input type="text" id="searchBox" placeholder="Type URL or search..." required>
+  <button type="submit">→</button>
+</form>
+
+<script>
+const form = document.getElementById("searchForm");
+const input = document.getElementById("searchBox");
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  let query = input.value.trim();
+
+  // Check if it looks like a URL
+  if (!query.startsWith("http://") && !query.startsWith("https://")) {
+    // If it has dots like example.com, add https://
+    if (query.includes(".")) {
+      query = "https://" + query;
+    } else {
+      // Not a URL — redirect to Google search
+      query = "https://www.google.com/search?q=" + encodeURIComponent(query);
+    }
+  }
+
+  // Redirect to the link
+  window.location.href = query;
+});
+</script>
+</body>
+</html>

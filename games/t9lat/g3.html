@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All Games</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to bottom, #0a0e27, #090a0f);
+    color: white;
+    overflow-x: hidden;
+  }
+  body::-webkit-scrollbar { width: 0; height: 0; }
+
+  #searchBar {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: 90%;
+    max-width: 500px;
+    padding: 12px 20px;
+    border-radius: 25px;
+    border: none;
+    background: rgba(255, 255, 255, 0.95);
+    color: #333;
+    font-size: 16px;
+    outline: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  #imageContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    padding: 80px 20px 30px;
+  }
+
+  .game-card {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.15s ease;
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  .game-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+  }
+
+  .game-card.large { grid-column: span 2; grid-row: span 2; }
+
+  .game-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .game-card::after {
+    content: attr(data-title);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    padding: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    opacity: 0.9;
+  }
+
+  @media (max-width: 768px) {
+    #imageContainer { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; padding: 80px 15px 20px; }
+    .game-card.large { grid-column: span 2; grid-row: span 1; }
+  }
+
+  @media (max-width: 480px) {
+    #imageContainer { grid-template-columns: repeat(2, 1fr); }
+    .game-card.large { grid-column: span 1; grid-row: span 1; }
+  }
+
+  .no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    font-size: 1.2em;
+    color: rgba(255, 255, 255, 0.7);
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<input type="text" id="searchBar" placeholder="Search games...">
+
+<div id="imageContainer">
+  <div class="no-results" id="noResults">No games found</div>
+
+  <!-- All your games -->
+  <a href="/ai/index.html" class="game-card" data-title="AI"><img src="ai.png" alt="AI"></a>
+<a href="https://test388344448.vercel.app" class="game-card" data-title="Browser"><img src="browser.png" alt="Browser"></a>
+<a href="https://forms.gle/17gCot1LnhMJghiT7" class="game-card" data-title="DMCA"><img src="dmca.png" alt="DMCA"></a>
+<a href="/minecraft.html" class="game-card large" data-title="Minecraft"><img src="mine2.png" alt="Minecraft"></a>
+<a href="/rooftop2.html" class="game-card large" data-title="Rooftop Snipers 2"><img src="rooftop2.png" alt="Rooftop Snipers 2"></img></a>
+<a href="/solarsmash.html" class="game-card large" data-title="Solar Smash"><img src="solar.png" alt="Solar Smash"></a>
+<a href="/friday.html" class="game-card large" data-title="Friday Night Funkin"><img src="FNF.gif" alt="Friday Night Funkin"></a>
+<a href="/miami.html" class="game-card" data-title="Hotline Miami"><img src="miami.png" alt="Hotline Miami"></a>
+<a href="/wheelie.html" class="game-card" data-title="Wheelie Bike 2"><img src="wheelie.png" alt="Wheelie Bike 2"></a>
+<a href="/shell.html" class="game-card" data-title="Shell Shockers"><img src="shell.png" alt="Shell Shockers"></a>
+<a href="/clash.html" class="game-card" data-title="Clash Royale"><img src="clash.png" alt="Clash Royale"></a>
+<a href="/soccer-random.html" class="game-card" data-title="Soccer Random"><img src="soccer-random.png" alt="Soccer Random"></a>
+<a href="/sniper.html" class="game-card" data-title="Sniper Shot"><img src="sniper.png" alt="Sniper Shot Bullet Time"></a>
+<a href="/block.html" class="game-card" data-title="Block Blast"><img src="blockblast.png" alt="Block Blast"></a>
+<a href="/crazycars.html" class="game-card" data-title="Crazy Cars"><img src="crazycars.png" alt="Crazy Cars"></a>
+<a href="/slowroad.html" class="game-card" data-title="Slow Roads"><img src="slow.png" alt="Slow Roads"></a>
+<a href="/baseball.html" class="game-card" data-title="Baseball Bros"><img src="baseball.png" alt="Baseball Bros"></a>
+<a href="/basketbros.html" class="game-card" data-title="Basketball Bros"><img src="basketbros.png" alt="Basketball Bros"></a>
+<a href="/football.html" class="game-card" data-title="Football Bros"><img src="footballbros.png" alt="Football Bros"></a>
+<a href="/jellytruck.html" class="game-card" data-title="Jelly Truck"><img src="jellytruck.png" alt="Jelly Truck"></a>
+<a href="/ultrakill.html" class="game-card" data-title="Ultrakill"><img src="ultrakill.png" alt="Ultrakill"></a>
+<a href="/spookymoto.html" class="game-card" data-title="Moto X3M Spooky"><img src="spookyland.png" alt="Moto X3M Spooky Land"></a>
+<a href="/elastic.html" class="game-card" data-title="Elastic Man"><img src="elastic.png" alt="Elastic Man"></a>
+<a href="/drawjoust.html" class="game-card" data-title="Draw Joust"><img src="joust.png" alt="Draw Joust"></a>
+<a href="/crossy.html" class="game-card" data-title="Crossy Road"><img src="crossy.jpg" alt="Crossy Road"></a>
+<a href="/truck.html" class="game-card" data-title="Cluster Rush"><img src="clusterrush.png" alt="Cluster Rush"></a>
+<a href="/gunspin.html" class="game-card" data-title="Gun Spin"><img src="gunspin.png" alt="Gun Spin"></a>
+<a href="/escape2.html" class="game-card" data-title="Escape Road 2"><img src="escape2.png" alt="Escape Road 2"></a>
+<a href="/cookie.html" class="game-card" data-title="Cookie Clicker"><img src="cookie.png" alt="Cookie Clicker"></a>
+<a href="/crazykitty.html" class="game-card" data-title="Crazy Kitty 3D"><img src="kitty.png" alt="Crazy Kitty 3D"></a>
+<a href="/ninjanf.html" class="game-card" data-title="Fruit Ninja"><img src="fninja.jpg" alt="Fruit Ninja"></a>
+<a href="/usservice.html" class="game-card" data-title="Among Us"><img src="among.webp" alt="Among Us"></a>
+<a href="/kartz.html" class="game-card" data-title="Smash Kartz"><img src="smash.png" alt="Smash Kartz"></a>
+<a href="/run.html" class="game-card" data-title="Run"><img src="run.png" alt="Run"></a>
+<a href="/run2.html" class="game-card" data-title="Run 2"><img src="run2.png" alt="Run 2"></a>
+<a href="/run3.html" class="game-card" data-title="Run 3"><img src="run3.png" alt="Run 3"></a>
+<a href="/garden.html" class="game-card" data-title="Grow a Garden"><img src="garden.png" alt="Grow a Garden"></a>
+<a href="/dino.html" class="game-card" data-title="Dinosaur Game"><img src="dino.png" alt="Dinosaur Game"></a>
+<a href="/2048.html" class="game-card" data-title="2048"><img src="2048.png" alt="2048"></a>
+<a href="/wheels.html" class="game-card" data-title="Happy Wheels"><img src="wheels.png" alt="Happy Wheels"></a>
+<a href="/baldi.html" class="game-card" data-title="Baldi"><img src="baldi.png" alt="Baldi"></a>
+<a href="/slope.html" class="game-card" data-title="Slope"><img src="slope1.png" alt="Slope"></a>
+<a href="/roblox.html" class="game-card" data-title="Roblox"><img src="roblox.png" alt="Roblox"></a>
+<a href="/fnaf.html" class="game-card" data-title="FNAF"><img src="fnaf.png" alt="Five Nights at Freddy"></a>
+<a href="/temple.html" class="game-card" data-title="Temple Run"><img src="temple.png" alt="Temple Run"></a>
+<a href="/tetris.html" class="game-card" data-title="Tetris"><img src="tetris.png" alt="Tetris"></a>
+<a href="/stickhook.html" class="game-card" data-title="Stickman Hook"><img src="stickhook.png" alt="Stickman Hook"></a>
+<a href="/core.html" class="game-card" data-title="Core Ball"><img src="core.png" alt="Core Ball"></a>
+<a href="/stack.html" class="game-card" data-title="Stack Block"><img src="stack.png" alt="Stack Block"></a>
+<a href="/flip.html" class="game-card" data-title="Just Flip"><img src="flip.png" alt="Just Flip"></a>
+<a href="/gta5.html" class="game-card" data-title="GTA"><img src="gta6.png" alt="GTA"></a>
+<a href="/box.html" class="game-card" data-title="Incredibox"><img src="https://cdn2.steamgriddb.com/thumb/c442b40dabc7f4bda930bef2b5d100fc.jpg" alt="Incredibox"></a>
+<a href="/soccer.html" class="game-card" data-title="Football Legends"><img src="football.png" alt="Football Legends"></a>
+<a href="/shortlife.html" class="game-card" data-title="Short Life"><img src="shortlife.png" alt="Short Life"></a>
+<a href="/manic.html" class="game-card" data-title="Moto Maniac"><img src="manic.png" alt="Moto Maniac"></a>
+<a href="/slope2.html" class="game-card" data-title="Slope 2"><img src="slope2.png" alt="Slope 2"></a>
+<a href="/thrill.html" class="game-card" data-title="Aqua Thrill"><img src="thrill.png" alt="Aqua Thrill"></a>
+<a href="/shortride.html" class="game-card" data-title="Short Ride"><img src="shortlife.png" alt="Short Ride"></a>
+<a href="/stair.html" class="game-card" data-title="Stair Race 3D"><img src="stair.png" alt="Stair Race 3D"></a>
+<a href="/blight.html" class="game-card" data-title="Blight"><img src="blight.png" alt="Blight"></a>
+<a href="/vex.html" class="game-card" data-title="Vex 4"><img src="vex4.png" alt="Vex 4"></a>
+<a href="/hallow.html" class="game-card" data-title="Secrets of Hallowland"><img src="https://i.ibb.co/dmBbf5s/Screenshot-2024-04-10-7-06-13-PM.png" alt="Secrets of Hallowland"></a>
+<a href="/tapgoal.html" class="game-card" data-title="Tap Goal"><img src="tap.webp" alt="Tap Goal"></a>
+<a href="/snowrider.html" class="game-card" data-title="Snow Rider"><img src="/img/snow.png" alt="Snow Rider"></a>
+<a href="/rocketsoccer.html" class="game-card" data-title="Rocket Soccer"><img src="img/soccer.png" alt="Rocket Soccer"></a>
+<a href="/superhot.html" class="game-card" data-title="Super Hot"><img src="/img/superhot.png" alt="Super Hot"></a>
+<a href="/funnyshooter.html" class="game-card" data-title="Funny Shooter 2"><img src="funny.png" alt="Funny Shooter 2"></a>
+<a href="/icedodo.html" class="game-card" data-title="Ice Dodo"><img src="ice.jpg" alt="Ice Dodo"></a>
+<a href="/eggy-car-main/eggy-car-main/frame.html" class="game-card" data-title="Eggy Car"><img src="eggy.jpg" alt="Eggy Car"></a>
+<a href="/holeio.html" class="game-card" data-title="Hole.io"><img src="holeio.png" alt="Hole.io"></a>
+<a href="/dmad.html" class="game-card" data-title="Drive Mad"><img src="dmad.png" alt="Drive Mad"></a>
+<a href="/cubeshot.html" class="game-card" data-title="Cubeshot"><img src="cubeshot.png" alt="Cubeshot"></a>
+<a href="/1v1.html" class="game-card" data-title="1v1 LOL"><img src="1v1.jpg" alt="1v1 LOL"></a>
+<a href="/bitlifeservice.html" class="game-card" data-title="Bitlife"><img src="bitlife.png" alt="Bitlife"></a>
+<a href="/jet.html" class="game-card" data-title="Jetpack Joyride"><img src="jet.png" alt="Jetpack Joyride"></a>
+<a href="/ovo.html" class="game-card" data-title="Ovo"><img src="ovo.png" alt="Ovo"></a>
+<a href="/granny.html" class="game-card" data-title="Granny"><img src="granny.png" alt="Granny"></a>
+<a href="/grandvegas.html" class="game-card" data-title="Grand Vegas"><img src="grandvegas.png" alt="Grand Vegas"></a>
+<a href="/polytrack.html" class="game-card" data-title="Polytrack"><img src="polytrack.png" alt="Polytrack"></a>
+<a href="/subwayhw.html" class="game-card" data-title="Subway Surfers"><img src="subwayHW.png" alt="Subway Surfers"></a>
+<a href="/basket.html" class="game-card" data-title="Basketball Legends"><img src="basketL.png" alt="Basketball Legends"></a>
+<a href="/timeshooter3.html" class="game-card" data-title="Timeshooter 3"><img src="timeshooter.png" alt="Timeshooter 3"></a>
+<a href="/moneyroll.html" class="game-card" data-title="Money Roll"><img src="moneyroll.png" alt="Money Roll"></a>
+<a href="/backrooms.html" class="game-card" data-title="Backrooms"><img src="backrooms.png" alt="Backrooms"></a>
+<a href="/fnaf2.html" class="game-card" data-title="FNAF 2"><img src="fnaf2.png" alt="Five Nights at Freddy 2"></a>
+<a href="/bowl.html" class="game-card" data-title="Retro Bowl"><img src="bowl.png" alt="Retro Bowl"></a>
+<a href="/uno.html" class="game-card" data-title="Uno"><img src="uno.png" alt="Uno"></a>
+<a href="/burgeria.html" class="game-card" data-title="Burgeria"><img src="burgeria.png" alt="Burgeria"></a>
+<a href="/pou.html" class="game-card" data-title="Pou"><img src="pou.png" alt="Pou"></a>
+<a href="/johnny.html" class="game-card" data-title="Johnny"><img src="johnny.png" alt="Johnny"></a>
+<a href="/robber.html" class="game-card" data-title="Bob the Robber 2"><img src="robber2.png" alt="Bob the Robber 2"></a>
+<a href="/wordle.html" class="game-card" data-title="Wordle"><img src="wordle.png" alt="Wordle"></a>
+<a href="/onlyup.html" class="game-card" data-title="Only Up"><img src="onlyup.png" alt="Only Up"></a>
+<a href="/tinyfishing.html" class="game-card" data-title="Tiny Fishing"><img src="fishing.png" alt="Tiny Fishing"></a>
+<a href="/goball.html" class="game-card" data-title="Go Ball"><img src="goball.png" alt="Go Ball"></a>
+<a href="/helix.html" class="game-card" data-title="Helix"><img src="helix.png" alt="Helix"></a>
+<a href="/hohazards.html" class="game-card" data-title="House of Hazards"><img src="hohazards.png" alt="House of Hazards"></a>
+<a href="/president.html" class="game-card" data-title="President Simulator"><img src="president.png" alt="President Simulator"></a>
+<a href="/pokemon.html" class="game-card" data-title="Pokemon Red"><img src="pokemon.png" alt="Pokemon Red"></a>
+<a href="/granny2.html" class="game-card" data-title="Granny 2"><img src="granny2.png" alt="Granny 2"></a>
+<a href="/hunter.html" class="game-card" data-title="Drift Hunter"><img src="hunter.png" alt="Drift Hunter"></a>
+<a href="/just.html" class="game-card" data-title="Just Fall"><img src="just.png" alt="Just Fall"></a>
+<a href="/pacman.html" class="game-card" data-title="Pacman"><img src="pacman.png" alt="Pacman"></a>
+<a href="/knife.html" class="game-card" data-title="Knife Hit"><img src="knife.png" alt="Knife Hit"></a>
+<a href="/crazycattle3d.html" class="game-card" data-title="Crazy Cattle 3D"><img src="sheep.png" alt="Crazy Cattle 3D"></a>
+<a href="/window.html" class="game-card" data-title="The Man from the Window"><img src="window.png" alt="The Man from the Window"></a>
+<a href="/capybara.html" class="game-card" data-title="Capybara Clicker"><img src="capybara.png" alt="Capybara Clicker"></a>
+<a href="/balditrip.html" class="game-card" data-title="Baldi Field Trip"><img src="balditrip.png" alt="Baldi Field Trip"></a>
+<a href="/basketrandom.html" class="game-card" data-title="Basket Random"><img src="basketrandom.png" alt="Basket Random"></a>
+<a href="/deathrun.html" class="game-card" data-title="Death Run 3D"><img src="deathrun.png" alt="Death Run 3D"></a>
+<a href="/axe.html" class="game-card" data-title="Axe Random"><img src="axe.png" alt="Axe Random"></a>
+<a href="/motox3m.html" class="game-card" data-title="Moto X3M"><img src="moto.png" alt="Moto X3M"></a>
+<a href="/driftboss.html" class="game-card" data-title="Drift Boss"><img src="driftboss.png" alt="Drift Boss"></a>
+<a href="/bullet.html" class="game-card" data-title="Mr Bullet"><img src="bullet.png" alt="Mr Bullet"></a>
+<a href="/volleyball-random.html" class="game-card" data-title="Volleyball Random"><img src="volleyball.png" alt="Volleyball Random"></a>
+<a href="/draw.html" class="game-card" data-title="Draw Climber"><img src="draw.png" alt="Draw Climber"></a>
+<a href="/snowball.html" class="game-card" data-title="Snowball.io"><img src="snow.png" alt="Snowball.io"></a>
+<a href="/duel.html" class="game-card" data-title="Stickman Duel Battle"><img src="duel.png" alt="Stickman Duel Battle"></a>
+<a href="/pixel.html" class="game-card" data-title="Pixel Gun 3D"><img src="pixel.png" alt="Pixel Gun 3D"></a>
+<a href="/duck.html" class="game-card" data-title="Duck Life"><img src="duck.png" alt="Duck Life"></a>
+<a href="/riddle.html" class="game-card" data-title="Riddle School"><img src="riddle.png" alt="Riddle School"></a>
+<a href="/riddle2.html" class="game-card" data-title="Riddle School 2"><img src="riddle2.png" alt="Riddle School 2"></a>
+<a href="/riddle3.html" class="game-card" data-title="Riddle School 3"><img src="riddle3.png" alt="Riddle School 3"></a>
+<a href="/barry.html" class="game-card" data-title="Barry Prison"><img src="barry.png" alt="Barry Prison"></a>
+<a href="/brainrot.html" class="game-card" data-title="Steal a Brainrot"><img src="brainrot.png" alt="Steal a Brainrot"></a>
+<a href="/golf.html" class="game-card" data-title="Battle Golf"><img src="golf.png" alt="Battle Golf"></a>
+<a href="/worldcup.html" class="game-card" data-title="World Cup"><img src="worldcup.png" alt="World Cup"></a>
+<a href="/snakeio.html" class="game-card" data-title="Snake.io"><img src="snakeio.png" alt="Snake.io"></a>
+<a href="/speedstars.html" class="game-card" data-title="Speed Stars"><img src="speedstars.png" alt="Speed Stars"></a>
+
+
+</div>
+
+<script>
+const searchBar = document.getElementById('searchBar');
+const noResults = document.getElementById('noResults');
+const gameCards = document.querySelectorAll('.game-card:not(.no-results)');
+
+searchBar.addEventListener('input', function() {
+  const searchTerm = this.value.toLowerCase().trim();
+  let visibleCount = 0;
+
+  gameCards.forEach(card => {
+    const title = card.getAttribute('data-title');
+    const img = card.querySelector('img');
+
+    if(title && img) {
+      const titleText = title.toLowerCase();
+      const altText = img.alt.toLowerCase();
+      if(titleText.includes(searchTerm) || altText.includes(searchTerm)) {
+        card.style.display = 'block';
+        visibleCount++;
+      } else {
+        card.style.display = 'none';
+      }
+    }
+  });
+
+  noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+});
+</script>
+
+</body>
+</html>

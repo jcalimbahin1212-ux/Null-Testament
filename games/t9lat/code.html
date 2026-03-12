@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HTML Code Execution</title>
+</head>
+<body>
+    <iframe id="myFrame"></iframe>
+
+    <script>
+        function executeCode() {
+            var code = document.getElementById("codeInput").value;
+            var frame = document.getElementById("myFrame").contentWindow.document;
+            frame.open();
+            frame.writeln(code);
+            frame.close();
+        }
+    </script>
+
+    <textarea class="input" id="codeInput" rows="10" cols="50"></textarea><br/>
+    <a class="run" onclick="executeCode()">Run</a>
+    <style>
+        .run {
+            top:0;            
+            right:50%;
+            left:50%;
+            background-color:#40de14;
+            border-radius:6px;
+            font-family:sans;
+            padding:10px 20px;
+        }
+        
+    </style>
+    <style>
+        .input {
+            border-radius:9px;
+            border-color:white;
+        }
+            
+</style>
+    <style>
+        body {
+         background-color:black
+    </style>
+</body>
+</html>

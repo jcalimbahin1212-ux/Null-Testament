@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Background Changer</title>
+  <style>
+    body 
+      background-image: url("https://wallpapercave.com/wp/wp4841501.jpg"); /* Default background image */
+    }
+  </style>
+</head>
+<body>
+<style>
+    select {
+        background-color: cornflowerblue;
+        border-radius: 15px;
+        font-family: sans;
+    }
+</style>
+
+ <style>
+    option {
+        background-color: cornflowerblue;
+        border-radius: 15px;
+        font-family: sans;
+    }
+</style>
+
+   
+
+  <h1>Background Changer</h1>
+
+  <label for="background-select">Select Background:</label>
+  <select id="background-select">
+    <option value="default.jpg">Default</option>
+    <option value="img.gif">Image 1</option>
+    <option value="image2.jpg">Image 2</option>
+    <!-- Add more options as needed -->
+  </select>
+
+  <!-- Include the JavaScript code -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+  // Get the select element
+  var select = document.getElementById("background-select");
+
+  // Set initial background image based on stored preference or default
+  var selectedBackground = localStorage.getItem("selectedBackground");
+  
+  if (selectedBackground) {
+    document.body.style.backgroundImage = "url(" + selectedBackground + ")";
+    select.value = selectedBackground;
+  }
+
+   // Listen for changes in the select element
+   select.addEventListener("change", function() {
+     var newBackground = this.value;
+     document.body.style.backgroundImage = "url(" + newBackground + ")";
+     localStorage.setItem("selectedBackground", newBackground);
+   });
+});
+
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-adsense-account" content="ca-pub-7134787026595240">
+    <link rel="shortcut icon" type="image/jpg" href="favicon.ico"/>
+    <title>Learnify - Learn Better, Together</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #e0e0e0;
+            background: #1a1a1a;
+        }
+
+        header {
+            background: #2d2d2d;
+            border-bottom: 2px solid #3a3a3a;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #e0e0e0;
+        }
+
+        .logo span {
+            color: #3498db;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #e0e0e0;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #3498db;
+        }
+
+        .hero {
+            background: #242424;
+            padding: 4rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid #3a3a3a;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            color: #e0e0e0;
+            font-weight: 600;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #a0a0a0;
+        }
+
+        .cta-button {
+            background: #3498db;
+            color: white;
+            padding: 0.9rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .cta-button:hover {
+            background: #2980b9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 2.5rem;
+            color: #e0e0e0;
+            font-weight: 600;
+        }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .subject-card {
+            background: #2d2d2d;
+            padding: 2rem;
+            border-radius: 8px;
+            border: 1px solid #3a3a3a;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .subject-card:hover {
+            border-color: #3498db;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+        }
+
+        .subject-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .subject-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #e0e0e0;
+            font-weight: 600;
+        }
+
+        .subject-card p {
+            color: #a0a0a0;
+            font-size: 0.95rem;
+        }
+
+        .features {
+            background: #242424;
+            padding: 3rem 2rem;
+            border-top: 1px solid #3a3a3a;
+            border-bottom: 1px solid #3a3a3a;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-item {
+            padding: 1.5rem;
+            text-align: left;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-item h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #e0e0e0;
+            font-weight: 600;
+        }
+
+        .feature-item p {
+            color: #a0a0a0;
+            font-size: 0.95rem;
+        }
+
+        .stats {
+            background: #1a1a1a;
+            padding: 3rem 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 2rem auto 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: #2d2d2d;
+            border-radius: 8px;
+            border: 1px solid #3a3a3a;
+        }
+
+        .stat-item h3 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #3498db;
+            font-weight: 600;
+        }
+
+        .stat-item p {
+            color: #a0a0a0;
+            font-size: 0.95rem;
+        }
+
+        footer {
+            background: #2d2d2d;
+            color: #a0a0a0;
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid #3a3a3a;
+        }
+
+        .quiz-section {
+            background: #2d2d2d;
+            padding: 2rem;
+            border-radius: 8px;
+            border: 1px solid #3a3a3a;
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .quiz-section.active {
+            display: block;
+        }
+
+        .quiz-question {
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-question p {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .quiz-option {
+            padding: 1rem;
+            background: #242424;
+            border: 1px solid #3a3a3a;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quiz-option:hover {
+            border-color: #3498db;
+            background: #2a3f5f;
+        }
+
+        .quiz-option.correct {
+            border-color: #27ae60;
+            background: #1e4d2b;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #e74c3c;
+            background: #4d1f1f;
+        }
+
+        .fullscreen-iframe {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            border: none;
+        }
+
+        .fullscreen-iframe.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo"><span>Learn</span>ify</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#subjects">Subjects</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#quiz">Quiz</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero" id="home">
+        <h1>Learn Better, Together</h1>
+        <p>A modern learning platform for students of all levels</p>
+        <button class="cta-button" onclick="window.location.href='class.html'">Get Started</button>
+    </section>
+
+    <div class="container" id="subjects">
+        <h2 class="section-title">Subjects</h2>
+        <div class="subjects-grid">
+            <div class="subject-card" onclick="showSubject('Mathematics')">
+                <div class="subject-icon">📐</div>
+                <h3>Mathematics</h3>
+                <p>Algebra, geometry, calculus, and statistics</p>
+            </div>
+            <div class="subject-card" onclick="showSubject('Science')">
+                <div class="subject-icon">🔬</div>
+                <h3>Science</h3>
+                <p>Physics, chemistry, and biology fundamentals</p>
+            </div>
+            <div class="subject-card" onclick="showSubject('English')">
+                <div class="subject-icon">📚</div>
+                <h3>English</h3>
+                <p>Literature, grammar, and composition</p>
+            </div>
+            <div class="subject-card" onclick="showSubject('History')">
+                <div class="subject-icon">🏛️</div>
+                <h3>History</h3>
+                <p>World history and social studies</p>
+            </div>
+            <div class="subject-card" onclick="showSubject('Arts')">
+                <div class="subject-icon">🎨</div>
+                <h3>Arts</h3>
+                <p>Visual arts, music, and creative expression</p>
+            </div>
+            <div class="subject-card" onclick="showSubject('Computer Science')">
+                <div class="subject-icon">💻</div>
+                <h3>Computer Science</h3>
+                <p>Programming, algorithms, and digital literacy</p>
+            </div>
+        </div>
+    </div>
+
+    <section class="features" id="features">
+        <h2 class="section-title" style="text-align: center;">Features</h2>
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-icon">📖</div>
+                <h3>Comprehensive Lessons</h3>
+                <p>Well-structured content aligned with curriculum standards</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">✏️</div>
+                <h3>Practice Exercises</h3>
+                <p>Reinforce learning with quizzes and assignments</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">📊</div>
+                <h3>Progress Tracking</h3>
+                <p>Monitor your performance and improvement over time</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">👥</div>
+                <h3>Study Groups</h3>
+                <p>Collaborate with classmates and share knowledge</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">📝</div>
+                <h3>Study Resources</h3>
+                <p>Access notes, guides, and reference materials</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">⏰</div>
+                <h3>Flexible Schedule</h3>
+                <p>Learn at your own pace, anytime and anywhere</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="container">
+            <h2 class="section-title" style="text-align: center;">Platform Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3>50,000+</h3>
+                    <p>Active Students</p>
+                </div>
+                <div class="stat-item">
+                    <h3>1,000+</h3>
+                    <p>Lessons Available</p>
+                </div>
+                <div class="stat-item">
+                    <h3>500+</h3>
+                    <p>Educators</p>
+                </div>
+                <div class="stat-item">
+                    <h3>95%</h3>
+                    <p>Completion Rate</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container" id="quiz">
+        <h2 class="section-title">Practice Quiz</h2>
+        <div style="text-align: center;">
+            <button class="cta-button" onclick="startQuiz()">Start Quiz</button>
+        </div>
+        
+        <div class="quiz-section" id="quizSection">
+            <h3>Sample Question</h3>
+            <div class="quiz-question">
+                <p><strong>What is 15 × 8?</strong></p>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">100</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">120</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">130</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">115</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Learnify. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function scrollToSubjects() {
+            document.getElementById('subjects').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showSubject(subject) {
+            alert(`You selected ${subject}. Content and lessons will be available here.`);
+        }
+
+        function startQuiz() {
+            document.getElementById('quizSection').classList.add('active');
+            document.getElementById('quizSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function checkAnswer(element, isCorrect) {
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+            });
+
+            if (isCorrect) {
+                element.classList.add('correct');
+                setTimeout(() => {
+                    alert('Correct answer!');
+                }, 300);
+            } else {
+                element.classList.add('incorrect');
+                setTimeout(() => {
+                    alert('Incorrect. The correct answer is 120.');
+                }, 300);
+            }
+        }
+    </script>
+<script>
+  function redirectOnce(e) {
+    if (e && e.repeat) return;
+
+    if (sessionStorage.getItem("redirected")) return;
+
+    sessionStorage.setItem("redirected", "true");
+    window.location.href = "class.html"; 
+  }
+
+  document.addEventListener("keydown", redirectOnce);
+  document.addEventListener("mousemove", redirectOnce);
+</script>
+</body>
+</html>
