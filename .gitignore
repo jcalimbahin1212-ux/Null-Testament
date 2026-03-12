@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Build artifacts
+scripts/quicksize.js
+scripts/dirsize.js
+
+# OS files
+Thumbs.db
+.DS_Store
+Desktop.ini
+
+# IDE
+.vscode/
+.idea/
+
+# Git subdirectories in cloned repos
+games/**/.git/

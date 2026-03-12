@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Docs - Untitled document</title>
+<link rel="icon" href="https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #000;
+    color: #666;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+  .msg {
+    text-align: center;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .msg.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="msg" id="fallback">tab opened. you can close this window.</div>
+
+<script>
+(function() {
+  var DOCS_FAVICON = 'https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico';
+  var DOCS_TITLE = 'Google Docs';
+
+  // Resolve the target URL relative to this page's origin
+  var origin = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
+  var target = origin + 'index.html';
+
+  try {
+    var popup = window.open('about:blank', '_blank');
+
+    if (popup && !popup.closed) {
+      var doc = popup.document;
+
+      doc.open();
+      doc.write(
+        '<!DOCTYPE html>' +
+        '<html>' +
+        '<head>' +
+        '<title>' + DOCS_TITLE + '</title>' +
+        '<link rel="icon" href="' + DOCS_FAVICON + '">' +
+        '<style>' +
+        '* { margin: 0; padding: 0; box-sizing: border-box; }' +
+        'body, html { width: 100%; height: 100%; overflow: hidden; }' +
+        'iframe { width: 100%; height: 100%; border: none; }' +
+        '</style>' +
+        '</head>' +
+        '<body>' +
+        '<iframe src="' + target + '" allowfullscreen></iframe>' +
+        '</body>' +
+        '</html>'
+      );
+      doc.close();
+
+      // Show fallback message then try to close this tab
+      var msg = document.getElementById('fallback');
+      msg.classList.add('show');
+
+      // Attempt to close the launcher tab
+      try {
+        window.close();
+      } catch(e) {}
+
+      // If window.close() didn't work (common in modern browsers),
+      // the fallback message stays visible
+    } else {
+      // Popup was blocked — redirect directly
+      window.location.href = target;
+    }
+  } catch(e) {
+    // Any error — redirect directly
+    window.location.href = target;
+  }
+})();
+</script>
+
+</body>
+</html>

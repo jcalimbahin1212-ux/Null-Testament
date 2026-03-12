@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Docs</title>
+  <link rel="icon" href="https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Splash overlay -->
+  <div id="splash-overlay">
+    <div class="splash-text">null testament</div>
+    <div class="splash-sub">the privacy shield</div>
+  </div>
+
+  <!-- App shell -->
+  <div id="app">
+    <nav id="sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-logo">null testament</span>
+      </div>
+      <div class="sidebar-nav" id="sidebar-nav"></div>
+      <div class="sidebar-footer">
+        <button id="panic-btn" class="panic-button" title="panic (press `)">panic</button>
+        <span class="sidebar-badge">v1.0</span>
+      </div>
+    </nav>
+    <main id="content"></main>
+  </div>
+
+  <!-- Game overlay (hidden) -->
+  <div id="game-overlay" class="hidden">
+    <div id="game-toolbar">
+      <button id="game-close" class="game-toolbar-btn">&times; close</button>
+      <span id="game-title" class="game-toolbar-title"></span>
+      <div style="flex:1"></div>
+      <button id="game-fullscreen" class="game-toolbar-btn">&#x26F6; fullscreen</button>
+      <button id="game-favorite" class="game-toolbar-btn">&#x2606; favorite</button>
+    </div>
+    <iframe id="game-frame" sandbox="allow-scripts allow-same-origin allow-popups" allowfullscreen></iframe>
+  </div>
+
+  <!-- Toast container -->
+  <div id="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/game-catalog-data.js"></script>
+  <script src="js/lessons-math.js"></script>
+  <script src="js/lessons-science.js"></script>
+  <script src="js/lessons-english.js"></script>
+  <script src="js/lessons-history.js"></script>
+  <script src="js/lessons-cs.js"></script>
+  <script src="js/lessons-more.js"></script>
+  <script src="js/tools.js"></script>
+  <script src="js/noteshelf.js"></script>
+  <script src="js/sources.js"></script>
+  <script src="js/habits.js"></script>
+  <script src="js/privacy.js"></script>
+  <script src="js/games.js"></script>
+  <script src="js/emulators.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
