@@ -1,0 +1,52 @@
+﻿<level>
+<objects>
+<object className="StairUp" x="181.5" y="80.8" groupId="1" door="open" doorName="none" doorType="door1" />
+<object className="StairDown" x="181.5" y="179.05" groupId="1" door="open" doorName="none" doorType="door1" />
+<object className="Wall" x="19.3" y="81.9" />
+<object className="Wall" x="665.5" y="82.9" />
+<object className="Wall" x="19.3" y="178.75" />
+<object className="Wall" x="665.5" y="179.75" />
+<object className="Wall" x="19.3" y="277.65" />
+<object className="Wall" x="665.5" y="277.65" />
+<object className="Wall" x="19.3" y="375.5" />
+<object className="Wall" x="665.5" y="374.5" />
+<object className="Wall" x="19.3" y="475.4" />
+<object className="Wall" x="665.5" y="474.4" />
+<object className="StairUp" x="84.35" y="179.05" groupId="2" door="open" doorName="none" doorType="door1" />
+<object className="StairDown" x="84.35" y="275.95" groupId="2" door="open" doorName="none" doorType="door1" />
+<object className="StairUp" x="608.7" y="80.95" groupId="3" door="open" doorName="none" doorType="door1" />
+<object className="StairDown" x="608.7" y="177.85" groupId="3" door="open" doorName="none" doorType="door1" />
+<object className="ChargeBase" x="465.55" y="376.45" />
+<object className="Hiden" x="77" y="82" quantity="1" />
+<object className="Hiden" x="73" y="472" quantity="1" />
+<object className="StairUp" x="609.05" y="276.45" groupId="4" door="close" doorName="d1" doorType="StairDoor1" />
+<object className="StairDown" x="609.05" y="375.3" groupId="4" door="open" doorName="none" doorType="door1" />
+<object className="Camera" x="180" y="146" delay="5" viewZL="180" viewZR="160" />
+<object className="Hiden" x="320" y="179" quantity="1" />
+<object className="StairUp" x="181.85" y="375.7" groupId="5" door="open" doorName="none" doorType="door1" />
+<object className="StairDown" x="181.85" y="473.6" groupId="5" door="open" doorName="none" doorType="door1" />
+<object className="GuardB" x="280" y="483" viewZL="215" viewZR="70" />
+<object className="Sidedoor" x="531.65" y="87.4" door="close" doorName="sd1" />
+<object className="PartDoor" x="610.25" y="473.3" part="2" />
+<object className="Hiden" x="314" y="372" quantity="1" />
+<object className="StartDoor" x="331.55" y="77.8" />
+<object className="Elevator" x="460.05" y="77.1" groupId="1" door="open" doorName="none" />
+<object className="Elevator" x="460.4" y="274.15" groupId="1" door="open" doorName="none" />
+<object className="Sidedoor" x="389.7" y="283.15" door="close" doorName="sd2" />
+<object className="Hiden" x="448" y="474" quantity="1" />
+<object className="Computer" x="492" y="166" doorName="d1" />
+<object className="Shadow" x="53" y="479" sw="50" />
+<object className="Padlock" x="556.3" y="82.6" doorName="sd1" direction="right" plevel="1" />
+<object className="Padlock" x="411.4" y="281.1" doorName="sd2" direction="right" plevel="2" />
+<object className="Codepad" x="554" y="271" doorName="d1" />
+<object className="BobHero" x="331.55" y="83.35" />
+<object className="Bulkhead" x="530.8" y="82.55" bulkname="wood" />
+<object className="Bulkhead" x="387.6" y="181.05" bulkname="wood" />
+<object className="Bulkhead" x="388.45" y="279.75" bulkname="wood" />
+<object className="Bulkhead" x="387.65" y="377.85" bulkname="wood" />
+<object className="Bulkhead" x="389.05" y="476.5" bulkname="wood" />
+<object className="Camera" x="180" y="342" delay="5" viewZL="180" viewZR="160" />
+<object className="Wall" x="235.3" y="81.9" />
+<object className="Wall" x="275.3" y="81.9" />
+</objects>
+</level>
