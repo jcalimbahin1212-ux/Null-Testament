@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+
+<head>
+  <title>p0x games V2</title>
+  <style>
+    body {
+      scroll-behavior: smooth;
+    }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+    }
+  </style>
+</head>
+
+<html>
+
+<head>
+  <style>
+    body {
+      background-image: url('img/bg.gif');
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-size: cover;
+    }
+  </style>
+</head>
+
+<link rel="icon" href='img/logo.png' type="image/x-icon">
+
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="css/home.css">
+</head>
+
+<body>
+  <div class="navbar">
+    <a href="/">Home</a>
+    <a href="/games.html">Games</a>
+    <a href="/uv.html">Proxy</a>
+    <a href="/contact.html">Contact</a>
+  </div>
+  <div class="content">
+    <img src="img/logo.png" alt="Logo" style="width:220px;height:220px;">
+    <h1>Welcome to p0x games V2</h1>
+    <button class="start-now-button" onclick="location.href='games.html';">Start now!</button>
+    <h1> Games total: 84</h1>
+    <html>
+
+    <head>
+      <link rel="stylesheet" type="text/css" href="css/button.css">
+    </head>
+
+    <body>
+
+
+      <script>
+        document.querySelector('.navbar a').addEventListener('click', function (e) {
+          e.preventDefault(); // prevent default anchor behavior
+          var href = this.getAttribute('href');
+          var offsetTop = document.querySelector(href).offsetTop;
+
+          window.scrollTo({
+            top: offsetTop,
+            behavior: 'smooth'
+          });
+        });
+      </script>
+
+
+      <script>
+        window.onscroll = function () {
+          var navbar = document.getElementsByClassName('navbar')[0];
+          if (window.pageYOffset > 100) {
+            navbar.style.top = "-100px";
+          } else {
+            navbar.style.top = "0";
+          }
+        };
+      </script>
+    </body>
+
+    </html>
+  </div>
+</body>
+
+</html>
