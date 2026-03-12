@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vafor</title>
+    <link rel="stylesheet" href="../style/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9Y3T9NZGP8"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-9Y3T9NZGP8');
+    </script>
+</head>
+<body>
+<div class="container">
+    <nav class="side-nav">
+        <h2>Vafor</h2>
+        <ul id="nav-tabs">
+            <li id="home"><a>Home</a></li>
+            <!-- More tabs yay -->
+            <li id="all-gxmes"><a>All gxmes</a></li>
+        </ul>
+        <a id="open-modal"><i class="fa fa-cog cogig"></i></a>
+    </nav>
+
+    <main>
+        <div class="search-wrapper">
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search gxmes...">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+            <div id="search-results"></div>
+        </div>
+
+
+        <div id="tab-contents">
+            <section id="Favorites" class="tab-content">
+                <h2>Favorites</h2>
+                <div class="gxmes-grid" id="favorites"></div>
+            </section>
+
+            <section id="last-played" class="tab-content">
+                <h2>Recently Played</h2>
+                <div class="gxmes-grid" id="last-played-gxmes"></div>
+            </section>
+
+            <section id="top-10" class="tab-content">
+                <h2>Top 10 gxmes</h2>
+                <div class="gxmes-grid" id="top-10-gxmes"></div>
+            </section>
+            
+            <section id="last-10" class="tab-content">
+                <h2>Recently Added</h2>
+                <div class="gxmes-grid" id="last-10-gxmes"></div>
+            </section>
+
+            <section id="all-gxmes2" class="tab-content">
+                <h2>All gxmes</h2>
+                <div class="gxmes-grid" id="all-gxmes-grid"></div>
+            </section>
+            <!-- Category sections -->
+        </div>
+    </main>
+</div>
+<!-- yo modal what -->
+<div id="modal" class="modalclass">
+  <div class="modal-content">
+    <span class="modal-close" id="close-modal">&times;</span>
+    <h2>Settings</h2>
+
+    <!-- Group 1: Tab Renaming / Cloak -->
+    <div class="modal-group">
+      <h6>Tab Cloak Options</h6>
+      <div class="modal-item">
+
+        <p><i class="fa fa-globe"></i> Web Explorer:</p>
+        <button onclick="{
+          const search = prompt('What search term do you want to appear on Web Explorer?');
+          if (search) applyUrl('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNjQwIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDcuMC4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjUgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZD0iTTQxNS45IDM0NEwyMjUgMzQ0QzIyNy45IDQwOC41IDI0Mi4yIDQ2Ny45IDI2Mi41IDUxMS40QzI3My45IDUzNS45IDI4Ni4yIDU1My4yIDI5Ny42IDU2My44QzMwOC44IDU3NC4zIDMxNi41IDU3NiAzMjAuNSA1NzZDMzI0LjUgNTc2IDMzMi4yIDU3NC4zIDM0My40IDU2My44QzM1NC44IDU1My4yIDM2Ny4xIDUzNS44IDM3OC41IDUxMS40QzM5OC44IDQ2Ny45IDQxMy4xIDQwOC41IDQxNiAzNDR6TTIyNC45IDI5Nkw0MTUuOCAyOTZDNDEzIDIzMS41IDM5OC43IDE3Mi4xIDM3OC40IDEyOC42QzM2NyAxMDQuMiAzNTQuNyA4Ni44IDM0My4zIDc2LjJDMzMyLjEgNjUuNyAzMjQuNCA2NCAzMjAuNCA2NEMzMTYuNCA2NCAzMDguNyA2NS43IDI5Ny41IDc2LjJDMjg2LjEgODYuOCAyNzMuOCAxMDQuMiAyNjIuNCAxMjguNkMyNDIuMSAxNzIuMSAyMjcuOCAyMzEuNSAyMjQuOSAyOTZ6TTE3Ni45IDI5NkMxODAuNCAyMTAuNCAyMDIuNSAxMzAuOSAyMzQuOCA3OC43QzE0Mi43IDExMS4zIDc0LjkgMTk1LjIgNjUuNSAyOTZMMTc2LjkgMjk2ek02NS41IDM0NEM3NC45IDQ0NC44IDE0Mi43IDUyOC43IDIzNC44IDU2MS4zQzIwMi41IDUwOS4xIDE4MC40IDQyOS42IDE3Ni45IDM0NEw2NS41IDM0NHpNNDYzLjkgMzQ0QzQ2MC40IDQyOS42IDQzOC4zIDUwOS4xIDQwNiA1NjEuM0M0OTguMSA1MjguNiA1NjUuOSA0NDQuOCA1NzUuMyAzNDRMNDYzLjkgMzQ0ek01NzUuMyAyOTZDNTY1LjkgMTk1LjIgNDk4LjEgMTExLjMgNDA2IDc4LjdDNDM4LjMgMTMwLjkgNDYwLjQgMjEwLjQgNDYzLjkgMjk2TDU3NS4zIDI5NnoiLz48L3N2Zz4=', search + ' - Web Explorer');
+        }">
+          Apply
+        </button>
+      </div>
+
+      <div class="modal-item">
+        <p><i class="fa fa-book-reader"></i> Study Hub:</p>
+        <button onclick="applyUrl('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNjQwIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDcuMC4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjUgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZD0iTTMyMCAyMTZDMzY4LjYgMjE2IDQwOCAxNzYuNiA0MDggMTI4QzQwOCA3OS40IDM2OC42IDQwIDMyMCA0MEMyNzEuNCA0MCAyMzIgNzkuNCAyMzIgMTI4QzIzMiAxNzYuNiAyNzEuNCAyMTYgMzIwIDIxNnpNMzIwIDUxNC43TDMyMCAzNjUuNEMzMzYuMyAzNTguNiAzNTIuOSAzNTEuNyAzNjkuNyAzNDQuN0M0MDguNyAzMjguNSA0NTAuNSAzMjAuMSA0OTIuOCAzMjAuMUw1MTIgMzIwLjFMNTEyIDQ4MC4xTDQ5Mi44IDQ4MC4xQzQzMy43IDQ4MC4xIDM3NS4xIDQ5MS44IDMyMC41IDUxNC42TDMyMCA1MTQuOHpNMzIwIDI5NkwyOTQuOSAyODUuNUMyNDguMSAyNjYgMTk3LjkgMjU2IDE0Ny4yIDI1NkwxMTIgMjU2Qzg1LjUgMjU2IDY0IDI3Ny41IDY0IDMwNEw2NCA0OTZDNjQgNTIyLjUgODUuNSA1NDQgMTEyIDU0NEwxNDcuMiA1NDRDMTk3LjkgNTQ0IDI0OC4xIDU1NCAyOTQuOSA1NzMuNUwzMDcuNyA1NzguOEMzMTUuNiA1ODIuMSAzMjQuNCA1ODIuMSAzMzIuMyA1NzguOEwzNDUuMSA1NzMuNUMzOTEuOSA1NTQgNDQyLjEgNTQ0IDQ5Mi44IDU0NEw1MjggNTQ0QzU1NC41IDU0NCA1NzYgNTIyLjUgNTc2IDQ5Nkw1NzYgMzA0QzU3NiAyNzcuNSA1NTQuNSAyNTYgNTI4IDI1Nkw0OTIuOCAyNTZDNDQyLjEgMjU2IDM5MS45IDI2NiAzNDUuMSAyODUuNUwzMjAgMjk2eiIvPjwvc3ZnPg==', 'Study Dashboard');">
+          Apply
+        </button>
+      </div>
+
+      <div class="modal-item">
+        <p><i class="fa fa-file-alt"></i> Doc Manager:</p>
+        <button onclick="{
+          const doc = prompt('Which document do you want to appear on Doc Manager?');
+          if (doc) applyUrl('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNjQwIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDcuMC4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjUgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZD0iTTEyOCAxMjhDMTI4IDkyLjcgMTU2LjcgNjQgMTkyIDY0TDM0MS41IDY0QzM1OC41IDY0IDM3NC44IDcwLjcgMzg2LjggODIuN0w0OTMuMyAxODkuM0M1MDUuMyAyMDEuMyA1MTIgMjE3LjYgNTEyIDIzNC42TDUxMiA1MTJDNTEyIDU0Ny4zIDQ4My4zIDU3NiA0NDggNTc2TDE5MiA1NzZDMTU2LjcgNTc2IDEyOCA1NDcuMyAxMjggNTEyTDEyOCAxMjh6TTMzNiAxMjIuNUwzMzYgMjE2QzMzNiAyMjkuMyAzNDYuNyAyNDAgMzYwIDI0MEw0NTMuNSAyNDBMMzM2IDEyMi41ek0yNDggMzIwQzIzNC43IDMyMCAyMjQgMzMwLjcgMjI0IDM0NEMyMjQgMzU3LjMgMjM0LjcgMzY4IDI0OCAzNjhMMzkyIDM2OEM0MDUuMyAzNjggNDE2IDM1Ny4zIDQxNiAzNDRDNDE2IDMzMC43IDQwNS4zIDMyMCAzOTIgMzIwTDI0OCAzMjB6TTI0OCA0MTZDMjM0LjcgNDE2IDIyNCA0MjYuNyAyMjQgNDQwQzIyNCA0NTMuMyAyMzQuNyA0NjQgMjQ4IDQ2NEwzOTIgNDY0QzQwNS4zIDQ2NCA0MTYgNDUzLjMgNDE2IDQ0MEM0MTYgNDI2LjcgNDA1LjMgNDE2IDM5MiA0MTZMMjQ4IDQxNnoiLz48L3N2Zz4=', doc + ' - Doc Manager');
+        }">
+          Apply
+        </button>
+      </div>
+
+      <div class="modal-item">
+        <p><i class="fa fa-cloud-upload-alt"></i> Cloud Storage:</p>
+        <button onclick="{
+          const folder = prompt('Which folder do you want to appear on Cloud Storage?');
+          if (folder) applyUrl('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNjQwIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDcuMC4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjUgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZD0iTTE3NiA1NDRDOTYuNSA1NDQgMzIgNDc5LjUgMzIgNDAwQzMyIDMzNi42IDczIDI4Mi44IDEyOS45IDI2My41QzEyOC42IDI1NS44IDEyOCAyNDggMTI4IDI0MEMxMjggMTYwLjUgMTkyLjUgOTYgMjcyIDk2QzMyNy40IDk2IDM3NS41IDEyNy4zIDM5OS42IDE3My4xQzQxMy44IDE2NC44IDQzMC40IDE2MCA0NDggMTYwQzUwMSAxNjAgNTQ0IDIwMyA1NDQgMjU2QzU0NCAyNzEuNyA1NDAuMiAyODYuNiA1MzMuNSAyOTkuN0M1NzcuNSAzMjAgNjA4IDM2NC40IDYwOCA0MTZDNjA4IDQ4Ni43IDU1MC43IDU0NCA0ODAgNTQ0TDE3NiA1NDR6TTMzNyAyNTVDMzI3LjYgMjQ1LjYgMzEyLjQgMjQ1LjYgMzAzLjEgMjU1TDIzMS4xIDMyN0MyMjEuNyAzMzYuNCAyMjEuNyAzNTEuNiAyMzEuMSAzNjAuOUMyNDAuNSAzNzAuMiAyNTUuNyAzNzAuMyAyNjUgMzYwLjlMMjk2IDMyOS45TDI5NiA0MzJDMjk2IDQ0NS4zIDMwNi43IDQ1NiAzMjAgNDU2QzMzMy4zIDQ1NiAzNDQgNDQ1LjMgMzQ0IDQzMkwzNDQgMzI5LjlMMzc1IDM2MC45QzM4NC40IDM3MC4zIDM5OS42IDM3MC4zIDQwOC45IDM2MC45QzQxOC4yIDM1MS41IDQxOC4zIDMzNi4zIDQwOC45IDMyN0wzMzYuOSAyNTV6Ii8+PC9zdmc+', folder + ' - Cloud Storage');
+        }">
+          Apply
+        </button>
+      </div>
+
+      <div class="modal-item">
+        <p><i class="fa fa-tasks"></i> Task Board:</p>
+        <button onclick="applyUrl('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNjQwIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDcuMC4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjUgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZD0iTTE5Ny44IDEwMC4zQzIwOC43IDEwNy45IDIxMS4zIDEyMi45IDIwMy43IDEzMy43TDE0Ny43IDIxMy43QzE0My42IDIxOS41IDEzNy4yIDIyMy4yIDEzMC4xIDIyMy44QzEyMyAyMjQuNCAxMTYgMjIyIDExMSAyMTdMNzEgMTc3QzYxLjcgMTY3LjYgNjEuNyAxNTIuNCA3MSAxNDNDODAuMyAxMzMuNiA5NS42IDEzMy43IDEwNSAxNDNMMTI0LjggMTYyLjhMMTY0LjQgMTA2LjJDMTcyIDk1LjMgMTg3IDkyLjcgMTk3LjggMTAwLjN6TTE5Ny44IDI2MC4zQzIwOC43IDI2Ny45IDIxMS4zIDI4Mi45IDIwMy43IDI5My43TDE0Ny43IDM3My43QzE0My42IDM3OS41IDEzNy4yIDM4My4yIDEzMC4xIDM4My44QzEyMyAzODQuNCAxMTYgMzgyIDExMSAzNzdMNzEgMzM3QzYxLjYgMzI3LjYgNjEuNiAzMTIuNCA3MSAzMDMuMUM4MC40IDI5My44IDk1LjYgMjkzLjcgMTA0LjkgMzAzLjFMMTI0LjcgMzIyLjlMMTY0LjMgMjY2LjNDMTcxLjkgMjU1LjQgMTg2LjkgMjUyLjggMTk3LjcgMjYwLjR6TTI4OCAxNjBDMjg4IDE0Mi4zIDMwMi4zIDEyOCAzMjAgMTI4TDU0NCAxMjhDNTYxLjcgMTI4IDU3NiAxNDIuMyA1NzYgMTYwQzU3NiAxNzcuNyA1NjEuNyAxOTIgNTQ0IDE5MkwzMjAgMTkyQzMwMi4zIDE5MiAyODggMTc3LjcgMjg4IDE2MHpNMjg4IDMyMEMyODggMzAyLjMgMzAyLjMgMjg4IDMyMCAyODhMNTQ0IDI4OEM1NjEuNyAyODggNTc2IDMwMi4zIDU3NiAzMjBDNTc2IDMzNy43IDU2MS43IDM1MiA1NDQgMzUyTDMyMCAzNTJDMzAyLjMgMzUyIDI4OCAzMzcuNyAyODggMzIwek0yMjQgNDgwQzIyNCA0NjIuMyAyMzguMyA0NDggMjU2IDQ0OEw1NDQgNDQ4QzU2MS43IDQ0OCA1NzYgNDYyLjMgNTc2IDQ4MEM1NzYgNDk3LjcgNTYxLjcgNTEyIDU0NCA1MTJMMjU2IDUxMkMyMzguMyA1MTIgMjI0IDQ5Ny43IDIyNCA0ODB6TTEyOCA0NDBDMTUwLjEgNDQwIDE2OCA0NTcuOSAxNjggNDgwQzE2OCA1MDIuMSAxNTAuMSA1MjAgMTI4IDUyMEMxMDUuOSA1MjAgODggNTAyLjEgODggNDgwQzg4IDQ1Ny45IDEwNS45IDQ0MCAxMjggNDQweiIvPjwvc3ZnPg==', 'My Tasks');">
+          Apply
+        </button>
+      </div>
+
+
+    </div>
+
+    <div class="modal-group">
+      <h6>Save Manager</h6>
+
+      <div class="modal-item">
+        <p>Download your progress:</p>
+        <button onclick="letsdownload()"> Download</button>
+      </div>
+
+      <div class="modal-item">
+        <p>Upload your save data:</p>
+        <button onclick="cheatsandhacks()"> Upload</button>
+      </div>
+
+      <div class="modal-item">
+        <p>Reset all data:</p>
+        <button onclick="crashout()"> Reset</button>
+      </div>
+    </div>
+
+    <div class="modal-group">
+      <h6>Other Actions</h6>
+
+      <div class="modal-item">
+        <p>Open in blank tab:</p>
+        <button onclick="aboutblankcloakingpmayhaps()"> Open</button>
+      </div>
+
+      <div class="modal-item">
+        <p>Leave confirm:</p>
+        <button onclick="letleavethistownandrunforever()" id="leavbutton"> Enable</button>
+      </div>
+
+      <div class="modal-item">
+        <p>Change background:</p>
+        <button onclick="handleBackground()" id="bgButton"> Background</button>
+      </div>
+
+      <div class="modal-item">
+        <p>History flood:</p>
+        <button onclick="youngerdryas()"> Flood</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="../js/script.js"></script>
+<script src="../js/tabs.js"></script>
+<script src="../js/yeahmodalthing.js"></script>
+<script src="../js/s.js"></script>
+<script src="../js/search.js"></script>
+</body>
+</html>
+<!--  sadly have to remove these because of adsense good work tho
+      <div class="modal-item">
+        <p>Google Search:</p>
+        <button onclick="var search = prompt('What google search to you want to appear to be on?'); if (search) applyUrl('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAmVBMVEVHcEz////////////////+/v/////////////////////////5ysjxi4TqQTTpKRXqOinubWP0rKf89+/96+rsWFD1sq7/4qL1lAD8xDb8uwH6sgzrQhr7wCCsxfqjv/n80GhBhPU2gPUtfPTf6f1WkfVTsFvj8ubWvDEzqVMqpksRokFuvYG838QgpEaQy53K5tA3l6as17YMoVzUAAAADHRSTlMAMobC6v5g7P8U3jtapumyAAABHUlEQVR4AX2TBRaCUBBFP91ldxcd+1+cE2LDVfKd6UE8kWRF1TRVkSXxjW6YTwz9Q7Js8wPbEk8c8wfnj6Z9q5bJuJ4fBGE0GJoEe+Z4o3EQ+kAYBhOOS3myGUkh6YFrIpizQXYBvvQ9LwpC1BADaqc8xmhGL4cRa4AkZLxMZ6CNzC9koeBlvliungZPFKHiZbFYrE1k82CLBasCz0MQdyTuD8zxhJl8iec9w+KX2/0RaEW1TWh9uZoEmx81SohLucXJxWS0E5ieuRRuQhrHScYjOR3AcMNNEAaKOapFWVV5ltYPQ+PZ+BJUkIsiiZP6eOLGP0fWpEnMFPG1Hdlz2MOySMEyjZvnsBGn3ZBrnlfXniViWOtfzf6l7vsc7uGRJfdwhuwGAAAAAElFTkSuQmCC', search + ' - Google Search');">
+           Apply
+        </button>
+      </div>
+
+      <div class="modal-item">
+        <p>Google Classroom:</p>
+        <button onclick="applyUrl('https://ssl.gstatic.com/classroom/favicon.png', 'Classes');">
+           Apply
+        </button>
+      </div>
+
+      <div class="modal-item">
+        <p>Google Docs:</p>
+        <button onclick="var docsv3 = prompt('What google doc to you want to appear to be on??'); if (docsv3) applyUrl('https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico', docsv3 + ' - Google Docs');">
+           Apply
+        </button>
+      </div>
+
+      <div class="modal-item">
+        <p>Google Drive:</p>
+        <button onclick="var docs = prompt('What google drive to you want to appear to be on?'); if (docs) applyUrl('https://ssl.gstatic.com/images/branding/product/2x/hh_drive_36dp.png', docs + ' - Google Drive');">
+           Apply
+        </button>
+      </div>
+
+      <div class="modal-item">
+        <p>Canvas:</p>
+        <button onclick="applyUrl('https://du11hjcvx0uqb.cloudfront.net/dist/images/favicon-e10d657a73.ico', 'Dashboard');">
+           Apply
+        </button>
+      </div>
+
+
+-->

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bowmasters</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="mobile-web-app-capable" content="yes"/>
+    <meta name="apple-touch-fullscreen" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <meta name="msapplication-tap-highlight" content="no"/>
+    <meta name="MobileOptimized" content="960"/>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, user-scalable=no, minimal-ui"/>
+    <meta charset="utf-8"/>
+
+    <link rel="stylesheet" type="text/css" href="style/index.css"/>
+
+    <script src="customytgame.js"></script>
+<script src="game.js"></script>
+<script>window.addEventListener("load", () => window.runGame());</script>
+</head>
+
+<body>
+    <div id="game"></div>
+</body>
+
+<!--
+go here for help 
+data:text/html;charset=utf-8,%3C!DOCTYPE%20html%3E%0A%3Chtml%20lang%3D%22en%22%3E%0A%3Chead%3E%0A%3Cmeta%20charset%3D%22UTF-8%22%3E%0A%3Cmeta%20name%3D%22viewport%22%20content%3D%22width%3Ddevice-width%2C%20initial-scale%3D1.0%22%3E%0A%3Ctitle%3EDEFLATE%20Base64%20Encoder%2FDecoder%3C%2Ftitle%3E%0A%3Cscript%20src%3D%22https%3A%2F%2Fcdnjs.cloudflare.com%2Fajax%2Flibs%2Fpako%2F2.1.0%2Fpako.min.js%22%3E%3C%2Fscript%3E%0A%3Cstyle%3E%0A%20%20%20%20body%20%7B%0A%20%20%20%20%20%20%20%20font-family%3A%20'Segoe%20UI'%2C%20Tahoma%2C%20Geneva%2C%20Verdana%2C%20sans-serif%3B%0A%20%20%20%20%20%20%20%20background%3A%20%232c3e50%3B%0A%20%20%20%20%20%20%20%20color%3A%20%23ecf0f1%3B%0A%20%20%20%20%20%20%20%20display%3A%20flex%3B%0A%20%20%20%20%20%20%20%20flex-direction%3A%20column%3B%0A%20%20%20%20%20%20%20%20align-items%3A%20center%3B%0A%20%20%20%20%20%20%20%20padding%3A%2040px%2020px%3B%0A%20%20%20%20%7D%0A%20%20%20%20h1%20%7B%0A%20%20%20%20%20%20%20%20font-size%3A%202.5rem%3B%0A%20%20%20%20%20%20%20%20margin-bottom%3A%2020px%3B%0A%20%20%20%20%20%20%20%20color%3A%20%231abc9c%3B%0A%20%20%20%20%7D%0A%20%20%20%20h2%20%7B%0A%20%20%20%20%20%20%20%20margin-top%3A%2030px%3B%0A%20%20%20%20%20%20%20%20margin-bottom%3A%2010px%3B%0A%20%20%20%20%20%20%20%20color%3A%20%23ecf0f1%3B%0A%20%20%20%20%7D%0A%20%20%20%20textarea%20%7B%0A%20%20%20%20%20%20%20%20width%3A%2090%25%3B%0A%20%20%20%20%20%20%20%20height%3A%20300px%3B%0A%20%20%20%20%20%20%20%20padding%3A%2015px%3B%0A%20%20%20%20%20%20%20%20font-size%3A%201.1rem%3B%0A%20%20%20%20%20%20%20%20border-radius%3A%2010px%3B%0A%20%20%20%20%20%20%20%20border%3A%20none%3B%0A%20%20%20%20%20%20%20%20resize%3A%20vertical%3B%0A%20%20%20%20%20%20%20%20background-color%3A%20%2334495e%3B%0A%20%20%20%20%20%20%20%20color%3A%20%23ecf0f1%3B%0A%20%20%20%20%20%20%20%20box-shadow%3A%200%204px%206px%20rgba(0%2C0%2C0%2C0.3)%3B%0A%20%20%20%20%7D%0A%20%20%20%20button%20%7B%0A%20%20%20%20%20%20%20%20padding%3A%2012px%2025px%3B%0A%20%20%20%20%20%20%20%20margin%3A%2010px%205px%3B%0A%20%20%20%20%20%20%20%20font-size%3A%201rem%3B%0A%20%20%20%20%20%20%20%20border-radius%3A%208px%3B%0A%20%20%20%20%20%20%20%20border%3A%20none%3B%0A%20%20%20%20%20%20%20%20cursor%3A%20pointer%3B%0A%20%20%20%20%20%20%20%20background-color%3A%20%231abc9c%3B%0A%20%20%20%20%20%20%20%20color%3A%20%232c3e50%3B%0A%20%20%20%20%20%20%20%20transition%3A%20background-color%200.3s%2C%20transform%200.2s%3B%0A%20%20%20%20%7D%0A%20%20%20%20button%3Ahover%20%7B%0A%20%20%20%20%20%20%20%20background-color%3A%20%2316a085%3B%0A%20%20%20%20%20%20%20%20transform%3A%20translateY(-2px)%3B%0A%20%20%20%20%7D%0A%20%20%20%20%23output%20%7B%0A%20%20%20%20%20%20%20%20background-color%3A%20%2334495e%3B%0A%20%20%20%20%7D%0A%3C%2Fstyle%3E%0A%3C%2Fhead%3E%0A%3Cbody%3E%0A%0A%3Ch1%3EDEFLATE%20Base64%20Encoder%2FDecoder%3C%2Fh1%3E%0A%0A%3Ch2%3EInput%3C%2Fh2%3E%0A%3Ctextarea%20id%3D%22input%22%20placeholder%3D%22Enter%20text%20or%20Base64%20DEFLATE%20string%20here...%22%3E%3C%2Ftextarea%3E%0A%3Cbr%3E%0A%3Cbutton%20onclick%3D%22encode()%22%3EEncode%3C%2Fbutton%3E%0A%3Cbutton%20onclick%3D%22decode()%22%3EDecode%3C%2Fbutton%3E%0A%0A%3Ch2%3EOutput%3C%2Fh2%3E%0A%3Ctextarea%20id%3D%22output%22%20readonly%20placeholder%3D%22Result%20will%20appear%20here...%22%3E%3C%2Ftextarea%3E%0A%0A%3Cscript%3E%0Afunction%20encode()%20%7B%0A%20%20%20%20const%20text%20%3D%20document.getElementById('input').value%3B%0A%20%20%20%20try%20%7B%0A%20%20%20%20%20%20%20%20const%20deflated%20%3D%20pako.deflate(text)%3B%0A%20%20%20%20%20%20%20%20const%20base64%20%3D%20btoa(String.fromCharCode.apply(null%2C%20deflated))%3B%0A%20%20%20%20%20%20%20%20document.getElementById('output').value%20%3D%20'data%3Aapplication%2Fdeflate%3Bbase64%2C'%20%2B%20base64%3B%0A%20%20%20%20%7D%20catch%20(err)%20%7B%0A%20%20%20%20%20%20%20%20alert('Error%20encoding%3A%20'%20%2B%20err)%3B%0A%20%20%20%20%7D%0A%7D%0A%0Afunction%20decode()%20%7B%0A%20%20%20%20let%20input%20%3D%20document.getElementById('input').value%3B%0A%20%20%20%20try%20%7B%0A%20%20%20%20%20%20%20%20if%20(input.startsWith('data%3Aapplication%2Fdeflate%3Bbase64%2C'))%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20input%20%3D%20input.replace('data%3Aapplication%2Fdeflate%3Bbase64%2C'%2C%20'')%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20const%20strData%20%3D%20atob(input)%3B%0A%20%20%20%20%20%20%20%20const%20charData%20%3D%20strData.split('').map(c%20%3D%3E%20c.charCodeAt(0))%3B%0A%20%20%20%20%20%20%20%20const%20uint8Array%20%3D%20new%20Uint8Array(charData)%3B%0A%20%20%20%20%20%20%20%20const%20inflated%20%3D%20pako.inflate(uint8Array%2C%20%7B%20to%3A%20'string'%20%7D)%3B%0A%20%20%20%20%20%20%20%20document.getElementById('output').value%20%3D%20inflated%3B%0A%20%20%20%20%7D%20catch%20(err)%20%7B%0A%20%20%20%20%20%20%20%20alert('Error%20decoding%3A%20'%20%2B%20err)%3B%0A%20%20%20%20%7D%0A%7D%0A%3C%2Fscript%3E%0A%0A%3C%2Fbody%3E%0A%3C%2Fhtml%3E%0A
+chat gpt slop lol
+-->
+</html>
