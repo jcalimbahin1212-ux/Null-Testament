@@ -234,6 +234,7 @@
   function getPanicKey() {
     return localStorage.getItem('nt-panic-key') || '`';
   }
+  NT.privacy.getPanicKey = getPanicKey;
 
   function setPanicKey(key) {
     localStorage.setItem('nt-panic-key', key);
@@ -424,6 +425,170 @@
   }
 
   // ── privacy settings page renderer ────────────────────────────────
+
+  // ── auto-panic on idle ──────────────────────────────────────────
+  var idleTimer = null;
+  var idleTimeout = parseInt(localStorage.getItem('nt-idle-timeout')) || 0; // 0 = disabled, in seconds
+
+  function resetIdleTimer() {
+    if (!idleTimeout) return;
+    if (idleTimer) clearTimeout(idleTimer);
+    idleTimer = setTimeout(function () {
+      if (NT.privacy && NT.privacy.triggerPanic) NT.privacy.triggerPanic();
+    }, idleTimeout * 1000);
+  }
+
+  NT.privacy.enableIdlePanic = function (seconds) {
+    idleTimeout = seconds;
+    localStorage.setItem('nt-idle-timeout', seconds);
+    if (seconds > 0) {
+      resetIdleTimer();
+      document.addEventListener('mousemove', resetIdleTimer);
+      document.addEventListener('keydown', resetIdleTimer);
+      document.addEventListener('click', resetIdleTimer);
+      document.addEventListener('scroll', resetIdleTimer);
+    }
+  };
+
+  NT.privacy.disableIdlePanic = function () {
+    idleTimeout = 0;
+    localStorage.setItem('nt-idle-timeout', '0');
+    if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; }
+    document.removeEventListener('mousemove', resetIdleTimer);
+    document.removeEventListener('keydown', resetIdleTimer);
+    document.removeEventListener('click', resetIdleTimer);
+    document.removeEventListener('scroll', resetIdleTimer);
+  };
+
+  NT.privacy.getIdleTimeout = function () { return idleTimeout; };
+
+  /* restore idle-panic on load */
+  if (idleTimeout > 0) {
+    NT.privacy.enableIdlePanic(idleTimeout);
+  }
+
+  // ── cookie & storage cleaner ────────────────────────────────────
+  NT.privacy.cleanCookies = function () {
+    /* clear all cookies for current domain */
+    var cookies = document.cookie.split(';');
+    var cleared = 0;
+    cookies.forEach(function (c) {
+      var name = c.split('=')[0].trim();
+      if (!name) return;
+      document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+      cleared++;
+    });
+
+    /* clear session storage (non-NT data) */
+    var sessKeys = [];
+    for (var i = 0; i < sessionStorage.length; i++) {
+      var key = sessionStorage.key(i);
+      if (key && key.indexOf('nt-') !== 0) sessKeys.push(key);
+    }
+    sessKeys.forEach(function (k) { sessionStorage.removeItem(k); });
+
+    return cleared + sessKeys.length;
+  };
+
+  // ── anti-screenshot blur ────────────────────────────────────────
+  var blurStyleEl = null;
+  var antiScreenshotActive = localStorage.getItem('nt-anti-screenshot') === '1';
+
+  function injectBlurOnVisibilityChange() {
+    document.addEventListener('visibilitychange', function () {
+      if (!antiScreenshotActive) return;
+      if (document.hidden) {
+        if (!blurStyleEl) {
+          blurStyleEl = document.createElement('style');
+          blurStyleEl.textContent = 'body>*:not(#toast-container){filter:blur(20px)!important;transition:filter 0.1s;}';
+          document.head.appendChild(blurStyleEl);
+        }
+      } else {
+        if (blurStyleEl && blurStyleEl.parentNode) {
+          blurStyleEl.parentNode.removeChild(blurStyleEl);
+          blurStyleEl = null;
+        }
+      }
+    });
+  }
+
+  NT.privacy.enableAntiScreenshot = function () {
+    antiScreenshotActive = true;
+    localStorage.setItem('nt-anti-screenshot', '1');
+  };
+
+  NT.privacy.disableAntiScreenshot = function () {
+    antiScreenshotActive = false;
+    localStorage.setItem('nt-anti-screenshot', '0');
+    if (blurStyleEl && blurStyleEl.parentNode) {
+      blurStyleEl.parentNode.removeChild(blurStyleEl);
+      blurStyleEl = null;
+    }
+  };
+
+  NT.privacy.isAntiScreenshotActive = function () { return antiScreenshotActive; };
+
+  injectBlurOnVisibilityChange();
+
+  // ── referrer policy enforcement ─────────────────────────────────
+  var referrerActive = localStorage.getItem('nt-referrer-policy') === '1';
+
+  function enforceReferrerPolicy() {
+    var existing = $('meta[name="referrer"]');
+    if (existing) {
+      existing.setAttribute('content', 'no-referrer');
+    } else {
+      var meta = document.createElement('meta');
+      meta.setAttribute('name', 'referrer');
+      meta.setAttribute('content', 'no-referrer');
+      document.head.appendChild(meta);
+    }
+  }
+
+  NT.privacy.enableReferrerBlock = function () {
+    referrerActive = true;
+    localStorage.setItem('nt-referrer-policy', '1');
+    enforceReferrerPolicy();
+  };
+
+  NT.privacy.disableReferrerBlock = function () {
+    referrerActive = false;
+    localStorage.setItem('nt-referrer-policy', '0');
+    var meta = $('meta[name="referrer"]');
+    if (meta && meta.parentNode) meta.parentNode.removeChild(meta);
+  };
+
+  NT.privacy.isReferrerBlocked = function () { return referrerActive; };
+
+  if (referrerActive) enforceReferrerPolicy();
+
+  // ── privacy score calculator ────────────────────────────────────
+  NT.privacy.calculateScore = function () {
+    var score = 0;
+    var max = 6;
+    var details = [];
+
+    if (loadCloakState()) { score++; details.push({ name: 'tab cloaking', on: true }); }
+    else details.push({ name: 'tab cloaking', on: false });
+
+    if (monitorInterval) { score++; details.push({ name: 'extension monitor', on: true }); }
+    else details.push({ name: 'extension monitor', on: false });
+
+    if (spoofActive) { score++; details.push({ name: 'history spoofing', on: true }); }
+    else details.push({ name: 'history spoofing', on: false });
+
+    if (idleTimeout > 0) { score++; details.push({ name: 'idle auto-panic', on: true }); }
+    else details.push({ name: 'idle auto-panic', on: false });
+
+    if (antiScreenshotActive) { score++; details.push({ name: 'anti-screenshot', on: true }); }
+    else details.push({ name: 'anti-screenshot', on: false });
+
+    if (referrerActive) { score++; details.push({ name: 'referrer block', on: true }); }
+    else details.push({ name: 'referrer block', on: false });
+
+    return { score: score, max: max, pct: Math.round((score / max) * 100), details: details };
+  };
+
   NT.privacy.renderPage = function (container) {
     container.innerHTML = '';
 
@@ -433,6 +598,7 @@
     var monitorOn = !!monitorInterval;
     var spoofOn = spoofActive;
     var threats = NT.privacy.detectExtensions();
+    var privScore = NT.privacy.calculateScore();
 
     var statusColor = threats.length ? '#ef4444' : '#d4d4d4';
     var statusLabel = threats.length
@@ -445,6 +611,36 @@
     ]);
     container.appendChild(header);
 
+    /* ── privacy score dashboard ───────────────────────────────── */
+    var scoreColor = privScore.pct >= 80 ? '#4ade80' : privScore.pct >= 50 ? '#fbbf24' : '#ef4444';
+    var scoreCard = el('div', {
+      style: 'display:grid;grid-template-columns:160px 1fr;gap:24px;margin-bottom:24px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;'
+    });
+
+    var circumference = 2 * Math.PI * 52;
+    var dashOffset = circumference - (privScore.pct / 100) * circumference;
+    var circleHtml = '<svg width="120" height="120" viewBox="0 0 120 120">'
+      + '<circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>'
+      + '<circle cx="60" cy="60" r="52" fill="none" stroke="' + scoreColor + '" stroke-width="8" '
+      + 'stroke-dasharray="' + circumference + '" stroke-dashoffset="' + dashOffset + '" '
+      + 'stroke-linecap="round" transform="rotate(-90 60 60)" style="transition:stroke-dashoffset 0.8s ease;"/>'
+      + '<text x="60" y="55" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700" font-size="28" fill="' + scoreColor + '">' + privScore.pct + '</text>'
+      + '<text x="60" y="72" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#888">score</text>'
+      + '</svg>';
+
+    scoreCard.appendChild(el('div', { style: 'display:flex;align-items:center;justify-content:center;', html: circleHtml }));
+
+    var checklistDiv = el('div', { style: 'display:flex;flex-direction:column;justify-content:center;gap:8px;' });
+    privScore.details.forEach(function (d) {
+      var row = el('div', { style: 'display:flex;align-items:center;gap:8px;font-size:0.78rem;' });
+      row.appendChild(el('div', { style: 'width:8px;height:8px;border-radius:50%;flex-shrink:0;background:' + (d.on ? scoreColor : 'rgba(255,255,255,0.1)') + ';' }));
+      row.appendChild(el('span', { text: d.name, style: 'color:' + (d.on ? 'var(--text)' : 'var(--text-dim)') + ';' }));
+      row.appendChild(el('span', { text: d.on ? 'active' : 'off', style: 'margin-left:auto;font-size:0.68rem;color:' + (d.on ? scoreColor : 'var(--text-dim)') + ';' }));
+      checklistDiv.appendChild(row);
+    });
+    scoreCard.appendChild(checklistDiv);
+    container.appendChild(scoreCard);
+
     /* status card */
     var statusCard = el('div', {
       class: 'action-card',
@@ -455,281 +651,158 @@
         html: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="' + statusColor + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>'
       }),
       el('div', { style: 'flex:1;' }, [
-        el('div', {
-          style: 'font-size:1rem;font-weight:600;color:' + statusColor + ';margin-bottom:4px;',
-          text: 'shield status'
-        }),
-        el('div', {
-          style: 'font-size:0.78rem;color:#999;',
-          text: statusLabel
-              + '  \u2022  cloak: ' + (cloakOn ? 'on' : 'off')
-              + '  \u2022  monitor: ' + (monitorOn ? 'on' : 'off')
-              + '  \u2022  history spoof: ' + (spoofOn ? 'on' : 'off')
-        })
+        el('div', { style: 'font-size:1rem;font-weight:600;color:' + statusColor + ';margin-bottom:4px;', text: 'shield status' }),
+        el('div', { style: 'font-size:0.78rem;color:#999;', text: statusLabel })
       ])
     ]);
     container.appendChild(statusCard);
 
-    /* ── settings list wrapper ─────────────────────────────────── */
+    /* ── settings list ─────────────────────────────────────────── */
     var list = el('div', { class: 'settings-list' });
     container.appendChild(list);
 
-    /* ── 1. cloak preset selector ──────────────────────────────── */
+    /* 1. cloak preset */
     var activePreset = cloakState ? cloakState.preset : '';
     var presetSelect = el('select', { class: 'input-field', style: 'max-width:260px;' });
-    var presetOptions = [
-      { value: '',                label: 'off (no cloak)' },
-      { value: 'google-docs',    label: 'Google Docs' },
-      { value: 'google-classroom', label: 'Google Classroom' },
-      { value: 'canvas',         label: 'Canvas LMS' },
-      { value: 'khan-academy',   label: 'Khan Academy' },
-      { value: 'custom',         label: 'custom...' }
-    ];
-    presetOptions.forEach(function (o) {
+    [{ value:'', label:'off (no cloak)' },{ value:'google-docs', label:'Google Docs' },{ value:'google-classroom', label:'Google Classroom' },{ value:'canvas', label:'Canvas LMS' },{ value:'khan-academy', label:'Khan Academy' },{ value:'custom', label:'custom...' }].forEach(function (o) {
       var opt = el('option', { value: o.value, text: o.label });
       if (o.value === activePreset) opt.selected = true;
       presetSelect.appendChild(opt);
     });
-
-    var cloakItem = el('div', { class: 'setting-item' }, [
-      el('div', { class: 'setting-info' }, [
-        el('span', { class: 'setting-name', text: 'tab cloak' }),
-        el('span', { class: 'setting-desc', text: 'disguise the browser tab as a school app' })
-      ]),
+    list.appendChild(el('div', { class: 'setting-item' }, [
+      el('div', { class: 'setting-info' }, [el('span', { class: 'setting-name', text: 'tab cloak' }), el('span', { class: 'setting-desc', text: 'disguise the browser tab as a school app' })]),
       presetSelect
-    ]);
-    list.appendChild(cloakItem);
+    ]));
 
-    /* ── 2. custom cloak fields ────────────────────────────────── */
-    var customTitle = (cloakState && cloakState.preset === 'custom' && cloakState.customTitle) ? cloakState.customTitle : '';
-    var customFavicon = (cloakState && cloakState.preset === 'custom' && cloakState.customFavicon) ? cloakState.customFavicon : '';
-
-    var customTitleInput = el('input', {
-      type: 'text',
-      class: 'input-field',
-      placeholder: 'tab title',
-      value: customTitle,
-      style: 'max-width:260px;'
-    });
-    var customFaviconInput = el('input', {
-      type: 'text',
-      class: 'input-field',
-      placeholder: 'favicon url',
-      value: customFavicon,
-      style: 'max-width:260px;'
-    });
-
-    var customFields = el('div', {
-      class: 'setting-item',
-      style: 'flex-direction:column;align-items:stretch;gap:10px;' + (activePreset !== 'custom' ? 'display:none;' : '')
-    }, [
-      el('div', { class: 'setting-info' }, [
-        el('span', { class: 'setting-name', text: 'custom cloak' }),
-        el('span', { class: 'setting-desc', text: 'set your own title and favicon' })
-      ]),
-      el('div', { style: 'display:flex;gap:8px;flex-wrap:wrap;' }, [
-        customTitleInput,
-        customFaviconInput,
-        el('button', {
-          class: 'small-btn primary',
-          text: 'apply',
-          onclick: function () {
-            var t = customTitleInput.value.trim();
-            var f = customFaviconInput.value.trim();
-            if (!t) { toast('enter a title'); return; }
-            NT.privacy.applyCustomCloak(t, f);
-            toast('custom cloak applied');
-            NT.privacy.renderPage(container);
-          }
-        })
+    /* 2. custom cloak */
+    var customTitleVal = (cloakState && cloakState.preset === 'custom' && cloakState.customTitle) ? cloakState.customTitle : '';
+    var customFaviconVal = (cloakState && cloakState.preset === 'custom' && cloakState.customFavicon) ? cloakState.customFavicon : '';
+    var customTitleInput = el('input', { type:'text', class:'input-field', placeholder:'tab title', value:customTitleVal, style:'max-width:260px;' });
+    var customFaviconInput = el('input', { type:'text', class:'input-field', placeholder:'favicon url', value:customFaviconVal, style:'max-width:260px;' });
+    var customFields = el('div', { class:'setting-item', style:'flex-direction:column;align-items:stretch;gap:10px;' + (activePreset !== 'custom' ? 'display:none;' : '') }, [
+      el('div', { class:'setting-info' }, [el('span', { class:'setting-name', text:'custom cloak' }), el('span', { class:'setting-desc', text:'set your own title and favicon' })]),
+      el('div', { style:'display:flex;gap:8px;flex-wrap:wrap;' }, [customTitleInput, customFaviconInput,
+        el('button', { class:'small-btn primary', text:'apply', onclick: function () {
+          var t = customTitleInput.value.trim(); var f = customFaviconInput.value.trim();
+          if (!t) { toast('enter a title'); return; }
+          NT.privacy.applyCustomCloak(t, f); toast('custom cloak applied'); NT.privacy.renderPage(container);
+        }})
       ])
     ]);
     list.appendChild(customFields);
-
-    /* show/hide custom fields when preset changes */
     presetSelect.addEventListener('change', function () {
       var val = presetSelect.value;
-      if (val === '') {
-        NT.privacy.removeCloak();
-        customFields.style.display = 'none';
-        toast('cloak removed');
-      } else if (val === 'custom') {
-        customFields.style.display = '';
-        /* don't auto-apply; wait for user to click apply */
-      } else {
-        NT.privacy.applyCloak(val);
-        customFields.style.display = 'none';
-        toast('cloaked as ' + CLOAK_PRESETS[val].title);
-      }
+      if (val === '') { NT.privacy.removeCloak(); customFields.style.display = 'none'; toast('cloak removed'); }
+      else if (val === 'custom') { customFields.style.display = ''; }
+      else { NT.privacy.applyCloak(val); customFields.style.display = 'none'; toast('cloaked as ' + CLOAK_PRESETS[val].title); }
       NT.privacy.renderPage(container);
     });
 
-    /* ── 3. panic key ──────────────────────────────────────────── */
+    /* 3. panic key */
     var panicKeyValue = getPanicKey();
-    var panicKeyDisplay = el('span', {
-      style: 'display:inline-block;padding:4px 12px;background:#111;border:1px solid #2a2a2a;border-radius:6px;font-size:0.85rem;color:#f0f0f0;font-family:monospace;min-width:36px;text-align:center;',
-      text: panicKeyValue === '`' ? '` (backtick)' : panicKeyValue
-    });
-
+    var panicKeyDisplay = el('span', { style:'display:inline-block;padding:4px 12px;background:#111;border:1px solid #2a2a2a;border-radius:6px;font-size:0.85rem;color:#f0f0f0;font-family:monospace;min-width:36px;text-align:center;', text: panicKeyValue === '`' ? '` (backtick)' : panicKeyValue });
     var recordingKey = false;
-    var recordBtn = el('button', {
-      class: 'small-btn',
-      text: 'change key',
-      onclick: function () {
-        if (recordingKey) return;
-        recordingKey = true;
-        recordBtn.textContent = 'press a key...';
-        panicKeyDisplay.textContent = '...';
-        panicKeyDisplay.style.borderColor = '#d4d4d4';
+    var recordBtn = el('button', { class:'small-btn', text:'change key', onclick: function () {
+      if (recordingKey) return; recordingKey = true; recordBtn.textContent = 'press a key...'; panicKeyDisplay.textContent = '...'; panicKeyDisplay.style.borderColor = '#d4d4d4';
+      function onKey(e) { e.preventDefault(); e.stopPropagation(); document.removeEventListener('keydown', onKey, true); recordingKey = false; var k = e.key; setPanicKey(k); panicKeyDisplay.textContent = k === '`' ? '` (backtick)' : k; panicKeyDisplay.style.borderColor = '#2a2a2a'; recordBtn.textContent = 'change key'; toast('panic key set to ' + k); }
+      document.addEventListener('keydown', onKey, true);
+    }});
+    var panicTestBtn = el('button', { class:'small-btn primary', text:'test panic', style:'color:#ef4444;border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.06);', onclick: function () { if (confirm('this will replace the page with a fake google docs screen. refresh to get back. continue?')) NT.privacy.triggerPanic(); }});
+    list.appendChild(el('div', { class:'setting-item', style:'flex-wrap:wrap;gap:10px;' }, [
+      el('div', { class:'setting-info' }, [el('span', { class:'setting-name', text:'panic button' }), el('span', { class:'setting-desc', text:'instantly replace the page with a fake google docs screen' })]),
+      el('div', { style:'display:flex;align-items:center;gap:8px;flex-wrap:wrap;' }, [panicKeyDisplay, recordBtn, panicTestBtn])
+    ]));
 
-        function onKey(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          document.removeEventListener('keydown', onKey, true);
-          recordingKey = false;
-          var k = e.key;
-          setPanicKey(k);
-          panicKeyDisplay.textContent = k === '`' ? '` (backtick)' : k;
-          panicKeyDisplay.style.borderColor = '#2a2a2a';
-          recordBtn.textContent = 'change key';
-          toast('panic key set to ' + k);
-        }
-        document.addEventListener('keydown', onKey, true);
-      }
+    /* 4. idle auto-panic */
+    var currentIdle = NT.privacy.getIdleTimeout();
+    var idleSelect = el('select', { class:'input-field', style:'max-width:200px;' });
+    [{v:'0',l:'disabled'},{v:'30',l:'30 seconds'},{v:'60',l:'1 minute'},{v:'120',l:'2 minutes'},{v:'300',l:'5 minutes'}].forEach(function (o) {
+      var opt = el('option', { value:o.v, text:o.l }); if (parseInt(o.v) === currentIdle) opt.selected = true; idleSelect.appendChild(opt);
     });
-
-    var panicTestBtn = el('button', {
-      class: 'small-btn primary',
-      text: 'test panic',
-      style: 'color:#ef4444;border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.06);',
-      onclick: function () {
-        if (confirm('this will replace the page with a fake google docs screen. you will need to refresh to get back. continue?')) {
-          NT.privacy.triggerPanic();
-        }
-      }
+    idleSelect.addEventListener('change', function () {
+      var val = parseInt(idleSelect.value);
+      if (val > 0) { NT.privacy.enableIdlePanic(val); toast('auto-panic after ' + val + 's of idle'); }
+      else { NT.privacy.disableIdlePanic(); toast('idle auto-panic disabled'); }
+      NT.privacy.renderPage(container);
     });
+    list.appendChild(el('div', { class:'setting-item' }, [
+      el('div', { class:'setting-info' }, [el('span', { class:'setting-name', text:'idle auto-panic' }), el('span', { class:'setting-desc', text:'auto-trigger panic if no mouse/keyboard activity' })]),
+      idleSelect
+    ]));
 
-    var panicItem = el('div', { class: 'setting-item', style: 'flex-wrap:wrap;gap:10px;' }, [
-      el('div', { class: 'setting-info' }, [
-        el('span', { class: 'setting-name', text: 'panic button' }),
-        el('span', { class: 'setting-desc', text: 'instantly replace the page with a fake google docs screen' })
-      ]),
-      el('div', { style: 'display:flex;align-items:center;gap:8px;flex-wrap:wrap;' }, [
-        panicKeyDisplay,
-        recordBtn,
-        panicTestBtn
-      ])
-    ]);
-    list.appendChild(panicItem);
-
-    /* ── 4. history spoof toggle ───────────────────────────────── */
-    var spoofToggle = el('input', { type: 'checkbox' });
-    spoofToggle.checked = spoofActive;
-    var spoofLabel = el('label', { class: 'toggle' }, [
-      spoofToggle,
-      el('span', { class: 'toggle-slider' })
-    ]);
-
+    /* 5. history spoof */
+    var spoofToggle = el('input', { type:'checkbox' }); spoofToggle.checked = spoofActive;
     spoofToggle.addEventListener('change', function () {
-      if (spoofToggle.checked) {
-        spoofActive = true;
-        localStorage.setItem('nt-history-spoof', '1');
-        NT.privacy.spoofHistory();
-        toast('history spoofing enabled');
-      } else {
-        NT.privacy.disableSpoofHistory();
-        toast('history spoofing disabled');
-      }
+      if (spoofToggle.checked) { spoofActive = true; localStorage.setItem('nt-history-spoof','1'); NT.privacy.spoofHistory(); toast('history spoofing enabled'); }
+      else { NT.privacy.disableSpoofHistory(); toast('history spoofing disabled'); }
       NT.privacy.renderPage(container);
     });
+    list.appendChild(el('div', { class:'setting-item' }, [
+      el('div', { class:'setting-info' }, [el('span', { class:'setting-name', text:'history spoofing' }), el('span', { class:'setting-desc', text:'inject fake edu urls into browser history' })]),
+      el('label', { class:'toggle' }, [spoofToggle, el('span', { class:'toggle-slider' })])
+    ]));
 
-    var spoofItem = el('div', { class: 'setting-item' }, [
-      el('div', { class: 'setting-info' }, [
-        el('span', { class: 'setting-name', text: 'history spoofing' }),
-        el('span', { class: 'setting-desc', text: 'inject fake edu urls into browser history (docs, classroom, khan academy, quizlet)' })
-      ]),
-      spoofLabel
-    ]);
-    list.appendChild(spoofItem);
-
-    /* ── 5. extension monitor toggle ───────────────────────────── */
-    var monToggle = el('input', { type: 'checkbox' });
-    monToggle.checked = monitorOn;
-    var monLabel = el('label', { class: 'toggle' }, [
-      monToggle,
-      el('span', { class: 'toggle-slider' })
-    ]);
-
+    /* 6. extension monitor */
+    var monToggle = el('input', { type:'checkbox' }); monToggle.checked = monitorOn;
     monToggle.addEventListener('change', function () {
-      if (monToggle.checked) {
-        NT.privacy.startMonitor();
-        toast('extension monitor active');
-      } else {
-        NT.privacy.stopMonitor();
-        toast('extension monitor stopped');
-      }
+      if (monToggle.checked) { NT.privacy.startMonitor(); toast('extension monitor active'); }
+      else { NT.privacy.stopMonitor(); toast('extension monitor stopped'); }
       NT.privacy.renderPage(container);
     });
+    list.appendChild(el('div', { class:'setting-item' }, [
+      el('div', { class:'setting-info' }, [el('span', { class:'setting-name', text:'extension monitor' }), el('span', { class:'setting-desc', text:'scan for goguardian, securly, lightspeed, cisco umbrella every 5s' })]),
+      el('label', { class:'toggle' }, [monToggle, el('span', { class:'toggle-slider' })])
+    ]));
 
-    var monItem = el('div', { class: 'setting-item' }, [
-      el('div', { class: 'setting-info' }, [
-        el('span', { class: 'setting-name', text: 'extension monitor' }),
-        el('span', { class: 'setting-desc', text: 'scan for goguardian, securly, lightspeed, cisco umbrella every 5 seconds' })
-      ]),
-      monLabel
-    ]);
-    list.appendChild(monItem);
-
-    /* ── 6. scan now ───────────────────────────────────────────── */
-    var scanResults = el('div', {
-      style: 'margin-top:10px;font-size:0.78rem;color:#999;display:none;'
+    /* 7. anti-screenshot blur */
+    var ssToggle = el('input', { type:'checkbox' }); ssToggle.checked = NT.privacy.isAntiScreenshotActive();
+    ssToggle.addEventListener('change', function () {
+      if (ssToggle.checked) { NT.privacy.enableAntiScreenshot(); toast('anti-screenshot enabled'); }
+      else { NT.privacy.disableAntiScreenshot(); toast('anti-screenshot disabled'); }
+      NT.privacy.renderPage(container);
     });
+    list.appendChild(el('div', { class:'setting-item' }, [
+      el('div', { class:'setting-info' }, [el('span', { class:'setting-name', text:'anti-screenshot blur' }), el('span', { class:'setting-desc', text:'blur the page when tab loses focus to prevent screen capture' })]),
+      el('label', { class:'toggle' }, [ssToggle, el('span', { class:'toggle-slider' })])
+    ]));
 
-    var scanBtn = el('button', {
-      class: 'primary-btn',
-      text: 'scan now',
-      style: 'flex-shrink:0;',
-      onclick: function () {
-        var results = NT.privacy.detectExtensions();
-        scanResults.style.display = 'block';
-        if (results.length === 0) {
-          scanResults.innerHTML = '';
-          scanResults.style.color = '#d4d4d4';
-          scanResults.textContent = 'scan complete — no monitoring extensions detected';
-        } else {
-          scanResults.style.color = '#ef4444';
-          scanResults.innerHTML = '';
-          var heading = el('div', {
-            text: 'detected ' + results.length + ' threat' + (results.length > 1 ? 's' : '') + ':',
-            style: 'margin-bottom:6px;font-weight:500;'
-          });
-          scanResults.appendChild(heading);
-          results.forEach(function (r) {
-            var row = el('div', {
-              style: 'padding:4px 0;padding-left:12px;',
-              text: '\u2022 ' + r
-            });
-            scanResults.appendChild(row);
-          });
-        }
-        toast(results.length ? results.length + ' threat(s) found' : 'scan clean');
+    /* 8. referrer block */
+    var refToggle = el('input', { type:'checkbox' }); refToggle.checked = NT.privacy.isReferrerBlocked();
+    refToggle.addEventListener('change', function () {
+      if (refToggle.checked) { NT.privacy.enableReferrerBlock(); toast('referrer blocking enabled'); }
+      else { NT.privacy.disableReferrerBlock(); toast('referrer blocking disabled'); }
+      NT.privacy.renderPage(container);
+    });
+    list.appendChild(el('div', { class:'setting-item' }, [
+      el('div', { class:'setting-info' }, [el('span', { class:'setting-name', text:'referrer block' }), el('span', { class:'setting-desc', text:'prevent sites from seeing where you came from' })]),
+      el('label', { class:'toggle' }, [refToggle, el('span', { class:'toggle-slider' })])
+    ]));
+
+    /* 9. cookie cleaner */
+    list.appendChild(el('div', { class:'setting-item' }, [
+      el('div', { class:'setting-info' }, [el('span', { class:'setting-name', text:'cookie & storage cleaner' }), el('span', { class:'setting-desc', text:'clear tracking cookies and non-NT session data' })]),
+      el('button', { class:'primary-btn', text:'clean now', style:'flex-shrink:0;', onclick: function () { var count = NT.privacy.cleanCookies(); toast('cleaned ' + count + ' tracking items'); }})
+    ]));
+
+    /* 10. manual scan */
+    var scanResults = el('div', { style:'margin-top:10px;font-size:0.78rem;color:#999;display:none;' });
+    var scanBtn = el('button', { class:'primary-btn', text:'scan now', style:'flex-shrink:0;', onclick: function () {
+      var results = NT.privacy.detectExtensions(); scanResults.style.display = 'block';
+      if (!results.length) { scanResults.innerHTML = ''; scanResults.style.color = '#d4d4d4'; scanResults.textContent = 'scan complete -- no monitoring extensions detected'; }
+      else {
+        scanResults.style.color = '#ef4444'; scanResults.innerHTML = '';
+        scanResults.appendChild(el('div', { text:'detected ' + results.length + ' threat(s):', style:'margin-bottom:6px;font-weight:500;' }));
+        results.forEach(function (r) { scanResults.appendChild(el('div', { style:'padding:4px 0;padding-left:12px;', text:'- ' + r })); });
       }
-    });
-
-    var scanItem = el('div', {
-      class: 'setting-item',
-      style: 'flex-direction:column;align-items:stretch;gap:10px;'
-    }, [
-      el('div', { style: 'display:flex;align-items:center;justify-content:space-between;' }, [
-        el('div', { class: 'setting-info' }, [
-          el('span', { class: 'setting-name', text: 'manual scan' }),
-          el('span', { class: 'setting-desc', text: 'run a one-time scan for monitoring extensions' })
-        ]),
+      toast(results.length ? results.length + ' threat(s) found' : 'scan clean');
+    }});
+    list.appendChild(el('div', { class:'setting-item', style:'flex-direction:column;align-items:stretch;gap:10px;' }, [
+      el('div', { style:'display:flex;align-items:center;justify-content:space-between;' }, [
+        el('div', { class:'setting-info' }, [el('span', { class:'setting-name', text:'manual scan' }), el('span', { class:'setting-desc', text:'run a one-time scan for monitoring extensions' })]),
         scanBtn
       ]),
       scanResults
-    ]);
-    list.appendChild(scanItem);
+    ]));
   };
 
 })();

@@ -57,8 +57,24 @@ window.NT = window.NT || {};
     var c = getCompleted();
     var key = subj + ':' + idx;
     if (c.indexOf(key) === -1) { c.push(key); localStorage.setItem('nt-completed', JSON.stringify(c)); }
+    logActivity('lesson', subj + ' #' + idx);
   }
   function isLessonCompleted(subj, idx) { return getCompleted().indexOf(subj + ':' + idx) !== -1; }
+
+  /* ================================================================
+     ACTIVITY LOG
+     ================================================================ */
+  function getActivityLog() {
+    try { return JSON.parse(localStorage.getItem('nt-activity') || '[]'); }
+    catch (_) { return []; }
+  }
+  function logActivity(type, detail) {
+    var log = getActivityLog();
+    log.push({ type: type, detail: detail, time: Date.now() });
+    if (log.length > 50) log = log.slice(-50);
+    localStorage.setItem('nt-activity', JSON.stringify(log));
+  }
+  N.logActivity = logActivity;
 
   /* ================================================================
      LESSON HELPERS
@@ -170,6 +186,7 @@ window.NT = window.NT || {};
 
   function navigate(pageId, opts) {
     currentPage = pageId;
+    logActivity('navigate', pageId);
     $$('.nav-link').forEach(function (l) {
       l.classList.toggle('active', l.getAttribute('data-page') === pageId);
     });
@@ -234,31 +251,71 @@ window.NT = window.NT || {};
   /* ================================================================
      PAGE: HOME
      ================================================================ */
+
+  /* SVG logo markup (inline shield with NT monogram) — enhanced */
+  var svgShieldLogo = '<svg viewBox="0 0 64 88" fill="none" xmlns="http://www.w3.org/2000/svg">'
+    + '<defs><linearGradient id="shieldGrad" x1="32" y1="0" x2="32" y2="88" gradientUnits="userSpaceOnUse">'
+    + '<stop offset="0%" stop-color="currentColor" stop-opacity="1"/>'
+    + '<stop offset="100%" stop-color="currentColor" stop-opacity="0.4"/>'
+    + '</linearGradient></defs>'
+    + '<path d="M32 2L4 18v26c0 22 28 38 28 38s28-16 28-38V18L32 2z" stroke="url(#shieldGrad)" stroke-width="2" fill="none"/>'
+    + '<path d="M32 10L10 22v20c0 18 22 30 22 30s22-12 22-30V22L32 10z" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.2" fill="none"/>'
+    + '<line x1="16" y1="28" x2="48" y2="28" stroke="currentColor" stroke-width="0.4" stroke-opacity="0.12"/>'
+    + '<line x1="16" y1="40" x2="48" y2="40" stroke="currentColor" stroke-width="0.4" stroke-opacity="0.12"/>'
+    + '<text x="32" y="53" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700" font-size="24" fill="currentColor" letter-spacing="-0.5">NT</text>'
+    + '</svg>';
+
+  /* card accent map */
+  var CARD_ACCENTS = {
+    games:   { color: 'var(--clr-games)',   bg: 'rgba(96,165,250,0.10)',  glow: 'rgba(96,165,250,0.08)' },
+    learn:   { color: 'var(--clr-learn)',    bg: 'rgba(74,222,128,0.10)',  glow: 'rgba(74,222,128,0.08)' },
+    notes:   { color: 'var(--clr-notes)',    bg: 'rgba(251,191,36,0.10)', glow: 'rgba(251,191,36,0.08)' },
+    tools:   { color: 'var(--clr-tools)',    bg: 'rgba(167,139,250,0.10)',glow: 'rgba(167,139,250,0.08)' },
+    privacy: { color: 'var(--clr-privacy)',  bg: 'rgba(248,113,113,0.10)',glow: 'rgba(248,113,113,0.08)' },
+    writer:  { color: 'var(--clr-writer)',   bg: 'rgba(34,211,238,0.10)', glow: 'rgba(34,211,238,0.08)' },
+  };
+
+  /* stat accent colors */
+  var STAT_ACCENTS = ['var(--clr-games)', 'var(--clr-learn)', 'var(--clr-tools)', 'var(--clr-privacy)'];
+
   function renderHome(container) {
     var stats = countStats();
     var quote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
 
     container.innerHTML = ''
       + '<div class="hero">'
+      +   '<div class="hero-logo">' + svgShieldLogo + '</div>'
       +   '<h1 class="hero-title">null testament</h1>'
       +   '<p class="hero-subtitle">the privacy shield</p>'
-      +   '<p class="hero-quote" id="home-quote">"' + quote + '"</p>'
+      +   '<p class="hero-quote">"' + quote + '"</p>'
+      +   '<div class="global-search" id="global-search">'
+      +     '<div class="global-search-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>'
+      +     '<input type="text" class="input-field" id="global-search-input" placeholder="search games, lessons, tools...">'
+      +     '<div class="global-search-results" id="global-search-results"></div>'
+      +   '</div>'
+      +   '<div class="hero-divider"></div>'
       + '</div>'
       + '<div class="quick-actions" id="home-actions"></div>'
-      + '<div class="stat-bar" id="home-stats"></div>';
+      + '<div class="home-stats" id="home-stats"></div>'
+      + '<div id="home-recent"></div>'
+      + '<div id="home-activity"></div>';
 
     var actions = [
-      { icon: svgGames,   title: 'games',   desc: 'play 2000+ games',           page: 'games' },
-      { icon: svgLearn,   title: 'learn',    desc: '251 lessons & quizzes',       page: 'learn' },
-      { icon: svgNotes,   title: 'notes',    desc: 'take & organize notes',       page: 'noteshelf' },
-      { icon: svgTools,   title: 'tools',    desc: 'calculator, timer & more',    page: 'tools' },
-      { icon: svgPrivacy, title: 'privacy',  desc: 'shield settings',             page: 'privacy' },
-      { icon: svgWriter,  title: 'writer',   desc: 'ai-powered writing',          page: 'writer' },
+      { icon: svgGames,   title: 'games',   desc: 'play 2000+ games',           page: 'games',     accent: 'games' },
+      { icon: svgLearn,   title: 'learn',    desc: '251 lessons & quizzes',       page: 'learn',     accent: 'learn' },
+      { icon: svgNotes,   title: 'notes',    desc: 'take & organize notes',       page: 'noteshelf', accent: 'notes' },
+      { icon: svgTools,   title: 'tools',    desc: 'calculator, timer & more',    page: 'tools',     accent: 'tools' },
+      { icon: svgPrivacy, title: 'privacy',  desc: 'shield settings',             page: 'privacy',   accent: 'privacy' },
+      { icon: svgWriter,  title: 'writer',   desc: 'ai-powered writing',          page: 'writer',    accent: 'writer' },
     ];
 
     var grid = $('#home-actions', container);
     actions.forEach(function (a) {
+      var accent = CARD_ACCENTS[a.accent] || {};
       var card = el('div', { class: 'action-card' });
+      card.style.setProperty('--card-accent', accent.color || '');
+      card.style.setProperty('--card-accent-bg', accent.bg || '');
+      card.style.setProperty('--card-glow', accent.glow || '');
       card.innerHTML = '<span class="card-icon">' + a.icon + '</span>'
         + '<span class="card-title">' + a.title + '</span>'
         + '<span class="card-desc">' + a.desc + '</span>';
@@ -266,6 +323,7 @@ window.NT = window.NT || {};
       grid.appendChild(card);
     });
 
+    /* stat bar */
     var statsBar = $('#home-stats', container);
     var statItems = [
       { num: stats.games,    label: 'games' },
@@ -273,13 +331,15 @@ window.NT = window.NT || {};
       { num: stats.subjects, label: 'subjects' },
       { num: stats.tools,    label: 'tools' },
     ];
-    statItems.forEach(function (s) {
+    statItems.forEach(function (s, i) {
       var card = el('div', { class: 'stat-card' });
+      card.style.setProperty('--stat-accent', STAT_ACCENTS[i] || 'var(--border-hover)');
       var isStr = typeof s.num === 'string';
       card.innerHTML = '<span class="stat-number"' + (isStr ? '' : ' data-target="' + s.num + '"') + '>' + (isStr ? s.num : '0') + '</span><span class="stat-label">' + s.label + '</span>';
       statsBar.appendChild(card);
     });
 
+    /* animate stat numbers */
     setTimeout(function () {
       $$('.stat-number[data-target]', container).forEach(function (numEl) {
         var target = parseInt(numEl.getAttribute('data-target')) || 0;
@@ -293,6 +353,144 @@ window.NT = window.NT || {};
         }, 30);
       });
     }, 200);
+
+    /* recently played section */
+    renderRecentlyPlayed($('#home-recent', container));
+
+    /* activity log section */
+    renderActivityLog($('#home-activity', container));
+
+    /* global search */
+    bindGlobalSearch(container);
+  }
+
+  /* ── recently played ────────────────────────────── */
+  function renderRecentlyPlayed(wrap) {
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    if (!N.games || !N.games.getRecent || !N.games.findGame) return;
+
+    var recentIds = N.games.getRecent().slice().reverse().slice(0, 8);
+    if (!recentIds.length) return;
+
+    var games = [];
+    recentIds.forEach(function (id) {
+      var g = N.games.findGame(id);
+      if (g) games.push(g);
+    });
+    if (!games.length) return;
+
+    var section = el('div', { class: 'recent-section' });
+    section.innerHTML = '<div class="recent-header">recently played</div>';
+    var grid = el('div', { class: 'recent-grid' });
+
+    games.forEach(function (game) {
+      var card = el('div', { class: 'recent-card' });
+      card.innerHTML = '<div class="recent-card-name">' + game.name + '</div>'
+        + '<div class="recent-card-source">' + game.source + '</div>';
+      card.addEventListener('click', function () {
+        if (N.games && N.games.launchGame) N.games.launchGame(game);
+      });
+      grid.appendChild(card);
+    });
+
+    section.appendChild(grid);
+    wrap.appendChild(section);
+  }
+
+  /* ── activity log ────────────────────────────────── */
+  function renderActivityLog(wrap) {
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    var log = getActivityLog();
+    if (!log.length) return;
+
+    var recent = log.slice().reverse().slice(0, 10);
+    var section = el('div', { class: 'recent-section' });
+    section.innerHTML = '<div class="recent-header">activity log</div>';
+    var list = el('div', { style: 'display:flex;flex-direction:column;gap:4px;' });
+
+    recent.forEach(function (entry) {
+      var time = new Date(entry.time);
+      var timeStr = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      var row = el('div', { style: 'display:flex;align-items:center;gap:10px;padding:6px 10px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;font-size:0.75rem;' });
+      row.innerHTML = '<span style="color:var(--text-dim);min-width:50px;">' + timeStr + '</span>'
+        + '<span style="color:var(--accent);min-width:60px;font-weight:500;">' + entry.type + '</span>'
+        + '<span style="color:var(--text-muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + entry.detail + '</span>';
+      list.appendChild(row);
+    });
+
+    section.appendChild(list);
+    wrap.appendChild(section);
+  }
+
+  /* ── global search ──────────────────────────────── */
+  function bindGlobalSearch(container) {
+    var input = $('#global-search-input', container);
+    var resultsEl = $('#global-search-results', container);
+    if (!input || !resultsEl) return;
+
+    input.addEventListener('input', function () {
+      var q = input.value.trim().toLowerCase();
+      if (!q || q.length < 2) { resultsEl.classList.remove('visible'); return; }
+
+      var results = [];
+
+      /* search nav pages */
+      NAV_PAGES.forEach(function (p) {
+        if (p.id === '_divider') return;
+        if (p.label && p.label.toLowerCase().indexOf(q) !== -1) {
+          results.push({ name: p.label, type: 'page', action: function () { navigate(p.id); } });
+        }
+      });
+
+      /* search games */
+      if (N.games && N.games.getAllGames) {
+        var allGames = N.games.getAllGames();
+        var matched = 0;
+        for (var i = 0; i < allGames.length && matched < 8; i++) {
+          if (allGames[i].name.toLowerCase().indexOf(q) !== -1) {
+            (function (g) {
+              results.push({ name: g.name, type: 'game', action: function () { N.games.launchGame(g); } });
+            })(allGames[i]);
+            matched++;
+          }
+        }
+      }
+
+      /* search lessons */
+      getAllLessons().forEach(function (entry) {
+        if (results.length >= 15) return;
+        if (entry.lesson.title.toLowerCase().indexOf(q) !== -1) {
+          results.push({ name: entry.lesson.title, type: entry.subjectName, action: function () { navigate('learn'); } });
+        }
+      });
+
+      /* render results */
+      resultsEl.innerHTML = '';
+      if (!results.length) {
+        resultsEl.innerHTML = '<div class="search-result-item" style="color:var(--text-dim);">no results</div>';
+      } else {
+        results.slice(0, 12).forEach(function (r) {
+          var item = el('div', { class: 'search-result-item' });
+          item.innerHTML = '<span style="flex:1;">' + r.name + '</span><span class="search-result-type">' + r.type + '</span>';
+          item.addEventListener('click', function () {
+            resultsEl.classList.remove('visible');
+            input.value = '';
+            r.action();
+          });
+          resultsEl.appendChild(item);
+        });
+      }
+      resultsEl.classList.add('visible');
+    });
+
+    /* close on outside click */
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('#global-search')) {
+        resultsEl.classList.remove('visible');
+      }
+    });
   }
 
   /* ================================================================
@@ -1107,7 +1305,17 @@ window.NT = window.NT || {};
     }
 
     document.addEventListener('keydown', function (e) {
+      var tag = (e.target.tagName || '').toLowerCase();
+      var inField = (tag === 'input' || tag === 'textarea' || e.target.isContentEditable);
+
       if (e.key === 'Escape') {
+        /* close shortcuts overlay */
+        var scOverlay = document.getElementById('shortcuts-overlay');
+        if (scOverlay && !scOverlay.classList.contains('hidden')) {
+          scOverlay.classList.add('hidden');
+          return;
+        }
+        /* close game overlay */
         var overlay = document.getElementById('game-overlay');
         if (overlay && overlay.classList.contains('active')) {
           overlay.classList.remove('active');
@@ -1115,8 +1323,55 @@ window.NT = window.NT || {};
           var frame = document.getElementById('game-frame');
           if (frame) frame.src = 'about:blank';
         }
+        return;
+      }
+
+      if (inField) return;
+
+      /* ? — toggle shortcuts overlay */
+      if (e.key === '?' && !e.ctrlKey && !e.altKey) {
+        e.preventDefault();
+        var sc = document.getElementById('shortcuts-overlay');
+        if (sc) sc.classList.toggle('hidden');
+        return;
+      }
+
+      /* / — focus search on home page */
+      if (e.key === '/' && !e.ctrlKey && !e.altKey) {
+        var searchInput = document.getElementById('global-search-input');
+        if (searchInput) {
+          e.preventDefault();
+          searchInput.focus();
+        }
+        return;
+      }
+
+      /* 1-9 — quick nav */
+      if (e.key >= '1' && e.key <= '9' && !e.ctrlKey && !e.altKey && !e.metaKey) {
+        var navLinks = NAV_PAGES.filter(function (p) { return p.id !== '_divider'; });
+        var idx = parseInt(e.key) - 1;
+        if (idx < navLinks.length) {
+          e.preventDefault();
+          navigate(navLinks[idx].id);
+        }
+        return;
       }
     });
+
+    /* shortcuts close button */
+    var scClose = document.getElementById('shortcuts-close');
+    if (scClose) {
+      scClose.addEventListener('click', function () {
+        document.getElementById('shortcuts-overlay').classList.add('hidden');
+      });
+    }
+    /* close shortcuts on backdrop click */
+    var scOverlayEl = document.getElementById('shortcuts-overlay');
+    if (scOverlayEl) {
+      scOverlayEl.addEventListener('click', function (e) {
+        if (e.target === scOverlayEl) scOverlayEl.classList.add('hidden');
+      });
+    }
 
     /* navigate to home */
     navigate('home');

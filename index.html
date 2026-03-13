@@ -14,20 +14,58 @@
 
   <!-- Splash overlay -->
   <div id="splash-overlay">
+    <div class="splash-logo">
+      <svg viewBox="0 0 64 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="splashGrad" x1="32" y1="0" x2="32" y2="88" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#fff" stop-opacity="1"/>
+          <stop offset="100%" stop-color="#fff" stop-opacity="0.4"/>
+        </linearGradient></defs>
+        <path d="M32 2L4 18v26c0 22 28 38 28 38s28-16 28-38V18L32 2z" stroke="url(#splashGrad)" stroke-width="2" fill="none"/>
+        <path d="M32 10L10 22v20c0 18 22 30 22 30s22-12 22-30V22L32 10z" stroke="#fff" stroke-width="0.5" stroke-opacity="0.2" fill="none"/>
+        <line x1="16" y1="28" x2="48" y2="28" stroke="#fff" stroke-width="0.4" stroke-opacity="0.12"/>
+        <line x1="16" y1="40" x2="48" y2="40" stroke="#fff" stroke-width="0.4" stroke-opacity="0.12"/>
+        <text x="32" y="53" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700" font-size="24" fill="#fff" letter-spacing="-0.5">NT</text>
+      </svg>
+    </div>
     <div class="splash-text">null testament</div>
     <div class="splash-sub">the privacy shield</div>
+  </div>
+
+  <!-- Keyboard shortcuts overlay -->
+  <div id="shortcuts-overlay" class="hidden">
+    <div class="shortcuts-modal">
+      <div class="shortcuts-header">
+        <span>keyboard shortcuts</span>
+        <button id="shortcuts-close">&times;</button>
+      </div>
+      <div class="shortcuts-list">
+        <div class="shortcut-row"><kbd>`</kbd><span>panic — fake google docs</span></div>
+        <div class="shortcut-row"><kbd>?</kbd><span>show this help</span></div>
+        <div class="shortcut-row"><kbd>Esc</kbd><span>close game / overlay</span></div>
+        <div class="shortcut-row"><kbd>/</kbd><span>focus search bar</span></div>
+        <div class="shortcut-row"><kbd>1-9</kbd><span>navigate sidebar items</span></div>
+      </div>
+    </div>
   </div>
 
   <!-- App shell -->
   <div id="app">
     <nav id="sidebar">
       <div class="sidebar-header">
+        <svg class="sidebar-logo-mark" viewBox="0 0 64 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 2L4 18v26c0 22 28 38 28 38s28-16 28-38V18L32 2z" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M32 10L10 22v20c0 18 22 30 22 30s22-12 22-30V22L32 10z" stroke="currentColor" stroke-width="0.5" stroke-opacity="0.2" fill="none"/>
+          <text x="32" y="53" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700" font-size="24" fill="currentColor" letter-spacing="-0.5">NT</text>
+        </svg>
         <span class="sidebar-logo">null testament</span>
       </div>
       <div class="sidebar-nav" id="sidebar-nav"></div>
       <div class="sidebar-footer">
         <button id="panic-btn" class="panic-button" title="panic (press `)">panic</button>
-        <span class="sidebar-badge">v1.0</span>
+        <span class="sidebar-badge">
+          <svg viewBox="0 0 64 88" fill="none" width="12" height="17" style="vertical-align:-2px;margin-right:4px;"><path d="M32 2L4 18v26c0 22 28 38 28 38s28-16 28-38V18L32 2z" stroke="currentColor" stroke-width="4" fill="none"/></svg>
+          v1.0
+        </span>
       </div>
     </nav>
     <main id="content"></main>
@@ -39,8 +77,8 @@
       <button id="game-close" class="game-toolbar-btn">&times; close</button>
       <span id="game-title" class="game-toolbar-title"></span>
       <div style="flex:1"></div>
-      <button id="game-fullscreen" class="game-toolbar-btn">&#x26F6; fullscreen</button>
-      <button id="game-favorite" class="game-toolbar-btn">&#x2606; favorite</button>
+      <button id="game-fullscreen" class="game-toolbar-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" style="vertical-align:-2px;margin-right:4px;"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>fullscreen</button>
+      <button id="game-favorite" class="game-toolbar-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" style="vertical-align:-2px;margin-right:4px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>favorite</button>
     </div>
     <iframe id="game-frame" sandbox="allow-scripts allow-same-origin allow-popups" allowfullscreen></iframe>
   </div>

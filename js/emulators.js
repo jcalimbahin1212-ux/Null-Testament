@@ -49,12 +49,19 @@
   // ── constants ─────────────────────────────────────────────────────
   var EJS_DATA_PATH = 'emulators/emulatorjs/data/';
 
+  // ── SVG icon helpers (replace emoji) ─────────────────────────────
+  var svgGamepad = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><line x1="15" y1="13" x2="15.01" y2="13"/><line x1="18" y1="11" x2="18.01" y2="11"/><path d="M17.32 5H6.68a4 4 0 00-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 003 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 019.828 16h4.344a2 2 0 011.414.586L17 18c.5.5 1 1 2 1a3 3 0 003-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0017.32 5z"/></svg>';
+  var svgJoystick = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><circle cx="12" cy="18" r="4"/><line x1="12" y1="14" x2="12" y2="6"/><circle cx="12" cy="5" r="1"/></svg>';
+  var svgHandheld = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><rect x="6" y="3" width="12" height="18" rx="2"/><rect x="9" y="6" width="6" height="5" rx="1"/><circle cx="10" cy="15" r="0.5"/><circle cx="14" cy="15" r="0.5"/><line x1="10" y1="18" x2="14" y2="18"/></svg>';
+  var svgChip = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>';
+  var svgDisc = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>';
+
   var SYSTEMS = [
     {
       id: 'nes',
       name: 'NES',
       core: 'nes',
-      icon: '\uD83C\uDFAE',          // gamepad emoji
+      icon: svgGamepad,
       extensions: ['.nes'],
       description: 'Nintendo Entertainment System'
     },
@@ -62,7 +69,7 @@
       id: 'snes',
       name: 'SNES',
       core: 'snes',
-      icon: '\uD83D\uDD79\uFE0F',    // joystick emoji
+      icon: svgJoystick,
       extensions: ['.smc', '.sfc'],
       description: 'Super Nintendo Entertainment System'
     },
@@ -70,7 +77,7 @@
       id: 'gb',
       name: 'Game Boy',
       core: 'gb',
-      icon: '\uD83D\uDCDF',           // pager emoji (closest to handheld)
+      icon: svgHandheld,
       extensions: ['.gb'],
       description: 'Nintendo Game Boy'
     },
@@ -78,7 +85,7 @@
       id: 'gba',
       name: 'GBA',
       core: 'gba',
-      icon: '\uD83D\uDCF1',           // mobile phone emoji
+      icon: svgHandheld,
       extensions: ['.gba'],
       description: 'Game Boy Advance'
     },
@@ -86,7 +93,7 @@
       id: 'n64',
       name: 'N64',
       core: 'n64',
-      icon: '\uD83C\uDF1F',           // glowing star emoji
+      icon: svgChip,
       extensions: ['.z64', '.n64', '.v64'],
       description: 'Nintendo 64'
     },
@@ -94,7 +101,7 @@
       id: 'nds',
       name: 'NDS',
       core: 'nds',
-      icon: '\uD83D\uDCBB',           // laptop emoji
+      icon: svgHandheld,
       extensions: ['.nds'],
       description: 'Nintendo DS'
     },
@@ -102,7 +109,7 @@
       id: 'genesis',
       name: 'Sega Genesis',
       core: 'segaMD',
-      icon: '\uD83E\uDDA4',           // hedgehog emoji
+      icon: svgGamepad,
       extensions: ['.md', '.gen', '.bin'],
       description: 'Sega Genesis / Mega Drive'
     },
@@ -110,7 +117,7 @@
       id: 'psx',
       name: 'PlayStation',
       core: 'psx',
-      icon: '\uD83C\uDFB2',           // die emoji
+      icon: svgDisc,
       extensions: ['.bin', '.iso', '.cue', '.pbp'],
       description: 'Sony PlayStation'
     },
@@ -118,7 +125,7 @@
       id: 'atari2600',
       name: 'Atari 2600',
       core: 'atari2600',
-      icon: '\uD83D\uDD79\uFE0F',    // joystick emoji
+      icon: svgJoystick,
       extensions: ['.a26', '.bin'],
       description: 'Atari 2600 Video Computer System'
     }
@@ -247,7 +254,7 @@
       var countText = romCount > 0 ? (romCount + ' rom' + (romCount > 1 ? 's' : '')) : 'upload roms';
 
       var card = el('div', { class: 'emulator-card' }, [
-        el('div', { class: 'emulator-card-icon', text: sys.icon }),
+        el('div', { class: 'emulator-card-icon', html: sys.icon }),
         el('div', { class: 'emulator-card-info' }, [
           el('div', { class: 'emulator-card-title', text: sys.name }),
           el('div', { class: 'emulator-card-desc', text: sys.description }),
@@ -298,7 +305,7 @@
 
     // header
     var header = el('div', { class: 'page-header' }, [
-      el('h2', { text: sys.icon + ' ' + sys.name }),
+      el('h2', { html: '<span style="display:inline-block;width:24px;height:24px;vertical-align:-4px;margin-right:8px;">' + sys.icon + '</span>' + sys.name }),
       el('p', { class: 'page-desc', text: sys.description + ' \u2014 supported formats: ' + sys.extensions.join(', ') })
     ]);
     container.appendChild(header);
